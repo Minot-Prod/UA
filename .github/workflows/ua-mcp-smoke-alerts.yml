@@ -1,0 +1,43 @@
+name: ua-mcp-smoke-alerts
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"  # toutes les 6h
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install jq & curl
+        run: sudo apt-get update && sudo apt-get install -y jq curl
+
+      - name: Facade smoke
+        env:
+          FACADE_BASE: ${{ secrets.FACADE_BASE }}
+          HMAC_HEADER: ${{ secrets.FACADE_HMAC_HEADER }}
+        run: |
+          bash ./smoke_facade.sh
+
+      - name: Firefly smoke
+        env:
+          FIREFLY_BASE: ${{ secrets.FIREFLY_BASE }}
+        run: |
+          bash ./smoke_firefly.sh
+
+      - name: n8n smoke
+        env:
+          N8N_WEBHOOK_BASE: ${{ secrets.N8N_WEBHOOK_BASE }}
+          N8N_SHARED_SECRET: ${{ secrets.N8N_SHARED_SECRET }}
+          WEBHOOK_PATH: ${{ secrets.N8N_WEBHOOK_PATH }}
+        run: |
+          bash ./smoke_n8n.sh
+
+      - name: Notify on failure (Slack/Telegram)
+        if: failure()
+        run: |
+          echo "Smoke KO — notifiez vos canaux"
+          # Optionnel: curl -X POST "$SLACK_WEBHOOK_URL" -d '{"text":"Smoke KO"}'
