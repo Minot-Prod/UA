@@ -20,14 +20,14 @@ jobs:
 
       - name: Ping n8n endpoint
         run: |
-          curl -sS -X POST "$UA_N8N_BASE_URL" `
-            -H "Content-Type: application/json" `
+          curl -sS -X POST "$UA_N8N_BASE_URL" \
+            -H "Content-Type: application/json" \
             -d '{"intent":"PING"}'
 
       - name: Demo call
         run: |
-          curl -sS -X POST "$UA_N8N_BASE_URL" `
-            -H "Content-Type: application/json" `
+          curl -sS -X POST "$UA_N8N_BASE_URL" \
+            -H "Content-Type: application/json" \
             -d '{"intent":"RUN.DEMO_HTTPBIN","params":{"echo":"hello from CI"}}'
 
       - name: Save artifact
