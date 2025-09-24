@@ -55,3 +55,24 @@ jobs:
             **/*.log
           if-no-files-found: warn
           retention-days: 7
+# ⬇️ ajoute ces deux steps dans le job E2E, juste avant ton "Upload E2E results" actuel
+- name: Prepare E2E bundle
+  if: ${{ always() }}
+  shell: bash
+  run: |
+    mkdir -p ua-e2e-out
+    echo "{\"run_id\":\"${{ github.run_id }}\",\"ts\":\"$(date -Is)\"}" > ua-e2e-out/summary.json
+    # si tu as déjà des rapports/logs, copie-les ici (exemples) :
+    for d in test-results playwright-report reports; do
+      if [ -d "$d" ]; then cp -R "$d" "ua-e2e-out/$d"; fi
+    done
+
+- name: Upload E2E results
+  if: ${{ always() }}
+  uses: actions/upload-artifact@v4
+  with:
+    name: ua-e2e-results
+    path: |
+      ua-e2e-out/**
+    if-no-files-found: error
+    retention-days: 7
