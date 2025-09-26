@@ -1,12 +1,16 @@
 name: UA E2E
 
 on:
-  workflow_dispatch:
-  push:
+  workflow_dispatch:          # lancement manuel possible
+  push:                       # un petit commit déclenche aussi
     branches: [ "main" ]
+  schedule:                   # HEARTBEAT quotidien (UTC)
+    - cron: '0 13 * * *'      # 13:00 UTC = 09:00 à Toronto l'été, 08:00 l'hiver
 
 jobs:
   e2e:
+    timeout-minutes: 5        # évite les jobs qui pendent
+    concurrency: ua-e2e-heartbeat   # empêche les runs qui se chevauchent
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,3 +45,4 @@ jobs:
           path: |
             ping.response.json
             demo.response.json
+          retention-days: 7    # garde les artefacts 7 jours
