@@ -4,3 +4,40 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sanity check secret
+        run: |
+          test -n "${{ secrets.UA_N8N_BASE_URL }}" || { echo "::error title=Missing secret::UA_N8N_BASE_URL"; exit 1; }
+          echo "UA_N8N_BASE_URL present ✅"
+
+      - name: PING (inline)
+        env:
+          UA_N8N_BASE_URL: ${{ secrets.UA_N8N_BASE_URL }}
+        run: |
+          echo '{"type":"PING","intent":"healthcheck","meta":{"source":"GitHubActions","suite":"UA_E2E"}}' > _ping.json
+          curl -sS -X POST "$UA_N8N_BASE_URL" \
+               -H "content-type: application/json" \
+               --data-binary @_ping.json | tee ping.response.json
+
+      - name: DEMO (inline)
+        env:
+          UA_N8N_BASE_URL: ${{ secrets.UA_N8N_BASE_URL }}
+        run: |
+          echo '{"type":"DEMO","intent":"demo_handshake","payload":{"message":"Hello from UA E2E"},"meta":{"source":"GitHubActions","suite":"UA_E2E"}}' > _demo.json
+          curl -sS -X POST "$UA_N8N_BASE_URL" \
+               -H "content-type: application/json" \
+               --data-binary @_demo.json | tee demo.response.json
+
+      - name: Upload E2E artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ua-e2e-results
+          path: |
+            ping.response.json
+            demo.response.json
