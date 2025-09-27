@@ -1,0 +1,18 @@
+{
+  "rules": [
+    {
+      "match": {
+        "task": "connectivity"
+      },
+      "route_to": "api-agent"
+    },
+    {
+      "match": {
+        "task": "production-code"
+      },
+      "route_to": "map"
+    }
+  ],
+  "arbiter": "ua",
+  "policy": "OAuth>API key>login-first, justification + % confiance"
+}
