@@ -1,0 +1,55 @@
+name: UA Knowledge Sync
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm install --no-audit --no-fund js-yaml@4.1.0
+
+      - name: Build payload (diff + contents)
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          node scripts/ua-build-knowledge-payload.js
+
+      - name: POST to n8n webhook (OAuth-backed)
+        env:
+          UA_N8N_KNOWLEDGE_WEBHOOK: ${{ secrets.UA_N8N_KNOWLEDGE_WEBHOOK }}
+        run: |
+          test -n "$UA_N8N_KNOWLEDGE_WEBHOOK"
+          curl -sS -X POST "$UA_N8N_KNOWLEDGE_WEBHOOK" \
+            -H "Content-Type: application/json" \
+            --data @./artifacts/ua_knowledge_payload.json | tee ./artifacts/n8n_response.json
+
+      - name: Upload artifacts (trace)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ua-knowledge-sync-results
+          path: artifacts/
