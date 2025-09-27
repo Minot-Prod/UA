@@ -11,22 +11,31 @@ jobs:
   discover:
     runs-on: ubuntu-latest
     outputs:
-      slugs: ${{ steps.out.outputs.slugs }}
+      slugs: ${{ steps.export.outputs.slugs }}
     steps:
       - uses: actions/checkout@v4
-      - name: Python setup
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
       - name: Discover agents
         id: disc
         run: |
           python3 scripts/discover_agents.py > discover.json
+          echo "=== Discover output ==="
           cat discover.json
       - name: Export slugs
-        id: out
+        id: export
         run: |
-          echo "slugs=$(cat discover.json | jq -c '.slugs')" >> $GITHUB_OUTPUT
+          echo "slugs=$(jq -c '.slugs' discover.json)" >> "$GITHUB_OUTPUT"
+      - name: Upload UA registry cache
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ua-registry-cache
+          path: manifests/UA_registry_cache.json
+          if-no-files-found: ignore
 
   matrix-smoke:
     needs: discover
@@ -42,21 +51,26 @@ jobs:
       - uses: actions/checkout@v4
       - name: Print context
         run: echo "Slug=${{ matrix.slug }}"
-      - name: Resolve payloads from manifest
+      - name: Resolve manifest & payloads
         id: resolve
+        shell: bash
         run: |
           set -e
-          MANIFEST="manifests/AGENT_${{ matrix.slug }}.manifest.json"
-          if [ ! -f "$MANIFEST" ]; then
-            MANIFEST="manifests/AGENT_${{ matrix.slug^^ }}.manifest.json"
+          SLUG="${{ matrix.slug }}"
+          CANDIDATES=("manifests/AGENT_${SLUG}.manifest.json" "manifests/AGENT_${SLUG^^}.manifest.json" "manifests/AGENT_${SLUG,,}.manifest.json")
+          MANIFEST=""
+          for M in "${CANDIDATES[@]}"; do
+            if [ -f "$M" ]; then MANIFEST="$M"; break; fi
+          done
+          if [ -z "$MANIFEST" ]; then
+            echo "::error::Manifest not found for slug $SLUG"
+            exit 1
           fi
-          if [ ! -f "$MANIFEST" ]; then
-            echo "::error::Manifest not found for slug ${{ matrix.slug }}"; exit 1
-          fi
+          echo "manifest=$MANIFEST" >> "$GITHUB_OUTPUT"
           PING=$(jq -r '.tests.payloads.ping // empty' "$MANIFEST")
           DEMO=$(jq -r '.tests.payloads.demo // empty' "$MANIFEST")
-          echo "ping=$PING" >> $GITHUB_OUTPUT
-          echo "demo=$DEMO" >> $GITHUB_OUTPUT
+          echo "ping=$PING" >> "$GITHUB_OUTPUT"
+          echo "demo=$DEMO" >> "$GITHUB_OUTPUT"
       - name: Optional live smoke (if BASE_URL set)
         if: ${{ env.BASE_URL != '' }}
         run: |
@@ -66,5 +80,7 @@ jobs:
               echo "--> POST $f"
               curl -sS -X POST "$BASE_URL" -H "Content-Type: application/json" --data @"$f" || true
               echo
+            else
+              echo "Skip (missing file): $f"
             fi
           done
