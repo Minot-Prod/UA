@@ -1,10 +1,10 @@
-name: UA → Gemini (AI Studio v1 auto-detect)
+name: UA → Gemini (AI Studio v1 — NO VERTEX HARDLOCK)
 
 on:
   workflow_dispatch:
     inputs:
       prompt:
-        description: "Question à poser à Gemini"
+        description: "Question à poser à Gemini (AI Studio)"
         required: true
         default: "Dis bonjour et propose 2 idées IG pour Taslow (ultra concis)."
 
@@ -14,92 +14,105 @@ jobs:
     env:
       ACTIONS_STEP_DEBUG: "false"
       ACTIONS_RUNNER_DEBUG: "false"
+      # 🔒 Modèle AI Studio explicite (PAS de publishers/, PAS de -001/-002)
+      AI_STUDIO_MODEL: "models/gemini-1.5-flash"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Déterminer le prompt
+      - name: Prompt
         id: prompt
         run: echo "value=${{ github.event.inputs.prompt }}" >> $GITHUB_OUTPUT
 
-      - name: Valider le secret GEMINI_API_KEY
-        id: validate
+      - name: Vérifier le secret (clé AI Studio)
+        id: secret
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -e
           if [ -z "${GEMINI_API_KEY:-}" ]; then
-            echo "❌ Secret GEMINI_API_KEY introuvable. Va dans Settings → Secrets and variables → Actions → New repository secret." >&2
+            echo "❌ Secret GEMINI_API_KEY manquant. Repo → Settings → Secrets and variables → Actions → New repository secret." >&2
             exit 3
           fi
           CLEANED="$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           if [ "${#CLEANED}" -lt 20 ]; then
-            echo "❌ Clé suspecte. Regénère depuis Google AI Studio (ai.google.dev) et recolle-la dans le secret." >&2
+            echo "❌ Clé suspecte. Regénère une clé **Gemini API** sur https://ai.google.dev/ (AI Studio), active “Generative Language API”, et remets-la dans le secret." >&2
             exit 4
           fi
-          echo "::notice::GEMINI_API_KEY chargé (longueur: ${#CLEANED})"
+          echo "::notice::GEMINI_API_KEY chargée."
 
-      - name: (Diag) Lister les modèles AI Studio (v1)
-        id: list
+      - name: (Diag) Vérifier le modèle AI Studio (v1)
+        id: meta
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MODEL: ${{ env.AI_STUDIO_MODEL }}
         run: |
           set -e
           mkdir -p out
           BASE="https://generativelanguage.googleapis.com/v1"
-          curl -sS "$BASE/models?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" > out/models.json || true
+          URL="$BASE/${MODEL}?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          echo "::notice::GET $URL"
+          curl -sS "$URL" > out/model_meta.json || true
 
-          echo "---- Extrait modèles (nom \t méthodes) ----"
-          (jq -r '.models[] | [.name, ( .supportedGenerationMethods // [] | join(","))] | @tsv' out/models.json | head -n 30) || cat out/models.json
-          echo "-------------------------------------------"
+          echo "---- model_meta.json ----"
+          cat out/model_meta.json
+          echo "-------------------------"
 
-          # Sélection d’un modèle qui supporte generateContent (flash prioritaire, sinon pro)
-          MODEL=$(jq -r '
-            .models[] | select((.name|startswith("models/gemini-1.5-flash")) and (.supportedGenerationMethods|index("generateContent"))) | .name
-          ' out/models.json | head -n 1)
-
-          if [ -z "$MODEL" ]; then
-            MODEL=$(jq -r '
-              .models[] | select((.name|startswith("models/gemini-1.5-pro")) and (.supportedGenerationMethods|index("generateContent"))) | .name
-            ' out/models.json | head -n 1)
+          # ❌ Hard-stop si une trace 'publishers/' apparaît (pattern Vertex)
+          if grep -q '"name": *"publishers/' out/model_meta.json; then
+            echo "❌ Détection d'un chemin type Vertex (publishers/...)."
+            echo "   ➜ Ta clé n'est probablement pas une clé AI Studio, ou le projet n'a pas l'API 'Generative Language' activée."
+            echo "   ➜ Solution : génère une clé **Gemini API** sur https://ai.google.dev/, active l’API sur ce projet, puis remets-la dans GEMINI_API_KEY."
+            exit 10
           fi
 
-          # Fallback si la liste ne remonte rien d’exploitable
-          if [ -z "$MODEL" ]; then
-            MODEL="models/gemini-1.5-flash"
+          # Si le modèle n'est pas trouvé sur v1 → message explicite
+          if jq -e '.error' out/model_meta.json >/dev/null 2>&1; then
+            echo "❌ Erreur meta sur AI Studio v1:"
+            cat out/model_meta.json
+            echo
+            echo "Tips:"
+            echo " - Vérifie que 'Generative Language API' est **ENABLED** sur le même projet que la clé."
+            echo " - Assure-toi que le modèle '${MODEL}' est disponible côté AI Studio (essaie 'models/gemini-1.5-pro' si besoin)."
+            exit 11
           fi
 
-          echo "model=$MODEL" >> $GITHUB_OUTPUT
-          echo "::notice::Modèle sélectionné: $MODEL"
-
-      - name: Appel Gemini (v1, generateContent)
+      - name: Appel AI Studio (v1 generateContent)
         id: call
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MODEL: ${{ env.AI_STUDIO_MODEL }}
           PROMPT: ${{ steps.prompt.outputs.value }}
-          MODEL: ${{ steps.list.outputs.model }}
         run: |
           set -e
           mkdir -p out
           BASE="https://generativelanguage.googleapis.com/v1"
           URL="$BASE/${MODEL}:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
-
           BODY=$(jq -n --arg text "$PROMPT" '{contents: [{"role":"user","parts":[{"text": $text}]}]}')
 
+          echo "::notice::POST $URL"
           curl -sS -X POST "$URL" -H "Content-Type: application/json" -d "$BODY" > out/response.json || {
             echo "❌ Requête HTTP échouée"; exit 5;
           }
 
+          # ❌ Stop si on voit un message qui mentionne 'publishers/...-00X' (typiquement Vertex)
+          if grep -q 'publishers/.*/gemini-.*-00[12]' out/response.json; then
+            echo "❌ Réponse suggère un modèle Vertex ('publishers/...-001/-002')."
+            echo "   Ce workflow est AI Studio ONLY. Reprends une clé Gemini API AI Studio + API activée."
+            cat out/response.json
+            exit 12
+          fi
+
           if jq -e '.error' out/response.json >/dev/null 2>&1; then
-            echo "❌ Réponse d'erreur de l'API:"
+            echo "❌ Erreur AI Studio:"
             cat out/response.json
             exit 6
           fi
 
           TEXT=$(jq -r '.candidates[0].content.parts[0].text // empty' out/response.json)
           if [ -z "$TEXT" ]; then
-            echo "❌ Aucune réponse textuelle. Inspecte out/response.json" >&2
+            echo "❌ Aucune réponse textuelle. Dump JSON ci-dessous:" >&2
             cat out/response.json
             exit 7
           fi
@@ -109,14 +122,14 @@ jobs:
           cat out/answer.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Publier l’artifact (réponse + JSON brut)
+      - name: Publier l’artifact (réponse + JSON)
         uses: actions/upload-artifact@v4
         with:
           name: ua-gemini-response
           path: out/
 
-      - name: Afficher la réponse dans les logs
+      - name: Afficher la réponse
         run: |
-          echo "-------- Réponse Gemini --------"
+          echo "-------- Réponse Gemini (AI Studio) --------"
           cat out/answer.txt
-          echo "--------------------------------"
+          echo "-------------------------------------------"
