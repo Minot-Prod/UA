@@ -1,0 +1,31 @@
+platform,name,link,tags,metric_type,metric_value,metric_last_checked,proof_of_value
+Base44,App templates (catalog hub),https://docs.base44.com/Guides/App-templates,"catalog,base44",catalog_presence,,,Hub officiel de templates clonables (preuve d'usage via clones).
+Base44,Prompt Library — Client Portal,https://docs.base44.com/Getting-Started/Prompt-library,"prompt,base44",official_prompt,,,Prompts officiels orientés business (portail client).
+Base44,Prompt Library — Invoice Tracker,https://docs.base44.com/Getting-Started/Prompt-library,"prompt,base44,finance",official_prompt,,,"Gestion de factures, app business."
+Base44,Prompt Library — Proposal Generator (PDF),https://docs.base44.com/Getting-Started/Prompt-library,"prompt,base44,sales",official_prompt,,,Génération de propositions PDF (vente).
+Base44,Prompt Library — Simple CRM,https://docs.base44.com/Getting-Started/Prompt-library,"prompt,base44,crm",official_prompt,,,CRM simple utilisable en prod.
+Base44,Prompt Library — Time Tracker,https://docs.base44.com/Getting-Started/Prompt-library,"prompt,base44,ops",official_prompt,,,"Tracking d'heures, export CSV/PDF."
+Base44,Prompt Library — Event RSVP,https://docs.base44.com/Getting-Started/Prompt-library,"prompt,base44,events",official_prompt,,,Gestion d'événements et RSVP.
+Base44,Prompt Library — Knowledge Base,https://docs.base44.com/Getting-Started/Prompt-library,"prompt,base44,knowledge",official_prompt,,,Base de connaissance interne.
+Base44,Prompt Library — AI Assistant Builder,https://docs.base44.com/Getting-Started/Prompt-library,"prompt,base44,ai",official_prompt,,,Assistant IA spécialisé sur base de DB.
+Base44,Prompting guide (quality framework),https://docs.base44.com/Getting-Started/Prompt-guide,"guide,base44",official_guide,,,Cadre de qualité pour des prompts robustes.
+n8n,Shopify → Sheets (orders export),https://n8n.io/workflows/3218-get-all-orders-in-shopify-to-google-sheets/,"ecommerce,shopify,sheets",official_template,,,Export commandes Shopify vers Sheets (reporting).
+n8n,Shopify → Sheets (products sync),https://n8n.io/workflows/2089-shopify-to-google-sheets-product-sync-automation/,"ecommerce,shopify,sheets",official_template,,,Sync produits Shopify vers Sheets (catalogue).
+n8n,Shopify order auto-fulfillment,https://n8n.io/workflows/3296-automatic-shopify-order-fulfillment-process/,"ecommerce,shopify,ops",official_template,,,Marquage automatique des commandes comme 'Fulfilled'.
+n8n,Stripe → Slack/Gmail purchase alerts,https://n8n.io/workflows/3410-get-notified-on-gmail-telegram-and-slack-on-new-stripe-purchase/,"finance,stripe,alerts",official_template,,,Alerte paiement en temps réel (Stripe).
+n8n,Stripe payment session → CRM sync,https://n8n.io/workflows/3391-stripe-payment-order-sync-auto-retrieve-customer-and-product-purchased/,"finance,stripe,crm",official_template,,,Récupération des infos client/produit pour CRM.
+n8n,Daily Google Ads → Notion + Sheets,https://n8n.io/workflows/7133-daily-google-ads-performance-to-notion-and-google-sheets/,"ads,reporting,notion,sheets",official_template,,,Rapport quotidien Ads (clics/conversions) dans Notion & Sheets.
+n8n,Automated Google Ads reporting (multi-client),https://n8n.io/workflows/7387-automated-google-ads-campaign-reporting-to-google-sheets-with-airtable-client-management/,"ads,agency,airtable,sheets",official_template,,,Reporting multi-comptes + gestion clients Airtable.
+n8n,Facebook/Google Lead Ads → Sheets + Salesforce,https://n8n.io/workflows/6687-sync-facebookgoogle-lead-ads-to-google-sheets-and-salesforce-crm/,"leadgen,fbads,googleads,salesforce",official_template,,,Capture & sync leads vers CRM (Salesforce).
+n8n,Typeform → HubSpot (new contact),https://n8n.io/workflows/1223-capture-leads-in-hubspot-from-typeform/,"leadgen,typeform,hubspot",official_template,,,Création de contacts HubSpot depuis Typeform.
+n8n,Notion KB AI Assistant (RAG),https://n8n.io/workflows/2413-notion-knowledge-base-ai-assistant/,"ai,rag,notion,support",official_template,,,Assistant IA adossé à Notion (RAG).
+Zapier,Gmail → Slack (new emails to channel),https://zapier.com/apps/gmail/integrations/slack,"ops,alerts,gmail,slack",popular_template,,,"Galerie officielle Zapier, recettes populaires."
+Zapier,Typeform → Google Sheets (populate),https://zapier.com/apps/google-sheets/integrations/typeform,"leadgen,forms,sheets",popular_template,,,Intégration très répandue pour la collecte de leads.
+Zapier,FB Lead Ads → HubSpot (contacts/deals),https://zapier.com/apps/facebook-lead-ads/integrations/hubspot,"leadgen,fbads,hubspot",popular_template,,,Connexion leadgen → CRM (HubSpot).
+Zapier,Stripe → Slack (notify new payments),https://zapier.com/apps/slack/integrations/stripe,"finance,stripe,slack,alerts",popular_template,,,Alerte revenue en temps réel.
+Zapier,Shopify ↔ Google Sheets (orders),https://zapier.com/apps/google-sheets/integrations/shopify,"ecommerce,shopify,sheets",popular_template,,,Reporting e-commerce récurrent.
+Zapier,Notify on Slack + log to Sheets (Stripe),https://zapier.com/templates/details/e19bef4fcbeb282fa88d45d54f08872de6d4ca55e8ef4553ed13b1bc0e80cf75,"finance,stripe,slack,sheets",template_detail,,,Page template détaillée (Stripe→Slack+Sheets).
+Zapier,Create Shopify orders from Sheets,https://zapier.com/templates/details/7a12ba2208c729d4e0c6e06b7a9798598098f044d65cdec7397794facf97dd7c,"ecommerce,shopify,sheets",template_detail,,,Création d'ordres Shopify depuis Sheets.
+Zapier,Gmail labeled digest → Slack (AI),https://zapier.com/apps/gmail/integrations/slack/1659731/get-slack-channel-messages-with-summary-digests-of-new-labeled-gmail-emails-by-chat-tuesday,"ops,ai,gmail,slack",template_detail,,,Résumé IA des emails et digest vers Slack.
+Zapier,Typeform → Sheets (how-to blog),https://zapier.com/blog/add-typeform-responses-to-google-sheets/,"tutorial,forms,sheets",tutorial,,,Tutoriel officiel avec template pointé.
+Zapier,Save Shopify orders to Sheets (how-to blog),https://zapier.com/blog/save-shopify-orders-google-sheet/,"tutorial,ecommerce,shopify,sheets",tutorial,,,Tutoriel officiel pour log de commandes.
