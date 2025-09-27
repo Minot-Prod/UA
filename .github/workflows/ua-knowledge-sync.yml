@@ -46,3 +46,16 @@ jobs:
         with:
           name: ua-knowledge-sync-results
           path: artifacts/
+      - name: Ping n8n API (health + last executions)
+        if: always()
+        env:
+          UA_N8N_BASE_URL: ${{ secrets.UA_N8N_BASE_URL }}
+          UA_N8N_API_KEY:  ${{ secrets.UA_N8N_API_KEY }}
+        run: |
+          test -n "$UA_N8N_BASE_URL" && test -n "$UA_N8N_API_KEY"
+          # Santé basique
+          curl -fsS "$UA_N8N_BASE_URL/rest/health" \
+            -H "X-N8N-API-KEY: $UA_N8N_API_KEY" | tee -a artifacts/n8n_health.json
+          # Dernières exécutions (optionnel, utile pour debug)
+          curl -fsS "$UA_N8N_BASE_URL/rest/executions?limit=5" \
+            -H "X-N8N-API-KEY: $UA_N8N_API_KEY" | tee -a artifacts/n8n_last_executions.json
