@@ -1,4 +1,4 @@
-name: UA to Gemini (AI Studio strict)
+name: UA to Gemini (AI Studio v1 auto-detect)
 
 on:
   workflow_dispatch:
@@ -21,8 +21,7 @@ jobs:
 
       - name: Déterminer le prompt
         id: prompt
-        run: |
-          echo "value=${{ github.event.inputs.prompt }}" >> $GITHUB_OUTPUT
+        run: echo "value=${{ github.event.inputs.prompt }}" >> $GITHUB_OUTPUT
 
       - name: Valider la clé (présence/forme)
         id: validate
@@ -31,50 +30,55 @@ jobs:
         run: |
           set -e
           if [ -z "${GEMINI_API_KEY:-}" ]; then
-            echo "❌ Secret GEMINI_API_KEY introuvable. Va dans Settings → Secrets and variables → Actions → New repository secret." >&2
+            echo "❌ Secret GEMINI_API_KEY introuvable (Settings → Secrets and variables → Actions)." >&2
             exit 3
           fi
           CLEANED="$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           if [ "${#CLEANED}" -lt 20 ]; then
-            echo "❌ Clé trop courte / mal collée. Regénère depuis Google AI Studio (ai.google.dev) et recolle dans le secret." >&2
+            echo "❌ Clé suspecte. Regénère depuis Google AI Studio (ai.google.dev) et recolle dans le secret." >&2
             exit 4
           fi
           echo "::notice::GEMINI_API_KEY chargé (longueur: ${#CLEANED})"
 
-      - name: (Diag) Lister les modèles via AI Studio
+      - name: (Diag) Lister les modèles AI Studio (v1)
         id: list
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -e
           mkdir -p out
-          BASE="https://generativelanguage.googleapis.com/v1beta"
+          BASE="https://generativelanguage.googleapis.com/v1"
           curl -sS "$BASE/models?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" > out/models.json || true
-          echo "---- Extrait de models.json ----"
-          (jq -r '.models[]?.name' out/models.json | head -n 30) || cat out/models.json
-          echo "--------------------------------"
 
-          # Garde-fou anti-Vertex: si on voit 'publishers/google/models/...-00X', on stoppe
-          if jq -e '.models[]?.name | test("^publishers/")' out/models.json >/dev/null 2>&1; then
-            echo "❌ On dirait un catalogue Vertex (publishers/...). Tu utilises sûrement une clé Vertex/GCP."
-            echo "   ➜ Génére une clé *Gemini API* sur https://ai.google.dev/ (AI Studio), active 'Generative Language API', et remets-la dans GEMINI_API_KEY."
-            exit 10
+          echo "---- Extrait de models.json (noms + méthodes supportées) ----"
+          (jq -r '.models[] | [.name, ( .supportedGenerationMethods // [] | join(","))] | @tsv' out/models.json | head -n 30) || cat out/models.json
+          echo "----------------------------------------------------------------"
+
+          # Sélectionne un modèle 'gemini-1.5-flash*' qui supporte generateContent
+          MODEL=$(jq -r '
+            .models[]
+            | select((.name|startswith("models/gemini-1.5-flash")) and (.supportedGenerationMethods|index("generateContent")))
+            | .name
+          ' out/models.json | head -n 1)
+
+          # Fallback: essaie un pro si pas de flash
+          if [ -z "$MODEL" ]; then
+            MODEL=$(jq -r '
+              .models[]
+              | select((.name|startswith("models/gemini-1.5-pro")) and (.supportedGenerationMethods|index("generateContent")))
+              | .name
+            ' out/models.json | head -n 1)
           fi
 
-          # Choisir un modèle AI Studio valide (flash prioritaire, sinon pro)
-          MODEL=$(jq -r '.models[]?.name | select(startswith("models/gemini-1.5-flash")) | . // empty' out/models.json | head -n 1)
+          # Fallback final statique (au cas où l’API de liste serait filtrée)
           if [ -z "$MODEL" ]; then
-            MODEL=$(jq -r '.models[]?.name | select(startswith("models/gemini-1.5-pro")) | . // empty' out/models.json | head -n 1)
-          fi
-          if [ -z "$MODEL" ]; then
-            # fallback statique si la liste ne remonte pas (cas rare)
-            MODEL="models/gemini-1.5-flash-latest"
+            MODEL="models/gemini-1.5-flash"
           fi
 
           echo "model=$MODEL" >> $GITHUB_OUTPUT
           echo "::notice::Modèle sélectionné: $MODEL"
 
-      - name: Appel Gemini (AI Studio, generateContent)
+      - name: Appel Gemini (v1, generateContent)
         id: call
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -83,7 +87,7 @@ jobs:
         run: |
           set -e
           mkdir -p out
-          BASE="https://generativelanguage.googleapis.com/v1beta"
+          BASE="https://generativelanguage.googleapis.com/v1"
           URL="$BASE/${MODEL}:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
 
           BODY=$(jq -n --arg text "$PROMPT" '{contents: [{"role":"user","parts":[{"text": $text}]}]}')
