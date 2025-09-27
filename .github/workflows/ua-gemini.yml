@@ -1,35 +1,21 @@
-name: UA → Gemini (AI Studio)
-
-on:
-  workflow_dispatch:
-    inputs:
-      prompt:
-        description: "Question à poser à Gemini"
-        required: true
-        default: "Donne 3 idées de posts Instagram pour Taslow (style concis)."
-  issue_comment:
-    types: [created]
-
-jobs:
-  ask-gemini:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/ask-gemini'))
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Déterminer le prompt
-        id: prompt
+      - name: Valider la clé (présence/forme)
+        id: validate
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "value=${{ github.event.inputs.prompt }}" >> $GITHUB_OUTPUT
-          else
-            # Ex: commentaire "/ask-gemini Ton texte ici"
-            RAW="${{ github.event.comment.body }}"
-            PROMPT="${RAW#*/ask-gemini }"
-            echo "value=${PROMPT}" >> $GITHUB_OUTPUT
+          set -e
+          if [ -z "${GEMINI_API_KEY:-}" ]; then
+            echo "❌ Secret GEMINI_API_KEY introuvable. Vérifie Settings → Secrets → Actions (repository)." >&2
+            exit 3
           fi
+          # Trim soft (supprime espaces/retours)
+          CLEANED="$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          if [ "${#CLEANED}" -lt 20 ]; then
+            echo "❌ Clé trop courte ou mal collée (longueur < 20). Recolle la clé depuis AI Studio." >&2
+            exit 4
+          fi
+          echo "key_len=${#CLEANED}" >> $GITHUB_OUTPUT
+          echo "::notice::GEMINI_API_KEY chargé (longueur: ${#CLEANED})"
 
       - name: Appel Gemini (curl)
         id: call
@@ -38,50 +24,28 @@ jobs:
           PROMPT: ${{ steps.prompt.outputs.value }}
         run: |
           set -e
-          mkdir -p out
-          # Endpoint courant Gemini "generateContent" (modèle flash rapide)
-          URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}"
+          URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           BODY=$(jq -n --arg text "$PROMPT" '{contents: [{parts: [{text: $text}]}]}')
 
-          curl -sS -X POST "$URL" \
-            -H "Content-Type: application/json" \
-            -d "$BODY" > out/response.json
+          curl -sS -X POST "$URL" -H "Content-Type: application/json" -d "$BODY" > out/response.json || {
+            echo "❌ Requête HTTP échouée"; exit 5;
+          }
 
-          # Extraire le texte (chemin standard des réponses Gemini)
+          # Si l'API renvoie une erreur, affiche un diagnostic court
+          if jq -e '.error' out/response.json >/dev/null 2>&1; then
+            echo "❌ Réponse d'erreur de l'API:"
+            cat out/response.json
+            exit 6
+          fi
+
           TEXT=$(jq -r '.candidates[0].content.parts[0].text // empty' out/response.json)
           if [ -z "$TEXT" ]; then
-            echo "Aucune réponse textuelle trouvée. Inspecte out/response.json"
+            echo "❌ Aucune réponse textuelle. Inspecte out/response.json" >&2
             cat out/response.json
-            exit 1
+            exit 7
           fi
 
           echo "$TEXT" > out/answer.txt
           echo "answer<<EOF" >> $GITHUB_OUTPUT
           echo "$TEXT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Publier l’artifact (réponse brute + parsed)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ua-gemini-response
-          path: out/
-
-      - name: Afficher la réponse dans les logs
-        run: |
-          echo "-------- Réponse Gemini --------"
-          cat out/answer.txt
-          echo "--------------------------------"
-
-      - name: (Optionnel) Répondre en commentaire si trigger via issue/PR
-        if: github.event_name == 'issue_comment'
-        uses: actions-ecosystem/action-create-comment@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          body: |
-            **UA → Gemini**
-            > Prompt : `${{ steps.prompt.outputs.value }}`
-
-            **Réponse :**
-            ```
-            ${{ steps.call.outputs.answer }}
-            ```
