@@ -1,8 +1,7 @@
 name: UA Knowledge Sync
-
 on:
   push:
-    branches: [ "*" ]
+    branches: ["*"]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -23,21 +22,15 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install deps
-        run: |
-          npm init -y >/dev/null 2>&1 || true
-          npm install --no-audit --no-fund js-yaml@4.1.0
-
       - name: Build payload (diff + contents)
         env:
           BEFORE_SHA: ${{ github.event.before }}
-          AFTER_SHA: ${{ github.sha }}
-          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-        run: |
-          node scripts/ua-build-knowledge-payload.js
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/ua-build-knowledge-payload.js
 
       - name: POST to n8n webhook (OAuth-backed)
         env:
