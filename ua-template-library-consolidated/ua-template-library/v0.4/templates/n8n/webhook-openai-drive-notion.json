@@ -1,0 +1,108 @@
+{
+  "name": "Webhook→OpenAI→Drive (+Notion log)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "ua/content",
+        "methods": [
+          "POST"
+        ]
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "chat",
+        "model": "gpt-4o-mini",
+        "messages": "={{[{\"role\":\"user\",\"content\": $json[\"body\"]?.text || $json.text || \"Generate a short post.\"}]}}"
+      },
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 2,
+      "name": "OpenAI (Chat)",
+      "credentials": {
+        "openAiApi": {
+          "id": "openai_cred_placeholder",
+          "name": "OpenAI Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "binaryData": false,
+        "fileName": "={{$json.data?.title || 'content.txt'}}",
+        "fileContent": "={{$json.data?.output || $json.choices?.[0]?.message?.content}}",
+        "parents": "={{$env.GOOGLE_DRIVE_FOLDER_ID || ''}}"
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "name": "Drive Upload",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "gdrive_cred_placeholder",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "pageId": "={{$env.NOTION_DB_CONTENT}}",
+        "propertiesUi": {
+          "propertyFields": [
+            {
+              "key": "Name",
+              "type": "title",
+              "value": "={{$json.data?.title || 'Content'}}"
+            },
+            {
+              "key": "DriveLink",
+              "type": "url",
+              "value": "={{$json.webViewLink || ''}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2,
+      "name": "Notion Log",
+      "credentials": {
+        "notionApi": {
+          "id": "notion_cred_placeholder",
+          "name": "Notion OAuth"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI (Chat)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI (Chat)": {
+      "main": [
+        [
+          {
+            "node": "Drive Upload",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notion Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
