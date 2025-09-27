@@ -10,45 +10,50 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install jq (if missing)
-        shell: bash
-        run: |
-          if ! command -v jq >/dev/null 2>&1; then
-            sudo apt-get update -y
-            sudo apt-get install -y jq
-          fi
-          jq --version
-
-      - name: Create sample text file
+      - name: Prepare tools
         shell: bash
         run: |
           set -euo pipefail
-          printf "Hello Max from UA. Ceci est un test Files API.\n" > note.txt
-          ls -l note.txt
+          sudo apt-get update -y
+          sudo apt-get install -y jq
 
-      - name: Define endpoints (sanitize CRLF)
-        id: ep
+      - name: Create sample file
         shell: bash
         run: |
           set -euo pipefail
-          UP_RAW="https://generativelanguage.googleapis.com/v1beta/files:upload"
-          GEN_RAW="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
-          UP=$(printf "%s" "$UP_RAW"  | tr -d '\r')
-          GEN=$(printf "%s" "$GEN_RAW" | tr -d '\r')
-          echo "upload=$UP" >> "$GITHUB_OUTPUT"
-          echo "gen=$GEN" >> "$GITHUB_OUTPUT"
-          echo "Upload endpoint: $UP"
-          echo "Generate endpoint: $GEN"
+          echo "Hello Max from UA. Ceci est un test Files API." > note.txt
 
-      - name: Init upload (get upload URL)
+      - name: Init upload (get signed URL)
         id: init
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${GEMINI_API_KEY:-}" || { echo "❌ Missing GEMINI_API_KEY secret"; exit 2; }
-          UP="${{ steps.ep.outputs.upload }}"
-          RES=$(curl -sS -X POST \
-            -H "x-goog-api-key: $GEMINI_API_KEY" \
-            -H "Content-Type: application/json" \
-            "$UP" \
-            --data-binary @-
+          RES=$(curl -sS -X POST -H "x-goog-api-key: ${GEMINI_API_KEY}" -H "Content-Type: application/json" "https://generativelanguage.googleapis.com/v1beta/files:upload" -d '{"file":{"display_name":"note.txt"}}')
+          echo "$RES" | tee files_init.json
+          UPLOAD_URL=$(jq -r '.file.upload_url' files_init.json)
+          FILE_NAME=$(jq -r '.file.name' files_init.json)
+          if [ -z "$UPLOAD_URL" ] || [ -z "$FILE_NAME" ]; then
+            echo "Files API init failed"; cat files_init.json; exit 1
+          fi
+          echo "upload_url=$UPLOAD_URL" >> "$GITHUB_OUTPUT"
+          echo "file_name=$FILE_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Upload binary to signed URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sS -X PUT "${{ steps.init.outputs.upload_url }}" -H "Content-Type: text/plain" --data-binary @note.txt > /dev/null
+
+      - name: Use file in generateContent
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE_NAME="${{ steps.init.outputs.file_name }}"
+          BODY=$(jq -nc --arg f "$FILE_NAME" '{contents:[{role:"user",parts:[{file_data:{file_name:$f,mime_type:"text/plain"}},{text:"Résume ce fichier en une phrase."}]}]}')
+          curl -sS -X POST -H "x-goog-api-key: ${GEMINI_API_KEY}" -H "Content-Type: application/json" "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent" -d "$BODY" | tee files_response.json
+
+      - name: Show concise answer
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -r '.candidates[0].content.parts[0].text // "No text found"' files_response.json
