@@ -1,0 +1,70 @@
+name: UA Autodiscover
+on:
+  push:
+    paths:
+      - "manifests/**"
+      - "scripts/**"
+      - ".github/workflows/ua-autodiscover.yml"
+  workflow_dispatch: {}
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      slugs: ${{ steps.out.outputs.slugs }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Discover agents
+        id: disc
+        run: |
+          python3 scripts/discover_agents.py > discover.json
+          cat discover.json
+      - name: Export slugs
+        id: out
+        run: |
+          echo "slugs=$(cat discover.json | jq -c '.slugs')" >> $GITHUB_OUTPUT
+
+  matrix-smoke:
+    needs: discover
+    if: ${{ needs.discover.outputs.slugs != '' && needs.discover.outputs.slugs != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        slug: ${{ fromJson(needs.discover.outputs.slugs) }}
+    env:
+      BASE_URL: ${{ secrets.UA_N8N_BASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print context
+        run: echo "Slug=${{ matrix.slug }}"
+      - name: Resolve payloads from manifest
+        id: resolve
+        run: |
+          set -e
+          MANIFEST="manifests/AGENT_${{ matrix.slug }}.manifest.json"
+          if [ ! -f "$MANIFEST" ]; then
+            MANIFEST="manifests/AGENT_${{ matrix.slug^^ }}.manifest.json"
+          fi
+          if [ ! -f "$MANIFEST" ]; then
+            echo "::error::Manifest not found for slug ${{ matrix.slug }}"; exit 1
+          fi
+          PING=$(jq -r '.tests.payloads.ping // empty' "$MANIFEST")
+          DEMO=$(jq -r '.tests.payloads.demo // empty' "$MANIFEST")
+          echo "ping=$PING" >> $GITHUB_OUTPUT
+          echo "demo=$DEMO" >> $GITHUB_OUTPUT
+      - name: Optional live smoke (if BASE_URL set)
+        if: ${{ env.BASE_URL != '' }}
+        run: |
+          set -e
+          for f in "${{ steps.resolve.outputs.ping }}" "${{ steps.resolve.outputs.demo }}"; do
+            if [ -n "$f" ] && [ -f "$f" ]; then
+              echo "--> POST $f"
+              curl -sS -X POST "$BASE_URL" -H "Content-Type: application/json" --data @"$f" || true
+              echo
+            fi
+          done
