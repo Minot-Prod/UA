@@ -1,18 +1,52 @@
 name: Gemini JSON Mode
-on: { workflow_dispatch: {} }
+on:
+  workflow_dispatch:
+
 jobs:
   json:
     runs-on: ubuntu-latest
-    env: { GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} }
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
-      - name: Ask for JSON with schema
+      - name: Install jq (if missing)
+        shell: bash
         run: |
-          SCHEMA='{"type":"OBJECT","properties":{"title":{"type":"STRING"},"tags":{"type":"ARRAY","items":{"type":"STRING"}},"score":{"type":"NUMBER"}},"required":["title","score"]}'
-          BODY=$(jq -nc --argjson schema "$SCHEMA" '{
-            contents:[{parts:[{text:"Analyse ce texte et retourne {title,tags,score}."}]}],
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo apt-get install -y jq
+          fi
+
+      - name: Ask for strict JSON with schema
+        id: ask
+        shell: bash
+        run: |
+          set -e
+          SCHEMA='{
+            "type":"OBJECT",
+            "properties":{
+              "title":{"type":"STRING"},
+              "tags":{"type":"ARRAY","items":{"type":"STRING"}},
+              "score":{"type":"NUMBER"}
+            },
+            "required":["title","score"]
+          }'
+          PROMPT="Analyse ce texte: 'UA booste la prod via CI.' et retourne {title,tags,score}."
+          BODY=$(jq -nc --arg p "$PROMPT" --argjson schema "$SCHEMA" '{
+            contents:[{parts:[{text:$p}]}],
             responseMimeType:"application/json",
             responseSchema:$schema
           }')
-          curl -sS -X POST -H "x-goog-api-key: $GEMINI_API_KEY" -H "Content-Type: application/json" \
-            https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent \
+          curl -sS -X POST \
+            -H "x-goog-api-key: $GEMINI_API_KEY" \
+            -H "Content-Type: application/json" \
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent" \
             -d "$BODY" | tee json_response.json
+
+      - name: Validate JSON
+        shell: bash
+        run: |
+          set -e
+          echo "Raw JSON:"
+          cat json_response.json
+          echo "Parsed:"
+          jq '.' json_response.json
