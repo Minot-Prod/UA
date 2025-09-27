@@ -1,51 +1,17 @@
       - name: Valider la clé (présence/forme)
         id: validate
         env:
-          GEMINI_API_KEY: ${{ AIzaSyDubMD3peGM1TrWD2hQ3IjHw2cO0Lp8MqI }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -e
           if [ -z "${GEMINI_API_KEY:-}" ]; then
             echo "❌ Secret GEMINI_API_KEY introuvable. Vérifie Settings → Secrets → Actions (repository)." >&2
             exit 3
           fi
-          # Trim soft (supprime espaces/retours)
+          # Trim soft (supprime CR/LF + espaces autour)
           CLEANED="$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           if [ "${#CLEANED}" -lt 20 ]; then
-            echo "❌ Clé trop courte ou mal collée (longueur < 20). Recolle la clé depuis AI Studio." >&2
+            echo "❌ Clé trop courte ou mal collée. Recolle la clé depuis AI Studio dans le secret." >&2
             exit 4
           fi
-          echo "key_len=${#CLEANED}" >> $GITHUB_OUTPUT
           echo "::notice::GEMINI_API_KEY chargé (longueur: ${#CLEANED})"
-
-      - name: Appel Gemini (curl)
-        id: call
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          PROMPT: ${{ steps.prompt.outputs.value }}
-        run: |
-          set -e
-          URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
-          BODY=$(jq -n --arg text "$PROMPT" '{contents: [{parts: [{text: $text}]}]}')
-
-          curl -sS -X POST "$URL" -H "Content-Type: application/json" -d "$BODY" > out/response.json || {
-            echo "❌ Requête HTTP échouée"; exit 5;
-          }
-
-          # Si l'API renvoie une erreur, affiche un diagnostic court
-          if jq -e '.error' out/response.json >/dev/null 2>&1; then
-            echo "❌ Réponse d'erreur de l'API:"
-            cat out/response.json
-            exit 6
-          fi
-
-          TEXT=$(jq -r '.candidates[0].content.parts[0].text // empty' out/response.json)
-          if [ -z "$TEXT" ]; then
-            echo "❌ Aucune réponse textuelle. Inspecte out/response.json" >&2
-            cat out/response.json
-            exit 7
-          fi
-
-          echo "$TEXT" > out/answer.txt
-          echo "answer<<EOF" >> $GITHUB_OUTPUT
-          echo "$TEXT" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
