@@ -1,7 +1,7 @@
       - name: Valider la clé (présence/forme)
         id: validate
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ AIzaSyDubMD3peGM1TrWD2hQ3IjHw2cO0Lp8MqI }}
         run: |
           set -e
           if [ -z "${GEMINI_API_KEY:-}" ]; then
