@@ -1,4 +1,4 @@
-name: UA to Gemini (AI Studio)
+name: UA to Gemini (AI Studio strict)
 
 on:
   workflow_dispatch:
@@ -11,7 +11,6 @@ on:
 jobs:
   ask-gemini:
     runs-on: ubuntu-latest
-    # Petite hygiène sécu de base
     env:
       ACTIONS_STEP_DEBUG: "false"
       ACTIONS_RUNNER_DEBUG: "false"
@@ -37,33 +36,56 @@ jobs:
           fi
           CLEANED="$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           if [ "${#CLEANED}" -lt 20 ]; then
-            echo "❌ Clé trop courte / mal collée. Regénère depuis Google AI Studio et recolle dans le secret." >&2
+            echo "❌ Clé trop courte / mal collée. Regénère depuis Google AI Studio (ai.google.dev) et recolle dans le secret." >&2
             exit 4
           fi
           echo "::notice::GEMINI_API_KEY chargé (longueur: ${#CLEANED})"
 
-      - name: (Diag) Lister les modèles AI Studio visibles avec ta clé
+      - name: (Diag) Lister les modèles via AI Studio
+        id: list
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -e
           mkdir -p out
-          curl -sS "https://generativelanguage.googleapis.com/v1beta/models?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" > out/models.json || true
-          echo "---- Models visibles (extrait) ----"
-          (jq -r '.models[]?.name' out/models.json | head -n 20) || cat out/models.json
-          echo "-----------------------------------"
+          BASE="https://generativelanguage.googleapis.com/v1beta"
+          curl -sS "$BASE/models?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" > out/models.json || true
+          echo "---- Extrait de models.json ----"
+          (jq -r '.models[]?.name' out/models.json | head -n 30) || cat out/models.json
+          echo "--------------------------------"
 
-      - name: Appel Gemini (AI Studio, modèle flash-latest)
+          # Garde-fou anti-Vertex: si on voit 'publishers/google/models/...-00X', on stoppe
+          if jq -e '.models[]?.name | test("^publishers/")' out/models.json >/dev/null 2>&1; then
+            echo "❌ On dirait un catalogue Vertex (publishers/...). Tu utilises sûrement une clé Vertex/GCP."
+            echo "   ➜ Génére une clé *Gemini API* sur https://ai.google.dev/ (AI Studio), active 'Generative Language API', et remets-la dans GEMINI_API_KEY."
+            exit 10
+          fi
+
+          # Choisir un modèle AI Studio valide (flash prioritaire, sinon pro)
+          MODEL=$(jq -r '.models[]?.name | select(startswith("models/gemini-1.5-flash")) | . // empty' out/models.json | head -n 1)
+          if [ -z "$MODEL" ]; then
+            MODEL=$(jq -r '.models[]?.name | select(startswith("models/gemini-1.5-pro")) | . // empty' out/models.json | head -n 1)
+          fi
+          if [ -z "$MODEL" ]; then
+            # fallback statique si la liste ne remonte pas (cas rare)
+            MODEL="models/gemini-1.5-flash-latest"
+          fi
+
+          echo "model=$MODEL" >> $GITHUB_OUTPUT
+          echo "::notice::Modèle sélectionné: $MODEL"
+
+      - name: Appel Gemini (AI Studio, generateContent)
         id: call
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PROMPT: ${{ steps.prompt.outputs.value }}
+          MODEL: ${{ steps.list.outputs.model }}
         run: |
           set -e
           mkdir -p out
-          URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          BASE="https://generativelanguage.googleapis.com/v1beta"
+          URL="$BASE/${MODEL}:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
 
-          # Corps compatible AI Studio (role user + parts)
           BODY=$(jq -n --arg text "$PROMPT" '{contents: [{"role":"user","parts":[{"text": $text}]}]}')
 
           curl -sS -X POST "$URL" -H "Content-Type: application/json" -d "$BODY" > out/response.json || {
