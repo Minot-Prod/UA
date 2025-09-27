@@ -1,3 +1,26 @@
+name: UA to Gemini
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "Question à poser à Gemini"
+        required: true
+        default: "Dis bonjour et donne 2 idées IG pour Taslow."
+
+jobs:
+  ask-gemini:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Déterminer le prompt
+        id: prompt
+        run: |
+          echo "value=${{ github.event.inputs.prompt }}" >> $GITHUB_OUTPUT
+
       - name: Valider la clé (présence/forme)
         id: validate
         env:
@@ -5,13 +28,57 @@
         run: |
           set -e
           if [ -z "${GEMINI_API_KEY:-}" ]; then
-            echo "❌ Secret GEMINI_API_KEY introuvable. Vérifie Settings → Secrets → Actions (repository)." >&2
+            echo "❌ Secret GEMINI_API_KEY introuvable. Va dans Settings → Secrets and variables → Actions → New repository secret." >&2
             exit 3
           fi
-          # Trim soft (supprime CR/LF + espaces autour)
           CLEANED="$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           if [ "${#CLEANED}" -lt 20 ]; then
-            echo "❌ Clé trop courte ou mal collée. Recolle la clé depuis AI Studio dans le secret." >&2
+            echo "❌ Clé trop courte / mal collée. Regénère depuis AI Studio et recolle dans le secret." >&2
             exit 4
           fi
           echo "::notice::GEMINI_API_KEY chargé (longueur: ${#CLEANED})"
+
+      - name: Appel Gemini (curl)
+        id: call
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PROMPT: ${{ steps.prompt.outputs.value }}
+        run: |
+          set -e
+          mkdir -p out
+          URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          BODY=$(jq -n --arg text "$PROMPT" '{contents: [{parts: [{text: $text}]}]}')
+
+          curl -sS -X POST "$URL" -H "Content-Type: application/json" -d "$BODY" > out/response.json || {
+            echo "❌ Requête HTTP échouée"; exit 5;
+          }
+
+          if jq -e '.error' out/response.json >/dev/null 2>&1; then
+            echo "❌ Réponse d'erreur de l'API:"
+            cat out/response.json
+            exit 6
+          fi
+
+          TEXT=$(jq -r '.candidates[0].content.parts[0].text // empty' out/response.json)
+          if [ -z "$TEXT" ]; then
+            echo "❌ Aucune réponse textuelle. Inspecte out/response.json" >&2
+            cat out/response.json
+            exit 7
+          fi
+
+          printf "%s\n" "$TEXT" > out/answer.txt
+          echo "answer<<EOF" >> $GITHUB_OUTPUT
+          cat out/answer.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Publier l’artifact (réponse brute + parsed)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ua-gemini-response
+          path: out/
+
+      - name: Afficher la réponse dans les logs
+        run: |
+          echo "-------- Réponse Gemini --------"
+          cat out/answer.txt
+          echo "--------------------------------"
