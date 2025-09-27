@@ -1,0 +1,104 @@
+{
+  "name": "Shield Legal Security Ethics",
+  "slug": "shield-legal-security-ethics",
+  "version": "1.0.0",
+  "owner_token": "{{OWNER}}",
+  "sector": "Security",
+  "purpose": "Conformité légale/éthique et licences, alternatives sûres.",
+  "entrypoints": {
+    "type": "prompt-agent",
+    "routing_keywords": [
+      "shield",
+      "shield legal security ethics"
+    ],
+    "triggers": [
+      "ua://shield-legal-security-ethics",
+      "/agent shield-legal-security-ethics",
+      "call shield legal security ethics"
+    ]
+  },
+  "io_contract": {
+    "inputs": [
+      {
+        "name": "context",
+        "type": "object",
+        "required": false,
+        "desc": "Shared UA context/state."
+      },
+      {
+        "name": "payload",
+        "type": "object",
+        "required": false,
+        "desc": "Task-specific data."
+      }
+    ],
+    "outputs": [
+      {
+        "name": "report",
+        "type": "markdown",
+        "desc": "Human-readable outcome and next steps."
+      },
+      {
+        "name": "artifacts",
+        "type": "list",
+        "desc": "Files or structured results."
+      },
+      {
+        "name": "logs",
+        "type": "text",
+        "desc": "Execution logs."
+      }
+    ]
+  },
+  "policies": {
+    "base44": false,
+    "login_first": true,
+    "oauth_preferred": true,
+    "safety": {
+      "refuse_pii_exfiltration": true,
+      "rate_limits": "respect external APIs"
+    }
+  },
+  "capabilities": {
+    "tools": [
+      "web.run",
+      "python_user_visible",
+      "gmail.read",
+      "gcal.read",
+      "gcontacts.read"
+    ],
+    "integrations": [
+      "Reports",
+      "Policies"
+    ]
+  },
+  "tests": [
+    {
+      "id": "shield-legal-security-ethics-handshake",
+      "type": "handshake",
+      "given": "UA routes 'hello' to Shield Legal Security Ethics",
+      "when": "agent starts",
+      "then": "responds with its purpose and required inputs"
+    },
+    {
+      "id": "shield-legal-security-ethics-routing",
+      "type": "routing",
+      "given": "UA dispatches task to shield-legal-security-ethics",
+      "when": "agent completes",
+      "then": "returns report+artifacts and updates registry"
+    }
+  ],
+  "metadata": {
+    "created": "2025-09-27",
+    "labels": [
+      "UA",
+      "autodiscovery",
+      "Security"
+    ],
+    "kpis": [
+      "latency_ms",
+      "success_rate",
+      "interop_score"
+    ]
+  }
+}
