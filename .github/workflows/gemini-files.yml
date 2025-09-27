@@ -1,0 +1,35 @@
+name: Gemini Files Demo
+on: { workflow_dispatch: {} }
+
+jobs:
+  files:
+    runs-on: ubuntu-latest
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create sample PDF (or pick an existing file)
+        run: |
+          echo "Hello Max from UA" > note.txt
+      - name: Upload file to Files API
+        id: up
+        run: |
+          R=$(curl -sS -X POST \
+            -H "x-goog-api-key: $GEMINI_API_KEY" \
+            -H "Content-Type: application/json" \
+            https://generativelanguage.googleapis.com/v1beta/files:upload \
+            -d '{"file":{"display_name":"note.txt"}}' \
+            -D >(tee headers.txt))
+          UPLOAD_URL=$(grep -i location headers.txt | awk '{print $2}' | tr -d '\r')
+          curl -sS -X PUT "$UPLOAD_URL" \
+            -H "Content-Type: text/plain" --data-binary @note.txt > /dev/null
+          echo "file_id=$(echo "$R" | jq -r '.file.name')" >> $GITHUB_OUTPUT
+      - name: Use file in generateContent
+        run: |
+          FILE="${{ steps.up.outputs.file_id }}"
+          curl -sS -X POST \
+            -H "x-goog-api-key: $GEMINI_API_KEY" \
+            -H "Content-Type: application/json" \
+            https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent \
+            -d "$(jq -nc --arg f "$FILE" '{contents:[{role:"user",parts:[{file_data:{file_name:$f,mime_type:"text/plain"}},{text:"Résume ce fichier en une phrase."}]}] }')" \
+            | tee files_response.json
