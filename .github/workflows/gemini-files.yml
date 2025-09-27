@@ -1,5 +1,6 @@
 name: Gemini Files Demo
-on: { workflow_dispatch: {} }
+on:
+  workflow_dispatch:
 
 jobs:
   files:
@@ -8,28 +9,71 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Create sample PDF (or pick an existing file)
+
+      - name: Create sample text file
+        shell: bash
         run: |
-          echo "Hello Max from UA" > note.txt
-      - name: Upload file to Files API
-        id: up
+          echo "Hello Max from UA. Ceci est un test Files API." > note.txt
+
+      - name: Install jq (if missing)
+        shell: bash
         run: |
-          R=$(curl -sS -X POST \
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo apt-get install -y jq
+          fi
+
+      - name: Init upload (get upload URL)
+        id: init
+        shell: bash
+        run: |
+          set -e
+          RES=$(curl -sS -X POST \
             -H "x-goog-api-key: $GEMINI_API_KEY" \
             -H "Content-Type: application/json" \
-            https://generativelanguage.googleapis.com/v1beta/files:upload \
-            -d '{"file":{"display_name":"note.txt"}}' \
-            -D >(tee headers.txt))
-          UPLOAD_URL=$(grep -i location headers.txt | awk '{print $2}' | tr -d '\r')
-          curl -sS -X PUT "$UPLOAD_URL" \
-            -H "Content-Type: text/plain" --data-binary @note.txt > /dev/null
-          echo "file_id=$(echo "$R" | jq -r '.file.name')" >> $GITHUB_OUTPUT
-      - name: Use file in generateContent
+            "https://generativelanguage.googleapis.com/v1beta/files:upload" \
+            -d '{"file":{"display_name":"note.txt"}}')
+          echo "$RES" | tee files_init.json
+          UPLOAD_URL=$(jq -r '.file.upload_url' files_init.json)
+          FILE_NAME=$(jq -r '.file.name' files_init.json)
+          echo "upload_url=$UPLOAD_URL" >> "$GITHUB_OUTPUT"
+          echo "file_name=$FILE_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Upload binary to signed URL
+        shell: bash
         run: |
-          FILE="${{ steps.up.outputs.file_id }}"
+          set -e
+          curl -sS -X PUT "${{ steps.init.outputs.upload_url }}" \
+            -H "Content-Type: text/plain" \
+            --data-binary @note.txt > /dev/null
+          echo "Upload OK."
+
+      - name: Use file in generateContent
+        shell: bash
+        run: |
+          set -e
+          FILE_NAME="${{ steps.init.outputs.file_name }}"
+          BODY=$(jq -nc --arg f "$FILE_NAME" '{
+            contents: [{
+              role: "user",
+              parts: [
+                { file_data: { file_name: $f, mime_type: "text/plain" } },
+                { text: "Résume ce fichier en une phrase." }
+              ]
+            }]
+          }')
           curl -sS -X POST \
             -H "x-goog-api-key: $GEMINI_API_KEY" \
             -H "Content-Type: application/json" \
-            https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent \
-            -d "$(jq -nc --arg f "$FILE" '{contents:[{role:"user",parts:[{file_data:{file_name:$f,mime_type:"text/plain"}},{text:"Résume ce fichier en une phrase."}]}] }')" \
-            | tee files_response.json
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent" \
+            -d "$BODY" | tee files_response.json
+
+      - name: Show concise answer
+        if: always()
+        shell: bash
+        run: |
+          if command -v jq >/dev/null 2>&1; then
+            jq -r '.candidates[0].content.parts[0].text // "No text found"' files_response.json
+          else
+            echo "Install jq to pretty-print response."
+          fi
