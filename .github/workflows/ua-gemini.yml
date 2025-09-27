@@ -1,4 +1,4 @@
-name: UA to Gemini
+name: UA to Gemini (AI Studio)
 
 on:
   workflow_dispatch:
@@ -6,11 +6,15 @@ on:
       prompt:
         description: "Question à poser à Gemini"
         required: true
-        default: "Dis bonjour et donne 2 idées IG pour Taslow."
+        default: "Dis bonjour et propose 2 idées IG pour Taslow (ultra concis)."
 
 jobs:
   ask-gemini:
     runs-on: ubuntu-latest
+    # Petite hygiène sécu de base
+    env:
+      ACTIONS_STEP_DEBUG: "false"
+      ACTIONS_RUNNER_DEBUG: "false"
 
     steps:
       - name: Checkout
@@ -33,12 +37,23 @@ jobs:
           fi
           CLEANED="$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
           if [ "${#CLEANED}" -lt 20 ]; then
-            echo "❌ Clé trop courte / mal collée. Regénère depuis AI Studio et recolle dans le secret." >&2
+            echo "❌ Clé trop courte / mal collée. Regénère depuis Google AI Studio et recolle dans le secret." >&2
             exit 4
           fi
           echo "::notice::GEMINI_API_KEY chargé (longueur: ${#CLEANED})"
 
-      - name: Appel Gemini (curl)
+      - name: (Diag) Lister les modèles AI Studio visibles avec ta clé
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -e
+          mkdir -p out
+          curl -sS "https://generativelanguage.googleapis.com/v1beta/models?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" > out/models.json || true
+          echo "---- Models visibles (extrait) ----"
+          (jq -r '.models[]?.name' out/models.json | head -n 20) || cat out/models.json
+          echo "-----------------------------------"
+
+      - name: Appel Gemini (AI Studio, modèle flash-latest)
         id: call
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -46,8 +61,10 @@ jobs:
         run: |
           set -e
           mkdir -p out
-          URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
-          BODY=$(jq -n --arg text "$PROMPT" '{contents: [{parts: [{text: $text}]}]}')
+          URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=$(printf "%s" "$GEMINI_API_KEY" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+          # Corps compatible AI Studio (role user + parts)
+          BODY=$(jq -n --arg text "$PROMPT" '{contents: [{"role":"user","parts":[{"text": $text}]}]}')
 
           curl -sS -X POST "$URL" -H "Content-Type: application/json" -d "$BODY" > out/response.json || {
             echo "❌ Requête HTTP échouée"; exit 5;
@@ -71,7 +88,7 @@ jobs:
           cat out/answer.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Publier l’artifact (réponse brute + parsed)
+      - name: Publier l’artifact (réponse + JSON brut)
         uses: actions/upload-artifact@v4
         with:
           name: ua-gemini-response
