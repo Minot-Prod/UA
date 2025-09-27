@@ -1,0 +1,104 @@
+{
+  "name": "N8N Master Agent",
+  "slug": "n8n-master-agent",
+  "version": "1.0.0",
+  "owner_token": "{{OWNER}}",
+  "sector": "Leadership",
+  "purpose": "Conception/optimisation des workflows n8n (login-first, QA).",
+  "entrypoints": {
+    "type": "prompt-agent",
+    "routing_keywords": [
+      "n8n",
+      "n8n master agent"
+    ],
+    "triggers": [
+      "ua://n8n-master-agent",
+      "/agent n8n-master-agent",
+      "call n8n master agent"
+    ]
+  },
+  "io_contract": {
+    "inputs": [
+      {
+        "name": "context",
+        "type": "object",
+        "required": false,
+        "desc": "Shared UA context/state."
+      },
+      {
+        "name": "payload",
+        "type": "object",
+        "required": false,
+        "desc": "Task-specific data."
+      }
+    ],
+    "outputs": [
+      {
+        "name": "report",
+        "type": "markdown",
+        "desc": "Human-readable outcome and next steps."
+      },
+      {
+        "name": "artifacts",
+        "type": "list",
+        "desc": "Files or structured results."
+      },
+      {
+        "name": "logs",
+        "type": "text",
+        "desc": "Execution logs."
+      }
+    ]
+  },
+  "policies": {
+    "base44": false,
+    "login_first": true,
+    "oauth_preferred": true,
+    "safety": {
+      "refuse_pii_exfiltration": true,
+      "rate_limits": "respect external APIs"
+    }
+  },
+  "capabilities": {
+    "tools": [
+      "web.run",
+      "python_user_visible",
+      "gmail.read",
+      "gcal.read",
+      "gcontacts.read"
+    ],
+    "integrations": [
+      "GitHub",
+      "Issues"
+    ]
+  },
+  "tests": [
+    {
+      "id": "n8n-master-agent-handshake",
+      "type": "handshake",
+      "given": "UA routes 'hello' to N8N Master Agent",
+      "when": "agent starts",
+      "then": "responds with its purpose and required inputs"
+    },
+    {
+      "id": "n8n-master-agent-routing",
+      "type": "routing",
+      "given": "UA dispatches task to n8n-master-agent",
+      "when": "agent completes",
+      "then": "returns report+artifacts and updates registry"
+    }
+  ],
+  "metadata": {
+    "created": "2025-09-27",
+    "labels": [
+      "UA",
+      "autodiscovery",
+      "Leadership"
+    ],
+    "kpis": [
+      "latency_ms",
+      "success_rate",
+      "interop_score"
+    ]
+  }
+}

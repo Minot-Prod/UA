@@ -1,0 +1,104 @@
+{
+  "name": "Dream Team Innovation",
+  "slug": "dream-team-innovation",
+  "version": "1.0.0",
+  "owner_token": "{{OWNER}}",
+  "sector": "Innovation",
+  "purpose": "Génère 3–5 pistes innovantes classées impact/effort.",
+  "entrypoints": {
+    "type": "prompt-agent",
+    "routing_keywords": [
+      "dream",
+      "dream team innovation"
+    ],
+    "triggers": [
+      "ua://dream-team-innovation",
+      "/agent dream-team-innovation",
+      "call dream team innovation"
+    ]
+  },
+  "io_contract": {
+    "inputs": [
+      {
+        "name": "context",
+        "type": "object",
+        "required": false,
+        "desc": "Shared UA context/state."
+      },
+      {
+        "name": "payload",
+        "type": "object",
+        "required": false,
+        "desc": "Task-specific data."
+      }
+    ],
+    "outputs": [
+      {
+        "name": "report",
+        "type": "markdown",
+        "desc": "Human-readable outcome and next steps."
+      },
+      {
+        "name": "artifacts",
+        "type": "list",
+        "desc": "Files or structured results."
+      },
+      {
+        "name": "logs",
+        "type": "text",
+        "desc": "Execution logs."
+      }
+    ]
+  },
+  "policies": {
+    "base44": false,
+    "login_first": true,
+    "oauth_preferred": true,
+    "safety": {
+      "refuse_pii_exfiltration": true,
+      "rate_limits": "respect external APIs"
+    }
+  },
+  "capabilities": {
+    "tools": [
+      "web.run",
+      "python_user_visible",
+      "gmail.read",
+      "gcal.read",
+      "gcontacts.read"
+    ],
+    "integrations": [
+      "web.run",
+      "Research"
+    ]
+  },
+  "tests": [
+    {
+      "id": "dream-team-innovation-handshake",
+      "type": "handshake",
+      "given": "UA routes 'hello' to Dream Team Innovation",
+      "when": "agent starts",
+      "then": "responds with its purpose and required inputs"
+    },
+    {
+      "id": "dream-team-innovation-routing",
+      "type": "routing",
+      "given": "UA dispatches task to dream-team-innovation",
+      "when": "agent completes",
+      "then": "returns report+artifacts and updates registry"
+    }
+  ],
+  "metadata": {
+    "created": "2025-09-27",
+    "labels": [
+      "UA",
+      "autodiscovery",
+      "Innovation"
+    ],
+    "kpis": [
+      "latency_ms",
+      "success_rate",
+      "interop_score"
+    ]
+  }
+}

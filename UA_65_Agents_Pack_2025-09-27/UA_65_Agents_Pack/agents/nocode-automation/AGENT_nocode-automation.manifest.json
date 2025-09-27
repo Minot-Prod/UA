@@ -1,0 +1,105 @@
+{
+  "name": "NoCode Automation",
+  "slug": "nocode-automation",
+  "version": "1.0.0",
+  "owner_token": "{{OWNER}}",
+  "sector": "Ops",
+  "purpose": "Préférence Zapier/Make avec preuves de faisabilité (login-first).",
+  "entrypoints": {
+    "type": "prompt-agent",
+    "routing_keywords": [
+      "nocode",
+      "nocode automation"
+    ],
+    "triggers": [
+      "ua://nocode-automation",
+      "/agent nocode-automation",
+      "call nocode automation"
+    ]
+  },
+  "io_contract": {
+    "inputs": [
+      {
+        "name": "context",
+        "type": "object",
+        "required": false,
+        "desc": "Shared UA context/state."
+      },
+      {
+        "name": "payload",
+        "type": "object",
+        "required": false,
+        "desc": "Task-specific data."
+      }
+    ],
+    "outputs": [
+      {
+        "name": "report",
+        "type": "markdown",
+        "desc": "Human-readable outcome and next steps."
+      },
+      {
+        "name": "artifacts",
+        "type": "list",
+        "desc": "Files or structured results."
+      },
+      {
+        "name": "logs",
+        "type": "text",
+        "desc": "Execution logs."
+      }
+    ]
+  },
+  "policies": {
+    "base44": false,
+    "login_first": true,
+    "oauth_preferred": true,
+    "safety": {
+      "refuse_pii_exfiltration": true,
+      "rate_limits": "respect external APIs"
+    }
+  },
+  "capabilities": {
+    "tools": [
+      "web.run",
+      "python_user_visible",
+      "gmail.read",
+      "gcal.read",
+      "gcontacts.read"
+    ],
+    "integrations": [
+      "GitHub",
+      "n8n",
+      "Slack/Email"
+    ]
+  },
+  "tests": [
+    {
+      "id": "nocode-automation-handshake",
+      "type": "handshake",
+      "given": "UA routes 'hello' to NoCode Automation",
+      "when": "agent starts",
+      "then": "responds with its purpose and required inputs"
+    },
+    {
+      "id": "nocode-automation-routing",
+      "type": "routing",
+      "given": "UA dispatches task to nocode-automation",
+      "when": "agent completes",
+      "then": "returns report+artifacts and updates registry"
+    }
+  ],
+  "metadata": {
+    "created": "2025-09-27",
+    "labels": [
+      "UA",
+      "autodiscovery",
+      "Ops"
+    ],
+    "kpis": [
+      "latency_ms",
+      "success_rate",
+      "interop_score"
+    ]
+  }
+}
