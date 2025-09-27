@@ -1,0 +1,30 @@
+name: Gemini Batch
+on: { workflow_dispatch: {} }
+jobs:
+  batch:
+    runs-on: ubuntu-latest
+    env: { GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} }
+    steps:
+      - name: Create batch job
+        id: create
+        run: |
+          REQ='{"requests":[
+            {"model":"models/gemini-2.5-flash","contents":[{"parts":[{"text":"Résumé 1 phrase: A."}]}]},
+            {"model":"models/gemini-2.5-flash","contents":[{"parts":[{"text":"Résumé 1 phrase: B."}]}]}
+          ]}'
+          R=$(curl -sS -X POST -H "x-goog-api-key: $GEMINI_API_KEY" -H "Content-Type: application/json" \
+            https://generativelanguage.googleapis.com/v1beta/batch:generateContent -d "$REQ")
+          echo "$R" | tee batch_create.json
+          echo "name=$(echo "$R" | jq -r '.name')" >> $GITHUB_OUTPUT
+      - name: Poll status (simple)
+        run: |
+          NAME="${{ steps.create.outputs.name }}"
+          for i in {1..20}; do
+            R=$(curl -sS -H "x-goog-api-key: $GEMINI_API_KEY" \
+              "https://generativelanguage.googleapis.com/v1beta/$NAME")
+            STATUS=$(echo "$R" | jq -r '.state')
+            echo "state=$STATUS"
+            [ "$STATUS" = "SUCCEEDED" ] && echo "$R" | jq '.' > batch_done.json && exit 0
+            sleep 10
+          done
+          echo "Timeout polling batch"; exit 1
