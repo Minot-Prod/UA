@@ -1,30 +1,64 @@
 name: Gemini Batch
-on: { workflow_dispatch: {} }
+on:
+  workflow_dispatch:
+
 jobs:
   batch:
     runs-on: ubuntu-latest
-    env: { GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} }
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
+      - name: Install jq (if missing)
+        shell: bash
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo apt-get install -y jq
+          fi
+
       - name: Create batch job
         id: create
+        shell: bash
         run: |
-          REQ='{"requests":[
-            {"model":"models/gemini-2.5-flash","contents":[{"parts":[{"text":"Résumé 1 phrase: A."}]}]},
-            {"model":"models/gemini-2.5-flash","contents":[{"parts":[{"text":"Résumé 1 phrase: B."}]}]}
-          ]}'
-          R=$(curl -sS -X POST -H "x-goog-api-key: $GEMINI_API_KEY" -H "Content-Type: application/json" \
-            https://generativelanguage.googleapis.com/v1beta/batch:generateContent -d "$REQ")
+          set -e
+          REQ=$(jq -nc '{
+            requests: [
+              { model:"models/gemini-2.5-flash",
+                contents:[{parts:[{text:"Résumé 1 phrase: Projet A (UA)."}]}] },
+              { model:"models/gemini-2.5-flash",
+                contents:[{parts:[{text:"Résumé 1 phrase: Projet B (Taslow)."}]}] }
+            ]
+          }')
+          R=$(curl -sS -X POST \
+            -H "x-goog-api-key: $GEMINI_API_KEY" \
+            -H "Content-Type: application/json" \
+            "https://generativelanguage.googleapis.com/v1beta/batch:generateContent" \
+            -d "$REQ")
           echo "$R" | tee batch_create.json
-          echo "name=$(echo "$R" | jq -r '.name')" >> $GITHUB_OUTPUT
-      - name: Poll status (simple)
+          NAME=$(echo "$R" | jq -r '.name')
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Poll status
+        id: poll
+        shell: bash
         run: |
+          set -e
           NAME="${{ steps.create.outputs.name }}"
-          for i in {1..20}; do
-            R=$(curl -sS -H "x-goog-api-key: $GEMINI_API_KEY" \
+          echo "Polling job: $NAME"
+          for i in {1..30}; do
+            R=$(curl -sS \
+              -H "x-goog-api-key: $GEMINI_API_KEY" \
               "https://generativelanguage.googleapis.com/v1beta/$NAME")
-            STATUS=$(echo "$R" | jq -r '.state')
-            echo "state=$STATUS"
-            [ "$STATUS" = "SUCCEEDED" ] && echo "$R" | jq '.' > batch_done.json && exit 0
+            STATE=$(echo "$R" | jq -r '.state')
+            echo "[$i] state=$STATE"
+            if [ "$STATE" = "SUCCEEDED" ]; then
+              echo "$R" | jq '.' | tee batch_done.json
+              exit 0
+            elif [ "$STATE" = "FAILED" ]; then
+              echo "$R" | jq '.' | tee batch_failed.json
+              exit 1
+            fi
             sleep 10
           done
-          echo "Timeout polling batch"; exit 1
+          echo "Timeout polling batch"
+          exit 1
