@@ -1,0 +1,18 @@
+name: Gemini JSON Mode
+on: { workflow_dispatch: {} }
+jobs:
+  json:
+    runs-on: ubuntu-latest
+    env: { GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} }
+    steps:
+      - name: Ask for JSON with schema
+        run: |
+          SCHEMA='{"type":"OBJECT","properties":{"title":{"type":"STRING"},"tags":{"type":"ARRAY","items":{"type":"STRING"}},"score":{"type":"NUMBER"}},"required":["title","score"]}'
+          BODY=$(jq -nc --argjson schema "$SCHEMA" '{
+            contents:[{parts:[{text:"Analyse ce texte et retourne {title,tags,score}."}]}],
+            responseMimeType:"application/json",
+            responseSchema:$schema
+          }')
+          curl -sS -X POST -H "x-goog-api-key: $GEMINI_API_KEY" -H "Content-Type: application/json" \
+            https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent \
+            -d "$BODY" | tee json_response.json
