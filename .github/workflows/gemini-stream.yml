@@ -1,13 +1,21 @@
 name: Gemini Streaming
-on: { workflow_dispatch: {} }
+on:
+  workflow_dispatch:
+
 jobs:
   stream:
     runs-on: ubuntu-latest
-    env: { GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} }
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
-      - name: Stream tokens
+      - name: Stream tokens (SSE)
+        shell: bash
         run: |
-          # Astuce: -N pour ne pas bufferiser, on lit les events au fil de l'eau
+          set -e
+          echo ">>> Streaming depuis Gemini (SSE)…"
           curl -N -sS "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse" \
-            -H "x-goog-api-key: $GEMINI_API_KEY" -H "Content-Type: application/json" \
-            -d '{"contents":[{"parts":[{"text":"Donne 5 punchlines courtes."}]}]}'
+            -H "x-goog-api-key: $GEMINI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"contents":[{"parts":[{"text":"Donne 5 punchlines courtes (format liste)."}]}]}'
+          echo
+          echo ">>> Fin du streaming"
