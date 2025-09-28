@@ -2,8 +2,8 @@ name: Parlios - Agents AutoSync
 
 "on":
   issues:
-    types: [labeled]        # on déclenche UNIQUEMENT quand un label est ajouté
-  workflow_dispatch: {}     # lancement manuel possible
+    types: [labeled]
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   from_issue_to_pr:
-    # ne tourne que si le label ajouté est exactement "agent:new"
     if: ${{ github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'agent:new' }}
     runs-on: ubuntu-latest
 
@@ -30,13 +29,10 @@ jobs:
         env:
           BODY: ${{ github.event.issue.body }}
         run: |
-          # récupère un bloc ```json ... ``` s'il existe
           printf "%s" "$BODY" | awk '/```json/{flag=1;next}/```/{flag=0}flag' > /tmp/agent.json || true
-          # sinon, prend tout le corps
           if [ ! -s /tmp/agent.json ]; then
             printf "%s" "$BODY" > /tmp/agent.json || true
           fi
-          # valide JSON
           if ! jq empty /tmp/agent.json 2>/dev/null; then
             echo "Issue body n'est pas un JSON valide. Mets un bloc ```json ... ```"
             exit 1
