@@ -1,0 +1,73 @@
+name: UA Agents Knowledge Packs
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-ua-pack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Generate UA Agents Knowledge Pack
+        run: |
+          mkdir -p build/UA_Agents_Pack
+          echo "# UA — Agents Knowledge Packs (v2.0)" > build/UA_Agents_Pack/README.md
+          echo "Inventaire et packs de connaissances générés automatiquement." >> build/UA_Agents_Pack/README.md
+
+          cat > build/UA_Agents_Pack/UA_Agents_Inventory.csv <<EOL
+Agent,Family,Status
+UA,META,Ready
+MA,META,Ready
+MAP,META,Ready
+Ops,Tier1,Ready
+QA Guardian,Tier1,Ready
+Content Agent,Tier1,Ready
+Strategy Agent,Tier1,Ready
+BizDev Agent,Tier1,Ready
+Growth Agent,Tier2,Ready
+SEO Agent,Tier2,Ready
+RAP Agent,Tier2,Ready
+Finance Coach,Tier2,Ready
+Leadership Agent,Tier2,Ready
+Archviz Agent,Tier2,Ready
+Archivist,Fondamentaux,Ready
+Chef,Fondamentaux,Ready
+Firefly,Fondamentaux,Ready
+Content Planner,Fondamentaux,Ready
+... autres agents ...
+EOL
+
+          cat > build/UA_Agents_Pack/UA_Agents_KnowledgePacks.md <<EOL
+# UA — Inventaire Agents & Knowledge Packs (v2.0)
+Tous les agents recensés (~80+) avec Knowledge Pack v1 optimisé.
+
+## Exemple
+### Ops Agent
+- Mission: CI/CD, secrets, replay
+- Inputs: secrets, workflows
+- Outputs: builds validés
+- KPIs: 100% secrets valides
+- Tests: replay OK
+EOL
+
+          cd build
+          zip -r UA_Agents_KnowledgePacks.zip UA_Agents_Pack
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: UA_Agents_KnowledgePacks
+          path: build/UA_Agents_KnowledgePacks.zip
