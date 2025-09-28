@@ -1,0 +1,65 @@
+name: Parlios — Agents AutoSync
+on:
+  issues:
+    types: [opened, edited, labeled]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *" # hourly (facultatif)
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  from_issue_to_pr:
+    if: contains(github.event.issue.labels.*.name, 'agent:new')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure jq is available
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Parse Issue body as JSON
+        id: parse
+        run: |
+          echo '${{ github.event.issue.body }}' | jq . > /tmp/agent.json
+
+      - name: Create working branch
+        run: |
+          BR="auto/agent-${{ github.event.issue.number }}-$(date +%s)"
+          echo "BRANCH=$BR" >> $GITHUB_ENV
+          git checkout -b "$BR"
+
+      - name: Update module (append agent)
+        run: |
+          MOD="modules/WebCreationTeam.json"
+          test -f "$MOD" || echo '{"agents":[]}' > "$MOD"
+          jq --slurpfile new /tmp/agent.json \
+             '.agents = (.agents + $new)' "$MOD" > "$MOD.tmp"
+          mv "$MOD.tmp" "$MOD"
+
+      - name: Commit & push
+        env: { GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add modules/WebCreationTeam.json
+          git commit -m "chore: add agent from issue #${{ github.event.issue.number }}"
+          git push origin "$BRANCH"
+
+      - name: Open PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `AutoSync: agent from issue #${context.payload.issue.number}`,
+              head: process.env.BRANCH,
+              base: 'main',
+              body: `Auto-generated from issue #${context.payload.issue.number}`
+            });
+            core.setOutput('pr', pr.html_url)
