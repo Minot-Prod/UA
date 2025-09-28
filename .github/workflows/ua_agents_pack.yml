@@ -2,33 +2,30 @@ name: UA Agents Knowledge Packs
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build-ua-pack:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
+        uses: actions/checkout@v4
 
       - name: Generate UA Agents Knowledge Pack
+        shell: bash
         run: |
+          set -euo pipefail
+
           mkdir -p build/UA_Agents_Pack
 
-          echo "# UA — Agents Knowledge Packs (v2.0)" > build/UA_Agents_Pack/README.md
-          echo "Inventaire et packs de connaissances générés automatiquement." >> build/UA_Agents_Pack/README.md
+          # README
+          printf "%s\n" "# UA — Agents Knowledge Packs (v2.0)" > build/UA_Agents_Pack/README.md
+          printf "%s\n" "Inventaire et packs de connaissances générés automatiquement." >> build/UA_Agents_Pack/README.md
 
-          cat << 'EOF' > build/UA_Agents_Pack/UA_Agents_Inventory.csv
+          # CSV (⚠️ ne mets aucun texte étranger ici)
+          cat > build/UA_Agents_Pack/UA_Agents_Inventory.csv <<'CSV'
 Agent,Family,Status
 UA,META,Ready
 MA,META,Ready
@@ -49,9 +46,10 @@ Chef,Fondamentaux,Ready
 Firefly,Fondamentaux,Ready
 Content Planner,Fondamentaux,Ready
 ... autres agents ...
-EOF
+CSV
 
-          cat << 'EOF' > build/UA_Agents_Pack/UA_Agents_KnowledgePacks.md
+          # Markdown (extrait)
+          cat > build/UA_Agents_Pack/UA_Agents_KnowledgePacks.md <<'MD'
 # UA — Inventaire Agents & Knowledge Packs (v2.0)
 Tous les agents recensés (~80+) avec Knowledge Pack v1 optimisé.
 
@@ -62,13 +60,13 @@ Tous les agents recensés (~80+) avec Knowledge Pack v1 optimisé.
 - Outputs: builds validés
 - KPIs: 100% secrets valides
 - Tests: replay OK
-EOF
+MD
 
-          cd build
-          zip -r UA_Agents_KnowledgePacks.zip UA_Agents_Pack
+          # ZIP
+          (cd build && zip -r UA_Agents_KnowledgePacks.zip UA_Agents_Pack)
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: UA_Agents_KnowledgePacks
           path: build/UA_Agents_KnowledgePacks.zip
