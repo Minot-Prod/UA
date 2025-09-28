@@ -1,9 +1,10 @@
+---
 name: Parlios - Agents AutoSync
 
 "on":
   issues:
-    types: [labeled]
-  workflow_dispatch: {}
+    types: [labeled]        # déclenche uniquement quand on ajoute un label
+  workflow_dispatch: {}     # lancement manuel
 
 permissions:
   contents: write
@@ -29,23 +30,19 @@ jobs:
         env:
           BODY: ${{ github.event.issue.body }}
         run: |
+          # récupère un bloc ```json ... ``` s'il existe
           printf "%s" "$BODY" | awk '/```json/{flag=1;next}/```/{flag=0}flag' > /tmp/agent.json || true
+          # sinon, prend tout le corps
           if [ ! -s /tmp/agent.json ]; then
             printf "%s" "$BODY" > /tmp/agent.json || true
           fi
+          # valide JSON
           if ! jq empty /tmp/agent.json 2>/dev/null; then
             echo "Issue body n'est pas un JSON valide. Mets un bloc ```json ... ```"
             exit 1
           fi
 
-      - name: Create working branch
-        id: br
-        run: |
-          BR="auto/agent-${{ github.event.issue.number }}-$(date +%Y%m%d-%H%M%S)"
-          echo "BRANCH=$BR" >> $GITHUB_ENV
-          git checkout -b "$BR"
-
-      - name: Update module file
+      - name: Prepare working tree
         run: |
           mkdir -p modules
           MOD="modules/WebCreationTeam.json"
@@ -57,30 +54,11 @@ jobs:
           fi
           mv "$MOD.tmp" "$MOD"
 
-      - name: Commit & push
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add modules/WebCreationTeam.json
-          git commit -m "chore: add agent from issue #${{ github.event.issue.number }}"
-          git push origin "$BRANCH"
-
-      - name: Open PR
-        id: open_pr
-        uses: actions/github-script@v7
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
         with:
-          script: |
-            const pr = await github.pulls.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `AutoSync: agent from issue #${context.payload.issue.number}`,
-              head: process.env.BRANCH,
-              base: 'main',
-              body: `Auto-generated from issue #${context.payload.issue.number}.`
-            });
-            core.setOutput('pr_url', pr.data.html_url)
-
-      - name: Log PR URL
-        run: echo "PR ouverte: ${{ steps.open_pr.outputs.pr_url }}"
+          commit-message: "chore: add agent from issue #${{ github.event.issue.number }}"
+          branch: "auto/agent-${{ github.event.issue.number }}-${{ github.run_id }}"
+          title: "AutoSync: agent from issue #${{ github.event.issue.number }}"
+          body: "Auto-generated from issue #${{ github.event.issue.number }}."
+          delete-branch: true
