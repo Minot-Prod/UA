@@ -1,0 +1,73 @@
+name: Security – Snyk (SCA & Code)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  snyk-scan:
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Optionnel : détecte langage (Node/Python) pour installer deps
+      - name: Setup Node (if package.json)
+        if: hashFiles('**/package.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Node deps
+        if: hashFiles('**/package.json') != ''
+        run: npm ci --ignore-scripts --fund=false --audit=false
+
+      - name: Setup Python (if requirements.txt or pyproject.toml)
+        if: hashFiles('**/requirements.txt') != '' || hashFiles('**/pyproject.toml') != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Python deps (requirements.txt)
+        if: hashFiles('**/requirements.txt') != ''
+        run: pip install -r requirements.txt
+      - name: Install Python deps (pyproject.toml)
+        if: hashFiles('**/pyproject.toml') != ''
+        run: pip install .
+
+      - name: Snyk Open Source (SCA)
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        with:
+          command: test
+          args: --all-projects --severity-threshold=medium
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Upload Snyk SCA SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk.sarif
+
+      - name: Snyk Code (SAST)
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        with:
+          command: code test
+          args: --severity-threshold=medium --sarif-file-output=snyk-code.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Upload Snyk Code SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-code.sarif
