@@ -4,7 +4,7 @@ on:
   issues:
     types: [opened, edited, labeled]
   workflow_dispatch:
-  schedule:
+  schedule:V
     - cron: "0 * * * *" # optionnel : passage horaire
 
 permissions:
