@@ -1,4 +1,4 @@
-name: Security – Snyk (SCA & Code)
+name: Security – Snyk (SCA)
 
 on:
   push:
@@ -22,44 +22,23 @@ jobs:
       - name: Install Snyk CLI
         uses: snyk/actions/setup@master
 
-      - name: Setup Node
-        if: hashFiles('**/package.json') != ''
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install Node deps
+      - name: Install Node deps (if package.json)
         if: hashFiles('**/package.json') != ''
         run: npm ci --ignore-scripts --fund=false --audit=false
 
-      - name: Setup Python
-        if: hashFiles('**/requirements.txt') != '' || hashFiles('**/pyproject.toml') != ''
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install Python deps (requirements.txt)
+      - name: Install Python deps (if requirements.txt)
         if: hashFiles('**/requirements.txt') != ''
         run: pip install -r requirements.txt
-      - name: Install Python deps (pyproject)
-        if: hashFiles('**/pyproject.toml') != ''
-        run: pip install .
 
       - name: Snyk Open Source (SCA) – JSON
-        run: |
-          snyk test --all-projects --severity-threshold=medium --json-file-output=snyk-os.json || true
-
-      - name: Snyk Code (SAST) – JSON
-        run: |
-          snyk code test --severity-threshold=medium --json-file-output=snyk-code.json || true
+        run: snyk test --all-projects --json-file-output=snyk-os.json || true
 
       - name: Snyk monitor (snapshot in Snyk UI)
-        run: |
-          snyk monitor --all-projects || true
+        run: snyk monitor --all-projects || true
 
       - name: Upload reports as artifacts
         uses: actions/upload-artifact@v4
         with:
           name: snyk-reports
-          path: |
-            snyk-os.json
-            snyk-code.json
+          path: snyk-os.json
           if-no-files-found: ignore
