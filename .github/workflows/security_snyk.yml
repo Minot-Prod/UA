@@ -1,0 +1,26 @@
+      - name: Snyk Open Source (SCA) – generate SARIF
+        run: |
+          snyk test \
+            --all-projects \
+            --severity-threshold=medium \
+            --sarif-file-output=snyk-os.sarif \
+            || true
+
+      - name: Upload Snyk SCA SARIF
+        if: ${{ hashFiles('snyk-os.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-os.sarif
+
+      - name: Snyk Code (SAST) – generate SARIF
+        run: |
+          snyk code test \
+            --severity-threshold=medium \
+            --sarif-file-output=snyk-code.sarif \
+            || true
+
+      - name: Upload Snyk Code SARIF
+        if: ${{ hashFiles('snyk-code.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-code.sarif
