@@ -1,0 +1,86 @@
+name: Security – Snyk (SCA & Code)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read         # nécessaire pour checkout
+  security-events: write # nécessaire pour upload-sarif
+
+jobs:
+  snyk-scan:
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
+
+      # (Optionnel) Node : installe les deps si un package.json est détecté
+      - name: Setup Node
+        if: hashFiles('**/package.json') != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Node deps
+        if: hashFiles('**/package.json') != ''
+        run: npm ci --ignore-scripts --fund=false --audit=false
+
+      # (Optionnel) Python : installe les deps si requirements/pyproject détectés
+      - name: Setup Python
+        if: hashFiles('**/requirements.txt') != '' || hashFiles('**/pyproject.toml') != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Python deps (requirements.txt)
+        if: hashFiles('**/requirements.txt') != ''
+        run: pip install -r requirements.txt
+      - name: Install Python deps (pyproject)
+        if: hashFiles('**/pyproject.toml') != ''
+        run: pip install .
+
+      # --- Snyk Open Source (SCA) ---
+      # Produit un SARIF "snyk-os.sarif" (et un JSON optionnel si tu veux)
+      - name: Snyk Open Source (SCA) – generate SARIF
+        continue-on-error: true
+        run: |
+          snyk test \
+            --all-projects \
+            --severity-threshold=medium \
+            --sarif-file-output=snyk-os.sarif \
+            || true
+          # Optionnel : JSON pour archivage / parse
+          # snyk test --all-projects --json-file-output=snyk-os.json || true
+
+      - name: Upload Snyk SCA SARIF
+        if: ${{ hashFiles('snyk-os.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-os.sarif
+
+      # --- Snyk Code (SAST) ---
+      # Assure-toi que Snyk Code est activé sur ton org Snyk
+      - name: Snyk Code (SAST) – generate SARIF
+        continue-on-error: true
+        run: |
+          snyk code test \
+            --severity-threshold=medium \
+            --sarif-file-output=snyk-code.sarif \
+            || true
+
+      - name: Upload Snyk Code SARIF
+        if: ${{ hashFiles('snyk-code.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-code.sarif
+
+      # (Optionnel) Enregistre un snapshot chez Snyk pour suivi continu
+      # - name: Snyk monitor (Open Source)
+      #   run: snyk monitor --all-projects || true
