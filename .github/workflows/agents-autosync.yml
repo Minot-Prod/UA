@@ -1,10 +1,11 @@
 name: Parlios — Agents AutoSync
+
 on:
   issues:
     types: [opened, edited, labeled]
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *" # hourly (facultatif)
+    - cron: "0 * * * *" # optionnel : passage horaire
 
 permissions:
   contents: write
@@ -13,38 +14,69 @@ permissions:
 
 jobs:
   from_issue_to_pr:
-    if: contains(github.event.issue.labels.*.name, 'agent:new')
+    # On exige soit l'événement issues+labeled avec le bon label,
+    # soit un Issue déjà avec le label présent à l'ouverture/édition.
+    if: >
+      (github.event_name == 'issues') &&
+      (
+        contains(github.event.issue.labels.*.name, 'agent:new') ||
+        (github.event.action == 'labeled' && github.event.label.name == 'agent:new')
+      )
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ensure jq is available
-        run: sudo apt-get update && sudo apt-get install -y jq
-
-      - name: Parse Issue body as JSON
-        id: parse
+      - name: Tooling
         run: |
-          echo '${{ github.event.issue.body }}' | jq . > /tmp/agent.json
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Extract JSON from Issue body (robust)
+        id: extract
+        env:
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          # Essaie de récupérer un bloc ```json ... ```
+          printf "%s" "$BODY" | awk '/```json/{flag=1;next}/```/{flag=0}flag' > /tmp/agent.json || true
+          if [ ! -s /tmp/agent.json ]; then
+            # Si pas de bloc ```json```, tente de parser tout le corps comme JSON brut
+            printf "%s" "$BODY" > /tmp/agent.json || true
+          fi
+          # Validation JSON
+          if ! jq empty /tmp/agent.json 2>/dev/null; then
+            echo "Issue body n'est pas un JSON valide. Ajoute un bloc \`\`\`json ... \`\`\`."
+            exit 1
+          fi
+          echo "json_ok=true" >> $GITHUB_OUTPUT
 
       - name: Create working branch
+        id: br
         run: |
-          BR="auto/agent-${{ github.event.issue.number }}-$(date +%s)"
+          BR="auto/agent-${{ github.event.issue.number }}-$(date +%Y%m%d-%H%M%S)"
           echo "BRANCH=$BR" >> $GITHUB_ENV
           git checkout -b "$BR"
+          echo "branch=$BR" >> $GITHUB_OUTPUT
 
-      - name: Update module (append agent)
+      - name: Update module file
         run: |
+          mkdir -p modules
           MOD="modules/WebCreationTeam.json"
           test -f "$MOD" || echo '{"agents":[]}' > "$MOD"
-          jq --slurpfile new /tmp/agent.json \
-             '.agents = (.agents + $new)' "$MOD" > "$MOD.tmp"
+          # Ajoute le/les agents (permet JSON objet *ou* liste)
+          if jq -e 'type=="array"' /tmp/agent.json >/dev/null; then
+            jq --slurpfile new /tmp/agent.json '.agents += $new' "$MOD" > "$MOD.tmp"
+          else
+            jq --slurpfile new /tmp/agent.json '.agents += [$new[0]]' "$MOD" > "$MOD.tmp"
+          fi
           mv "$MOD.tmp" "$MOD"
 
       - name: Commit & push
-        env: { GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add modules/WebCreationTeam.json
           git commit -m "chore: add agent from issue #${{ github.event.issue.number }}"
@@ -54,12 +86,15 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const { data: pr } = await github.pulls.create({
+            const pr = await github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `AutoSync: agent from issue #${context.payload.issue.number}`,
               head: process.env.BRANCH,
               base: 'main',
-              body: `Auto-generated from issue #${context.payload.issue.number}`
+              body: `Auto-generated from issue #${context.payload.issue.number}.`
             });
-            core.setOutput('pr', pr.html_url)
+            core.setOutput('pr_url', pr.data.html_url)
+
+      - name: Log PR url
+        run: echo "PR ouverte: ${{ steps.Open_PR.outputs.pr_url }}"
