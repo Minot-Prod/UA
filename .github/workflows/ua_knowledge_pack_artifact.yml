@@ -1,0 +1,34 @@
+name: UA Knowledge Sync
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pack-knowledge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Zip knowledge folder
+        run: |
+          mkdir -p build
+          if [ -d "knowledge" ]; then
+            (cd knowledge && zip -r ../build/UA_Agents_KnowledgePacks.zip .)
+          else
+            echo "No knowledge/ folder to zip"; touch build/UA_Agents_KnowledgePacks.zip
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UA_Agents_KnowledgePacks
+          path: build/UA_Agents_KnowledgePacks.zip
+          if-no-files-found: warn
