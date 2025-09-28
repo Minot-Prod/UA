@@ -2,10 +2,8 @@ name: Parlios - Agents AutoSync
 
 "on":
   issues:
-    types: [opened, edited, labeled]
-  workflow_dispatch: {}
-  schedule:
-    - cron: "0 * * * *"
+    types: [labeled]        # on déclenche UNIQUEMENT quand un label est ajouté
+  workflow_dispatch: {}     # lancement manuel possible
 
 permissions:
   contents: write
@@ -14,32 +12,31 @@ permissions:
 
 jobs:
   from_issue_to_pr:
-    if: >
-      (github.event_name == 'issues') &&
-      (
-        contains(github.event.issue.labels.*.name, 'agent:new') ||
-        (github.event.action == 'labeled' && github.event.label.name == 'agent:new')
-      )
+    # ne tourne que si le label ajouté est exactement "agent:new"
+    if: ${{ github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'agent:new' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Tooling
+      - name: Install jq
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Extract JSON from Issue body (robust)
+      - name: Extract JSON from Issue body
         id: extract
         env:
           BODY: ${{ github.event.issue.body }}
         run: |
+          # récupère un bloc ```json ... ``` s'il existe
           printf "%s" "$BODY" | awk '/```json/{flag=1;next}/```/{flag=0}flag' > /tmp/agent.json || true
+          # sinon, prend tout le corps
           if [ ! -s /tmp/agent.json ]; then
             printf "%s" "$BODY" > /tmp/agent.json || true
           fi
+          # valide JSON
           if ! jq empty /tmp/agent.json 2>/dev/null; then
             echo "Issue body n'est pas un JSON valide. Mets un bloc ```json ... ```"
             exit 1
@@ -89,5 +86,5 @@ jobs:
             });
             core.setOutput('pr_url', pr.data.html_url)
 
-      - name: Log PR url
+      - name: Log PR URL
         run: echo "PR ouverte: ${{ steps.open_pr.outputs.pr_url }}"
