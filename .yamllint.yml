@@ -1,0 +1,5 @@
+extends: default
+rules:
+  line-length: disable
+  truthy:
+    allowed-values: ["on", "off", "yes", "no", "true", "false"]  # on protège le mot "on"
