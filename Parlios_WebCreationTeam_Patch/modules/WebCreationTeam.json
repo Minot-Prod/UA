@@ -1,0 +1,1399 @@
+{
+  "id": "module.webcreationteam",
+  "name": "Web Creation Team",
+  "version": "1.0.0",
+  "created_at": "2025-09-28T19:59:19.387823Z",
+  "description": "Dream Team d’agents IA pour création de sites web & visuels — avec orchestration, pédagogie, SEO/Perf/A11y/CRO, et médias génératifs.",
+  "router": "agent.coordinator",
+  "agents": [
+    {
+      "id": "agent.coordinator",
+      "name": "Agent Coordinateur & Mémoire",
+      "objective": "Orchestrer la Web Creation Team, router les tâches, maintenir la mémoire projet et résoudre les conflits entre agents.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "brief",
+          "type": "object",
+          "required": true,
+          "desc": "Brief utilisateur (secteur, style, objectifs, exemples aimés)"
+        },
+        {
+          "id": "prefs",
+          "type": "object",
+          "required": false,
+          "desc": "Préférences UI (couleurs, ton, animations)"
+        },
+        {
+          "id": "project_state",
+          "type": "object",
+          "required": false,
+          "desc": "État courant (versions, validations, rejets)"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "plan",
+          "type": "array",
+          "desc": "Plan multi-étapes (agents ordonnés)"
+        },
+        {
+          "id": "pack",
+          "type": "object",
+          "desc": "Livrables consolidés (tokens/pages/seo/medias/qa)"
+        },
+        {
+          "id": "log",
+          "type": "array",
+          "desc": "Journal d’orchestration et décisions"
+        }
+      ],
+      "capabilities": [
+        "Routing sémantique par mots-clés & objectifs",
+        "Mémoire épisodique (préférences, validations)",
+        "Résolution de conflits (vote pondéré par domaine)",
+        "Versioning + rollback",
+        "Budget guardrails (stop 70%)"
+      ],
+      "actions": [
+        "Construire un plan d’appel d’agents optimisé",
+        "Fusionner les sorties en un pack cohérent",
+        "Déclencher revues QA transverses"
+      ],
+      "tools": [
+        {
+          "name": "MemoryStore",
+          "purpose": "Stocker préférences et historiques"
+        },
+        {
+          "name": "Router",
+          "purpose": "Appliquer règles de routage/ordre/dépendances"
+        }
+      ],
+      "prompt_master": "Tu es le Coordinateur. Lis le brief, sélectionne l’ordre optimal d’agents, fixe des objectifs SMART par étape,\nsurveille les budgets et la cohérence. Résous les conflits (perf vs design, SEO vs copy) via un vote pondéré (Perf=0.9, SEO=0.8, UX=0.8, Brand=0.7).\nMaintiens une mémoire durable (goûts, validations) et fournis un pack final propre et traçable.",
+      "evaluation": {
+        "checks": [
+          "Le plan couvre toutes les étapes (Strat→Brand→UX→Copy→Medias→Perf→SEO→CRO→Legal→QA)",
+          "Aucun livrable contradictoire (tokens vs UI)",
+          "Journal d’orchestration clair, décisions justifiées"
+        ]
+      },
+      "metrics": {
+        "planning_latency_ms": "<=150",
+        "conflict_resolution_rate": ">=95%",
+        "on_budget": ">=90% des runs"
+      },
+      "dependencies": [],
+      "tags": [
+        "core",
+        "router",
+        "memory"
+      ]
+    },
+    {
+      "id": "agent.strategy",
+      "name": "Agent Stratégie & Positionnement",
+      "objective": "Clarifier la promesse, l’ICP, le positionnement, le sitemap et la stack initiale.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "brief",
+          "type": "object",
+          "required": true
+        },
+        {
+          "id": "market",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "id": "strategy_onepager",
+          "type": "markdown",
+          "desc": "Promesse, ICP, preuves, différenciation"
+        },
+        {
+          "id": "sitemap",
+          "type": "array",
+          "desc": "Pages recommandées + objectifs"
+        },
+        {
+          "id": "stack",
+          "type": "object",
+          "desc": "Recommandation (No-code/Next.js/Shopify/etc.)"
+        }
+      ],
+      "capabilities": [
+        "Analyse ICP & jobs-to-be-done",
+        "Comparaison marché et différenciation",
+        "Recommandation stack & coûts"
+      ],
+      "actions": [
+        "Produire un one-pager compréhensible débutant",
+        "Esquisser un sitemap minimal viable + évolutif"
+      ],
+      "tools": [
+        {
+          "name": "BenchDB",
+          "purpose": "Exemples performants par secteur"
+        },
+        {
+          "name": "WebScraper",
+          "purpose": "Collecte d’exemples, balises SEO, schémas"
+        },
+        {
+          "name": "LighthouseProbe",
+          "purpose": "Mesure CWV (LCP/CLS/INP)"
+        },
+        {
+          "name": "A11yScanner",
+          "purpose": "Audit contrastes/roles/ARIA"
+        },
+        {
+          "name": "SchemaBuilder",
+          "purpose": "Générer JSON-LD"
+        },
+        {
+          "name": "CDNImageOps",
+          "purpose": "Optimiser images (AVIF/WebP, crops)"
+        }
+      ],
+      "prompt_master": "Produis une stratégie claire, sans jargon. Donne 3 options de stack (light/standard/pro) avec implications coût/maintenance. Fixe 3 KPIs de succès.",
+      "evaluation": {
+        "checks": [
+          "Promesse < 140 caractères",
+          "Sitemap couvre conversion + réassurance",
+          "Stack alignée au budget/échéance"
+        ]
+      },
+      "metrics": {
+        "clarity_score": ">=9/10",
+        "beginner_comprehension": ">=95%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.benchmark",
+      "name": "Agent Benchmark & Inspiration",
+      "objective": "Compiler des exemples et patterns UI/UX pertinents et expliquer pourquoi ils fonctionnent.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "sector",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "gallery",
+          "type": "array",
+          "desc": "Exemples annotés avec raisons & risques d’imitation"
+        }
+      ],
+      "capabilities": [
+        "Clustering de styles",
+        "Scoring UX (lisibilité, hiérarchie)",
+        "Anti-patterns"
+      ],
+      "actions": [
+        "Extraire 10 exemples récents",
+        "Annoter avec 'à copier/adapter/éviter'"
+      ],
+      "tools": [
+        {
+          "name": "PatternLib",
+          "purpose": "Base patterns UI récents"
+        }
+      ],
+      "prompt_master": "Sélectionne des exemples variés et commente en langage simple. Inclue 3 erreurs fréquentes à éviter.",
+      "evaluation": {
+        "checks": [
+          "Exemples < 18 mois",
+          "Diversité de styles et devices"
+        ]
+      },
+      "metrics": {
+        "useful_ratio": ">=90%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.brandkit",
+      "name": "Agent Brand Kit & Design Tokens",
+      "objective": "Générer palette, typos, composants de base et tokens exportables.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "adjectifs",
+          "type": "array",
+          "required": true
+        },
+        {
+          "id": "logo",
+          "type": "image",
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "id": "tokens",
+          "type": "json",
+          "desc": "Couleurs, espaces, rayons, ombres, typographies"
+        },
+        {
+          "id": "brand_preview",
+          "type": "image",
+          "desc": "Hero + Buttons + Cards en contexte"
+        }
+      ],
+      "capabilities": [
+        "Génération de thèmes alternatifs",
+        "Export Figma/Tailwind/shadcn",
+        "Contrastes AA/AAA auto"
+      ],
+      "actions": [
+        "Proposer 2 palettes + 1 compromis neutre",
+        "Valider contrastes"
+      ],
+      "tools": [
+        {
+          "name": "TokenForge",
+          "purpose": "Compile tokens multi-cibles"
+        },
+        {
+          "name": "ContrastCalc",
+          "purpose": "Vérifier AA/AAA"
+        }
+      ],
+      "prompt_master": "Crée tokens propres, neutres par défaut. Priorise lisibilité. Prévois variables pour dark mode.",
+      "evaluation": {
+        "checks": [
+          "Ratio contrastes AA partout",
+          "Tokens cohérents (naming)"
+        ]
+      },
+      "metrics": {
+        "wcag_pass_rate": ">=98%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.uxcoach",
+      "name": "Agent UX Coach (pédagogie)",
+      "objective": "Produire des wireframes section-par-section et expliquer les choix.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "page_goal",
+          "type": "string",
+          "required": true
+        },
+        {
+          "id": "tokens",
+          "type": "json",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "wireframes",
+          "type": "markdown",
+          "desc": "Schémas ASCII + explications"
+        }
+      ],
+      "capabilities": [
+        "Guidage débutant",
+        "Checklist heuristique",
+        "Responsive hints"
+      ],
+      "actions": [
+        "Proposer structure héro, preuve sociale, bénéfices, objections, CTA"
+      ],
+      "tools": [
+        {
+          "name": "WireASCII",
+          "purpose": "Wireframe texte rapide"
+        }
+      ],
+      "prompt_master": "Expliquer simplement. Un seul CTA principal. Met l’évidence au-dessus de la ligne de flottaison.",
+      "evaluation": {
+        "checks": [
+          "Sections essentielles présentes",
+          "Lisibilité mobile priorisée"
+        ]
+      },
+      "metrics": {
+        "beginner_happiness": ">=95%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.copy",
+      "name": "Agent Copywriting & Ton de Marque",
+      "objective": "Écrire titres H1/H2, textes de sections, CTA, FAQ et variantes A/B.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "tone",
+          "type": "string",
+          "required": true
+        },
+        {
+          "id": "wireframes",
+          "type": "markdown",
+          "required": true
+        },
+        {
+          "id": "seo_brief",
+          "type": "object",
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "id": "copy_blocks",
+          "type": "markdown",
+          "desc": "Blocs de texte par section + variantes A/B"
+        }
+      ],
+      "capabilities": [
+        "Objections→réponses",
+        "CTA tests",
+        "Rédaction mobile-first"
+      ],
+      "actions": [
+        "2 variantes par section",
+        "CTA clair orienté bénéfice"
+      ],
+      "tools": [
+        {
+          "name": "Readability",
+          "purpose": "Score Flesch, longueur lignes"
+        }
+      ],
+      "prompt_master": "Écris court, précis, sans jargon. Toujours une version 'débutant'.",
+      "evaluation": {
+        "checks": [
+          "Lisibilité score ≥ 60",
+          "CTA actionnable"
+        ]
+      },
+      "metrics": {
+        "ab_win_rate": ">=55%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.seo",
+      "name": "Agent SEO & IA-Search Ready",
+      "objective": "Structurer Hn, métas, schémas, maillage, plan éditorial.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "copy_blocks",
+          "type": "markdown",
+          "required": true
+        },
+        {
+          "id": "sector",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "seo_meta",
+          "type": "json",
+          "desc": "title, meta, og, twitter"
+        },
+        {
+          "id": "schema_ld",
+          "type": "json",
+          "desc": "JSON-LD"
+        },
+        {
+          "id": "editorial_plan",
+          "type": "array",
+          "desc": "4 semaines d’articles"
+        }
+      ],
+      "capabilities": [
+        "Keyword clustering",
+        "Helpful Content guidelines",
+        "Sitemaps robots"
+      ],
+      "actions": [
+        "Proposer 10 mots-clés primaires + 20 long tail",
+        "Générer 1 article pilier outline"
+      ],
+      "tools": [
+        {
+          "name": "KeywordKit",
+          "purpose": "Clustering sémantique"
+        },
+        {
+          "name": "SchemaBuilder",
+          "purpose": "LD"
+        }
+      ],
+      "prompt_master": "Aligner contenu et intention. Préférer pertinence à densité.",
+      "evaluation": {
+        "checks": [
+          "Balises complètes",
+          "Aucun keyword stuffing"
+        ]
+      },
+      "metrics": {
+        "organic_ready_score": ">=9/10"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.a11y",
+      "name": "Agent Accessibilité & Inclusivité",
+      "objective": "Garantir AA/AAA où pertinent, alt text, ordre tab, roles/ARIA.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "tokens",
+          "type": "json",
+          "required": true
+        },
+        {
+          "id": "ui_components",
+          "type": "json",
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "id": "a11y_report",
+          "type": "markdown",
+          "desc": "Checklist + corrections proposées"
+        }
+      ],
+      "capabilities": [
+        "Simulation déficiences visuelles",
+        "Lint ARIA",
+        "Langage clair"
+      ],
+      "actions": [
+        "Corriger contrastes insuffisants",
+        "Suggérer labels/aria-live"
+      ],
+      "tools": [
+        {
+          "name": "A11yScanner",
+          "purpose": "Audit rapide"
+        },
+        {
+          "name": "ContrastCalc",
+          "purpose": "WCAG"
+        }
+      ],
+      "prompt_master": "Accessibilité dès la conception. Pas de décoratif sans alt pertinent.",
+      "evaluation": {
+        "checks": [
+          "Ordre tab logique",
+          "Labels explicites"
+        ]
+      },
+      "metrics": {
+        "wcag_issues": "<=2 mineurs"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.perf",
+      "name": "Agent Performance & Core Web Vitals",
+      "objective": "Optimiser LCP/CLS/INP, images, CSS critique, lazy-loading.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "preview_url",
+          "type": "string",
+          "required": false
+        },
+        {
+          "id": "assets",
+          "type": "array",
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "id": "perf_plan",
+          "type": "markdown",
+          "desc": "Plan d’optimisation + estimation gains"
+        }
+      ],
+      "capabilities": [
+        "Critical CSS",
+        "Font subsetting",
+        "Lazy hydration"
+      ],
+      "actions": [
+        "Proposer tailles images par breakpoint",
+        "Mesurer et rapporter"
+      ],
+      "tools": [
+        {
+          "name": "LighthouseProbe",
+          "purpose": "CWV"
+        },
+        {
+          "name": "CDNImageOps",
+          "purpose": "Optim images"
+        }
+      ],
+      "prompt_master": "Prioriser LCP & CLS. Minimiser JS. Fonts locales si possible.",
+      "evaluation": {
+        "checks": [
+          "Lighthouse ≥ 90",
+          "JS < 200KB initial"
+        ]
+      },
+      "metrics": {
+        "lcp_ms": "<=2500",
+        "cls": "<=0.1",
+        "inp_ms": "<=200"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.arch",
+      "name": "Agent Architecture Technique / Plateforme",
+      "objective": "Choisir plateforme, arborescence, intégrations, coûts.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "stack_opts",
+          "type": "object",
+          "required": true
+        },
+        {
+          "id": "requirements",
+          "type": "object",
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "id": "arch_doc",
+          "type": "markdown",
+          "desc": "Architecture cible + coûts/mois + évolutivité"
+        }
+      ],
+      "capabilities": [
+        "Comparaison Vercel/Netlify/WordPress/Shopify/Framer/Webflow",
+        "Sécurité de base"
+      ],
+      "actions": [
+        "Proposer chemin 'light→pro'"
+      ],
+      "tools": [
+        {
+          "name": "CostEstimator",
+          "purpose": "Hébergement/CDN/DB rough"
+        }
+      ],
+      "prompt_master": "Favoriser simplicité/fiabilité pour débutant, ouverture pro plus tard.",
+      "evaluation": {
+        "checks": [
+          "Sécu basique (headers, SSL)",
+          "Chemin migration balisé"
+        ]
+      },
+      "metrics": {
+        "platform_fit_score": ">=8/10"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.cms",
+      "name": "Agent Intégration CMS & Données",
+      "objective": "Modéliser contenus, règles de validation, import/export.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "content_types",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "cms_models",
+          "type": "json",
+          "desc": "Collections et champs normalisés"
+        }
+      ],
+      "capabilities": [
+        "Headless ready",
+        "SEO fields par défaut",
+        "Versioning"
+      ],
+      "actions": [
+        "Définir contraintes (min/max, regex)",
+        "Hooks de publication"
+      ],
+      "tools": [
+        {
+          "name": "SchemaDesigner",
+          "purpose": "Modèles de contenus"
+        }
+      ],
+      "prompt_master": "Modèles propres, évolutifs, avec champs SEO et états brouillon/publiés.",
+      "evaluation": {
+        "checks": [
+          "Noms de champs clairs",
+          "Règles anti-incohérences"
+        ]
+      },
+      "metrics": {
+        "content_valid_rate": ">=98%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.ui",
+      "name": "Agent Générateur de Composants UI",
+      "objective": "Produire composants (cards, pricing, FAQ, header/footer) en HTML/React/Vue.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "tokens",
+          "type": "json",
+          "required": true
+        },
+        {
+          "id": "wireframes",
+          "type": "markdown",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "ui_components",
+          "type": "json",
+          "desc": "Code + doc d’usage"
+        }
+      ],
+      "capabilities": [
+        "Variants, animations micro-UX",
+        "Export multi-frameworks"
+      ],
+      "actions": [
+        "Inclure exemples d’usage et erreurs à éviter"
+      ],
+      "tools": [
+        {
+          "name": "CodeGen",
+          "purpose": "Génération code UI propre"
+        }
+      ],
+      "prompt_master": "Code minimaliste, accessible, lisible. Pas de dépendances inutiles.",
+      "evaluation": {
+        "checks": [
+          "Pas de styles inline inutiles",
+          "ARIA correct"
+        ]
+      },
+      "metrics": {
+        "build_error_rate": "<1%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.media",
+      "name": "Agent Médias Orchestrator",
+      "objective": "Générer/éditer visuels (images/vidéos/icônes) cohérents avec le Brand Kit.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "tokens",
+          "type": "json",
+          "required": true
+        },
+        {
+          "id": "mood",
+          "type": "string",
+          "required": true
+        },
+        {
+          "id": "formats",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "media_set",
+          "type": "array",
+          "desc": "Lot de visuels optimisés + variantes responsives"
+        }
+      ],
+      "capabilities": [
+        "Multi-moteurs image/vidéo",
+        "Upscale, in/outpainting",
+        "Templates Canva/Figma export"
+      ],
+      "actions": [
+        "Générer 10 visuels initiaux",
+        "Décliner mobile/desktop/social",
+        "Fournir alt text suggestion"
+      ],
+      "tools": [
+        {
+          "name": "ImageGenAPI",
+          "purpose": "SD/DALL·E/MJ routing"
+        },
+        {
+          "name": "VideoGenAPI",
+          "purpose": "Clips courts cinématiques"
+        },
+        {
+          "name": "VectorForge",
+          "purpose": "SVG/icônes propres"
+        }
+      ],
+      "prompt_master": "Respecte tokens. Fournis 2 styles alternatifs (safe/edge). Prépare variantes (hero, vignette, mockup produit).",
+      "evaluation": {
+        "checks": [
+          "Cohérence style/couleurs",
+          "Lisibilité sur mobile"
+        ]
+      },
+      "metrics": {
+        "coherence_score": ">=9/10",
+        "asset_ready_rate": ">=95%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.media_adapt",
+      "name": "Agent Contenu Visuel Adaptatif",
+      "objective": "Créer crops responsives, poids optimisés, mapping CDN.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "media_set",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "responsive_manifest",
+          "type": "json",
+          "desc": "srcset, sizes, breakpoints, alt"
+        }
+      ],
+      "capabilities": [
+        "Smart crop",
+        "AVIF/WebP",
+        "Sprite/icons"
+      ],
+      "actions": [
+        "Générer manifs par page",
+        "Inclure lazy-loading"
+      ],
+      "tools": [
+        {
+          "name": "CDNImageOps",
+          "purpose": "Optimisation images/CDN"
+        }
+      ],
+      "prompt_master": "Optimiser sans artefacts. Prioriser LCP.",
+      "evaluation": {
+        "checks": [
+          "Poids/qualité équilibrés",
+          "Alt text présents"
+        ]
+      },
+      "metrics": {
+        "avg_image_weight_kb": "<=150"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.cro",
+      "name": "Agent Formulaires & Conversion",
+      "objective": "Concevoir formulaires low-friction, messages d’erreur humains, tests A/B CTA.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "page_goal",
+          "type": "string",
+          "required": true
+        },
+        {
+          "id": "copy_blocks",
+          "type": "markdown",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "forms",
+          "type": "json",
+          "desc": "Schémas formulaires + validations + microcopies"
+        }
+      ],
+      "capabilities": [
+        "Conversion prédictive",
+        "Heatmap notes",
+        "Autosave champs"
+      ],
+      "actions": [
+        "Limiter champs requis",
+        "Fournir 2 CTA variantes"
+      ],
+      "tools": [
+        {
+          "name": "FormDesigner",
+          "purpose": "Schemas & validations"
+        }
+      ],
+      "prompt_master": "Réduis la friction. Utilise libellés clairs, placeholders explicites, états d’erreur utiles.",
+      "evaluation": {
+        "checks": [
+          "< 6 champs par formulaire",
+          "Mobile-first"
+        ]
+      },
+      "metrics": {
+        "completion_rate": ">=65%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.legal",
+      "name": "Agent Légal & Confiance",
+      "objective": "Générer mentions, privacy, cookies banner et consentements conformes (CA/EU/US).",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "jurisdiction",
+          "type": "string",
+          "required": true
+        },
+        {
+          "id": "data_collection",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "legal_pages",
+          "type": "markdown",
+          "desc": "Mentions & privacy"
+        },
+        {
+          "id": "cookie_config",
+          "type": "json",
+          "desc": "Consentement granulaire"
+        }
+      ],
+      "capabilities": [
+        "Templates par juridiction",
+        "Logs consentement"
+      ],
+      "actions": [
+        "Produire pages prêtes à publier + liens footer"
+      ],
+      "tools": [
+        {
+          "name": "PolicyKit",
+          "purpose": "Clauses & mises à jour"
+        }
+      ],
+      "prompt_master": "Conformité d’abord. Langage clair. Évite le copier-coller générique non adapté.",
+      "evaluation": {
+        "checks": [
+          "Cookies bloqués avant consentement",
+          "Liens visibles"
+        ]
+      },
+      "metrics": {
+        "compliance_score": ">=95%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.deploy",
+      "name": "Agent Déploiement & DNS/CDN",
+      "objective": "Fournir pas-à-pas DNS (A/CNAME/CAA), SSL, purge cache, préprod→prod.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "domain",
+          "type": "string",
+          "required": true
+        },
+        {
+          "id": "host",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "dns_steps",
+          "type": "markdown",
+          "desc": "Instructions claires + vérifications"
+        },
+        {
+          "id": "checks",
+          "type": "json",
+          "desc": "Tests propagation/SSL"
+        }
+      ],
+      "capabilities": [
+        "Rollback plan",
+        "Validation automatique"
+      ],
+      "actions": [
+        "Scripts de vérif basiques (HTTP 200, SSL ok)"
+      ],
+      "tools": [
+        {
+          "name": "DNSProbe",
+          "purpose": "Propagation A/CNAME"
+        },
+        {
+          "name": "TLSCheck",
+          "purpose": "Certif valide"
+        }
+      ],
+      "prompt_master": "Explications débutant + check-list avant bascule prod.",
+      "evaluation": {
+        "checks": [
+          "DNS valide",
+          "SSL valide"
+        ]
+      },
+      "metrics": {
+        "first_paint_to_live_min": "<=30"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.analytics",
+      "name": "Agent Analytics & Observabilité",
+      "objective": "Plan de taggage (GA4/PL), events clés, dashboards.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "goals",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "tracking_plan",
+          "type": "json",
+          "desc": "Events, propriétés, conversions"
+        },
+        {
+          "id": "dashboards",
+          "type": "json",
+          "desc": "Vues prêtes (hebdo/mensuel)"
+        }
+      ],
+      "capabilities": [
+        "Alertes",
+        "Anomalie ML simple"
+      ],
+      "actions": [
+        "Définir conversions critiques",
+        "Rapports automatiques hebdo"
+      ],
+      "tools": [
+        {
+          "name": "GAConfigurator",
+          "purpose": "Export config GA4-like"
+        }
+      ],
+      "prompt_master": "Mesurer ce qui compte. Clair pour débutant, utile pour pro.",
+      "evaluation": {
+        "checks": [
+          "Éviter données perso inutiles",
+          "Conformité privacy"
+        ]
+      },
+      "metrics": {
+        "event_coverage": ">=95%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.growth",
+      "name": "Agent Growth & Expérimentations",
+      "objective": "Backlog d’expériences, taille d’échantillon, suivi des résultats.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "hypotheses",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "ab_plan",
+          "type": "markdown",
+          "desc": "Priorisation ICE, protocole, durée"
+        },
+        {
+          "id": "weekly_report",
+          "type": "markdown",
+          "desc": "Synthèse hebdo"
+        }
+      ],
+      "capabilities": [
+        "ICE/RICE scoring",
+        "Significativité simplifiée"
+      ],
+      "actions": [
+        "Proposer 5 tests impact rapide"
+      ],
+      "tools": [
+        {
+          "name": "ABPlanner",
+          "purpose": "Estimations échantillon"
+        }
+      ],
+      "prompt_master": "Aller au plus utile. Commencer petit, mesurer, apprendre.",
+      "evaluation": {
+        "checks": [
+          "Hypothèses claires",
+          "KPI relié à objectifs"
+        ]
+      },
+      "metrics": {
+        "win_rate": ">=30%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.i18n",
+      "name": "Agent Internationalisation & Localisation",
+      "objective": "Fichiers de traduction, tonalité culturelle, hreflang.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "languages",
+          "type": "array",
+          "required": true
+        },
+        {
+          "id": "base_copy",
+          "type": "markdown",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "i18n_files",
+          "type": "json",
+          "desc": "Clés/valeurs par langue"
+        },
+        {
+          "id": "hreflang",
+          "type": "json",
+          "desc": "Balises hreflang"
+        }
+      ],
+      "capabilities": [
+        "SEO multilingue",
+        "Formats régionaux"
+      ],
+      "actions": [
+        "Mettre en évidence textes intraduisibles"
+      ],
+      "tools": [
+        {
+          "name": "I18nKit",
+          "purpose": "Gestion traductions"
+        }
+      ],
+      "prompt_master": "Traduire le sens, pas mot à mot. Adapter culture et unités.",
+      "evaluation": {
+        "checks": [
+          "Clés cohérentes",
+          "Aucune balise cassée"
+        ]
+      },
+      "metrics": {
+        "translation_quality": ">=9/10"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.qa",
+      "name": "Agent QA Final & Checklists",
+      "objective": "Vérifier SEO/A11y/Perf/Legal/Tracking et compiler le go-live report.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "pack",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "qa_report",
+          "type": "markdown",
+          "desc": "Pass/Fail + corrections"
+        },
+        {
+          "id": "go_live",
+          "type": "markdown",
+          "desc": "Checklist finale"
+        }
+      ],
+      "capabilities": [
+        "Exécution de scanners",
+        "Détection incohérences"
+      ],
+      "actions": [
+        "Bloquer go-live si fails critiques"
+      ],
+      "tools": [
+        {
+          "name": "QAStack",
+          "purpose": "Regroupe Lighthouse/A11y/SEO checks"
+        }
+      ],
+      "prompt_master": "Soyez strict mais pédagogique. Proposez correctifs concrets.",
+      "evaluation": {
+        "checks": [
+          "0 erreurs critiques",
+          "Liste corrections ordonnée"
+        ]
+      },
+      "metrics": {
+        "first_pass_rate": ">=80%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.coach",
+      "name": "Agent Coach Pas-à-Pas",
+      "objective": "Guider un débutant de 0 → site live via 7 étapes pédagogiques.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "brief",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "id": "roadmap",
+          "type": "markdown",
+          "desc": "Étapes, temps estimé, liens d’aide"
+        },
+        {
+          "id": "helper_cards",
+          "type": "array",
+          "desc": "Tips simples '1 clic'"
+        }
+      ],
+      "capabilities": [
+        "Tutos cliquables",
+        "Glossaire",
+        "Mode 'corrige pour moi'"
+      ],
+      "actions": [
+        "Adapter guidance à la tolérance technique du user"
+      ],
+      "tools": [
+        {
+          "name": "Tutor",
+          "purpose": "Guides pas-à-pas"
+        }
+      ],
+      "prompt_master": "Explique comme à un ami. Zéro jargon. Toujours montrer le bouton 'Pourquoi ?'.",
+      "evaluation": {
+        "checks": [
+          "Compréhension novice > 95%",
+          "Aucun trou de parcours"
+        ]
+      },
+      "metrics": {
+        "beginner_success_rate": ">=95%"
+      },
+      "dependencies": [],
+      "tags": []
+    },
+    {
+      "id": "agent.budget",
+      "name": "Agent Budget & Crédits",
+      "objective": "Planifier, estimer, déclencher stop 70% si dérive, proposer arbitrages.",
+      "mode": {
+        "beginner": true,
+        "pro": true
+      },
+      "inputs": [
+        {
+          "id": "plan",
+          "type": "array",
+          "required": true
+        },
+        {
+          "id": "constraints",
+          "type": "object",
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "id": "budget_view",
+          "type": "json",
+          "desc": "Coûts estimés par étape/agent"
+        },
+        {
+          "id": "alerts",
+          "type": "array",
+          "desc": "Alertes de dérive"
+        }
+      ],
+      "capabilities": [
+        "Estimation dynamique",
+        "Arbitrage"
+      ],
+      "actions": [
+        "Proposer 3 options : éco/standard/pro"
+      ],
+      "tools": [
+        {
+          "name": "CostEstimator",
+          "purpose": "Calcule coûts/temps rough"
+        }
+      ],
+      "prompt_master": "Toujours proposer une option économe. Prévenir avant dépassement.",
+      "evaluation": {
+        "checks": [
+          "Stop 70% appliqué",
+          "Clarté des arbitrages"
+        ]
+      },
+      "metrics": {
+        "budget_respect": ">=90%"
+      },
+      "dependencies": [],
+      "tags": []
+    }
+  ],
+  "pack_contract": {
+    "outputs": {
+      "tokens": "agent.brandkit.tokens",
+      "wireframes": "agent.uxcoach.wireframes",
+      "copy": "agent.copy.copy_blocks",
+      "media": "agent.media.media_set",
+      "seo": [
+        "agent.seo.seo_meta",
+        "agent.seo.schema_ld"
+      ],
+      "a11y_report": "agent.a11y.a11y_report",
+      "perf_plan": "agent.perf.perf_plan",
+      "forms": "agent.cro.forms",
+      "cms_models": "agent.cms.cms_models",
+      "qa": "agent.qa.qa_report"
+    }
+  }
+}
