@@ -27,7 +27,7 @@ jobs:
           echo "# UA — Agents Knowledge Packs (v2.0)" > build/UA_Agents_Pack/README.md
           echo "Inventaire et packs de connaissances générés automatiquement." >> build/UA_Agents_Pack/README.md
 
-          cat > build/UA_Agents_Pack/UA_Agents_Inventory.csv <<EOL
+          cat << 'EOF' > build/UA_Agents_Pack/UA_Agents_Inventory.csv
 Agent,Family,Status
 UA,META,Ready
 MA,META,Ready
@@ -48,9 +48,9 @@ Chef,Fondamentaux,Ready
 Firefly,Fondamentaux,Ready
 Content Planner,Fondamentaux,Ready
 ... autres agents ...
-EOL
+EOF
 
-          cat > build/UA_Agents_Pack/UA_Agents_KnowledgePacks.md <<EOL
+          cat << 'EOF' > build/UA_Agents_Pack/UA_Agents_KnowledgePacks.md
 # UA — Inventaire Agents & Knowledge Packs (v2.0)
 Tous les agents recensés (~80+) avec Knowledge Pack v1 optimisé.
 
@@ -61,7 +61,7 @@ Tous les agents recensés (~80+) avec Knowledge Pack v1 optimisé.
 - Outputs: builds validés
 - KPIs: 100% secrets valides
 - Tests: replay OK
-EOL
+EOF
 
           cd build
           zip -r UA_Agents_KnowledgePacks.zip UA_Agents_Pack
