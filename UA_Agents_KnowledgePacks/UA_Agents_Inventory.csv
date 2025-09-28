@@ -1,0 +1,20 @@
+Agent,Family,Status
+UA,META,Ready
+MA,META,Ready
+MAP,META,Ready
+Ops,Tier1,Ready
+QA Guardian,Tier1,Ready
+Content Agent,Tier1,Ready
+Strategy Agent,Tier1,Ready
+BizDev Agent,Tier1,Ready
+Growth Agent,Tier2,Ready
+SEO Agent,Tier2,Ready
+RAP Agent,Tier2,Ready
+Finance Coach,Tier2,Ready
+Leadership Agent,Tier2,Ready
+Archviz Agent,Tier2,Ready
+Archivist,Fondamentaux,Ready
+Chef,Fondamentaux,Ready
+Firefly,Fondamentaux,Ready
+Content Planner,Fondamentaux,Ready
+... (autres agents jusqu'à 80+) ...
