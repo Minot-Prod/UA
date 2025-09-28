@@ -24,6 +24,7 @@ jobs:
       - name: Generate UA Agents Knowledge Pack
         run: |
           mkdir -p build/UA_Agents_Pack
+
           echo "# UA — Agents Knowledge Packs (v2.0)" > build/UA_Agents_Pack/README.md
           echo "Inventaire et packs de connaissances générés automatiquement." >> build/UA_Agents_Pack/README.md
 
