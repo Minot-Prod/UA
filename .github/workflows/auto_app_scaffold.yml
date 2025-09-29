@@ -1,0 +1,142 @@
+name: UA Auto-App • Scaffold
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "Nom de l'app (slug court, ex: parlios)"
+        required: true
+        default: "parlios"
+      framework:
+        description: "UI framework"
+        required: true
+        default: "react-vite"
+      api_runtime:
+        description: "Backend runtime"
+        required: true
+        default: "fastapi"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: ${{ github.event.inputs.app_name }}
+      FRAMEWORK: ${{ github.event.inputs.framework }}
+      API_RUNTIME: ${{ github.event.inputs.api_runtime }}
+      NODE_VERSION: "20"
+      PY_VERSION: "3.11"
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PY_VERSION }}
+
+      - name: 🗂️ Ensure repo structure
+        run: |
+          mkdir -p app src api supabase infra .github/workflows
+          echo "# ${APP_NAME}" > README.md
+
+      - name: 🎨 Initialize React (Vite)
+        if: env.FRAMEWORK == 'react-vite'
+        run: |
+          cd app
+          npm create vite@latest . -- --template react
+          npm pkg set name="${APP_NAME}-app"
+          npm i
+          npm i -D tailwindcss postcss autoprefixer
+          npx tailwindcss init -p
+          # Tailwind config
+          cat > tailwind.config.js << 'EOF'
+          /** @type {import('tailwindcss').Config} */
+          export default {
+            content: ["./index.html","./src/**/*.{js,ts,jsx,tsx}"],
+            theme: { extend: {} },
+            plugins: [],
+          }
+          EOF
+          # Base44 tokens (placeholder)
+          mkdir -p src/styles
+          cat > src/styles/base44.css << 'EOF'
+          @tailwind base;
+          @tailwind components;
+          @tailwind utilities;
+
+          :root {
+            --brand: #0ea5e9; /* Parlios */
+          }
+          .btn { @apply px-4 py-2 rounded-xl shadow; background: var(--brand); color:white; }
+          EOF
+          # Minimal App
+          cat > src/App.jsx << 'EOF'
+          export default function App(){
+            return (
+              <div className="min-h-screen grid place-items-center p-8">
+                <div className="max-w-xl space-y-4">
+                  <h1 className="text-3xl font-bold">UA Auto-App — ${APP_NAME}</h1>
+                  <p className="opacity-80">Scaffold React + Tailwind • Design tokens Base44</p>
+                  <a className="btn" href="/api/healthz" target="_blank" rel="noreferrer">API /healthz</a>
+                </div>
+              </div>
+            )
+          }
+          EOF
+          # Wire Tailwind
+          sed -i '1i import "./styles/base44.css"' src/main.jsx
+
+      - name: 🧠 Initialize FastAPI backend
+        if: env.API_RUNTIME == 'fastapi'
+        run: |
+          cd api
+          python -m venv .venv
+          . .venv/bin/activate
+          pip install fastapi uvicorn[standard] pydantic
+          cat > main.py << 'EOF'
+          from fastapi import FastAPI
+          app = FastAPI()
+
+          @app.get("/healthz")
+          def healthz():
+            return {"status": "ok", "service": "ua-autoapp", "version": "0.1.0"}
+          EOF
+          cat > requirements.txt << 'EOF'
+          fastapi
+          uvicorn[standard]
+          pydantic
+          EOF
+
+      - name: 🗃️ Supabase seed placeholder
+        run: |
+          mkdir -p supabase
+          cat > supabase/README.md << 'EOF'
+          This folder holds Supabase schema & seeds for UA Auto-App.
+          EOF
+
+      - name: 🧪 Minimal infra placeholders
+        run: |
+          mkdir -p infra
+          cat > infra/README.md << 'EOF'
+          IaC / deployment notes for UA Auto-App.
+          EOF
+
+      - name: 🔐 Git identity
+        run: |
+          git config user.name "ua-bot"
+          git config user.email "ua-bot@users.noreply.github.com"
+
+      - name: ✅ Commit scaffold
+        run: |
+          git add -A
+          git commit -m "UA Auto-App: scaffold (${APP_NAME})" || echo "Nothing to commit"
+          git push
