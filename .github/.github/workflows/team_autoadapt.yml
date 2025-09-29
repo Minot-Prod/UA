@@ -1,0 +1,13 @@
+name: Team Auto-Adapt
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  adapt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder step
+        run: echo "Team auto-adapt not implemented yet"
