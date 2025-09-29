@@ -1,0 +1,121 @@
+name: UA Agent AutoCreate
+
+on:
+  repository_dispatch:
+    types: [ua_agent_request]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract payload
+        id: pl
+        run: |
+          echo "slug=${{ github.event.client_payload.payload.agent.slug }}" >> $GITHUB_OUTPUT
+          echo "name=${{ github.event.client_payload.payload.agent.name }}" >> $GITHUB_OUTPUT
+          echo "role=${{ github.event.client_payload.payload.agent.role }}" >> $GITHUB_OUTPUT
+
+      - name: Validate payload
+        run: |
+          test -n "${{ steps.pl.outputs.slug }}" || { echo "Missing slug"; exit 1; }
+          test -n "${{ steps.pl.outputs.name }}" || { echo "Missing name"; exit 1; }
+          test -n "${{ steps.pl.outputs.role }}" || { echo "Missing role"; exit 1; }
+
+      - name: Prepare branch name
+        id: bn
+        run: |
+          SLUG="${{ steps.pl.outputs.slug }}"
+          BR="feature/agent-$SLUG"
+          if git ls-remote --exit-code --heads origin "$BR" >/dev/null 2>&1; then
+            BR="${BR}-v2"
+          fi
+          echo "branch=$BR" >> $GITHUB_OUTPUT
+
+      - name: Create feature branch
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${{ steps.bn.outputs.branch }}"
+
+      - name: Scaffold agent from templates
+        run: |
+          set -e
+          SLUG="${{ steps.pl.outputs.slug }}"
+          NAME="${{ steps.pl.outputs.name }}"
+          ROLE="${{ steps.pl.outputs.role }}"
+          AG_DIR="agents/$SLUG"
+          KP_DIR="knowledge/agents/$SLUG"
+
+          # Agents template
+          if [ -d "agents/_template" ]; then
+            mkdir -p "$AG_DIR"
+            rsync -a "agents/_template/" "$AG_DIR/" --exclude ".gitkeep" || true
+          else
+            mkdir -p "$AG_DIR/workflows"
+            cat > "$AG_DIR/manifest.json" <<JSON
+          { "name": "$NAME", "slug": "$SLUG", "version": "1.0.0" }
+JSON
+            cat > "$AG_DIR/README.md" <<MD
+          # $NAME
+          Rôle: $ROLE
+MD
+            cat > "$AG_DIR/workflows/agent_checks.yml" <<YML
+          name: Agent Template Checks
+          on:
+            pull_request:
+              paths:
+                - "agents/**"
+          jobs:
+            basic:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - run: echo "Template OK"
+YML
+          fi
+
+          # Knowledge template
+          if [ -d "knowledge/agents/_template" ]; then
+            mkdir -p "$KP_DIR"
+            rsync -a "knowledge/agents/_template/" "$KP_DIR/" --exclude ".gitkeep" || true
+          else
+            mkdir -p "$KP_DIR/DATA" "$KP_DIR/EVAL" "$KP_DIR/PROMPTS/20_templates" "$KP_DIR/SOPs"
+            echo "# SOURCES" > "$KP_DIR/SOURCES.md"
+            cat > "$KP_DIR/knowledge_pack.json" <<JSON
+          { "agent":{"name":"$NAME","slug":"$SLUG"}, "bench":{"file":"DATA/benchmarks.jsonl","pass_threshold":80} }
+JSON
+            echo '{"input":"Checklist","expect":"items"}' > "$KP_DIR/DATA/benchmarks.jsonl"
+          fi
+
+          git add "$AG_DIR" "$KP_DIR"
+
+      - name: Commit changes
+        run: |
+          git commit -m "feat: add agent ${{ steps.pl.outputs.slug }} scaffold" || echo "Nothing to commit"
+
+      - name: Push branch
+        run: |
+          git push origin "${{ steps.bn.outputs.branch }}"
+
+      - name: Open PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "Add Agent: ${{ steps.pl.outputs.name }}"
+          body: |
+            Auto-created via UA request.
+
+            - Agent: `${{ steps.pl.outputs.slug }}`
+            - Role:  `${{ steps.pl.outputs.role }}`
+          branch: ${{ steps.bn.outputs.branch }}
+          base: ${{ github.base_ref || 'main' }}
+          draft: false
