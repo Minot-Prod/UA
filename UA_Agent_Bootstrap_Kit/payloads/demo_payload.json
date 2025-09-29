@@ -1,0 +1,36 @@
+{
+  "intent": "CREATE_AGENT",
+  "agent": {
+    "name": "Content Agent",
+    "slug": "content-agent",
+    "tier": "Tier1",
+    "role": "g\u00e9n\u00e9ration & organisation de contenu",
+    "responsibilities": [
+      "\u00e9quilibre texte/m\u00e9dias",
+      "templates r\u00e9utilisables",
+      "int\u00e9gration growth"
+    ],
+    "owner": "UA",
+    "routing": [
+      "UA",
+      "MAP"
+    ],
+    "tags": [
+      "content",
+      "production",
+      "ua-core"
+    ],
+    "acceptance": [
+      "branche+PR",
+      "CI verte",
+      "knowledge \u22658 sources",
+      "bench \u226580",
+      "familles/routage \u00e0 jour"
+    ]
+  },
+  "meta": {
+    "requested_by": "Maxime",
+    "source": "UA_CHAT",
+    "priority": "normal"
+  }
+}
