@@ -64,11 +64,11 @@ jobs:
             mkdir -p "$AG_DIR/workflows"
             cat > "$AG_DIR/manifest.json" <<JSON
           { "name": "$NAME", "slug": "$SLUG", "version": "1.0.0" }
-JSON
+          JSON
             cat > "$AG_DIR/README.md" <<MD
           # $NAME
           Rôle: $ROLE
-MD
+          MD
             cat > "$AG_DIR/workflows/agent_checks.yml" <<YML
           name: Agent Template Checks
           on:
@@ -81,7 +81,7 @@ MD
               steps:
                 - uses: actions/checkout@v4
                 - run: echo "Template OK"
-YML
+          YML
           fi
 
           # Knowledge template
@@ -93,7 +93,7 @@ YML
             echo "# SOURCES" > "$KP_DIR/SOURCES.md"
             cat > "$KP_DIR/knowledge_pack.json" <<JSON
           { "agent":{"name":"$NAME","slug":"$SLUG"}, "bench":{"file":"DATA/benchmarks.jsonl","pass_threshold":80} }
-JSON
+          JSON
             echo '{"input":"Checklist","expect":"items"}' > "$KP_DIR/DATA/benchmarks.jsonl"
           fi
 
