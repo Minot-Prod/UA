@@ -18,12 +18,26 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract payload
+      - name: Extract payload (supports client_payload.payload.agent or client_payload.agent)
         id: pl
+        shell: bash
         run: |
-          echo "slug=${{ github.event.client_payload.payload.agent.slug }}" >> $GITHUB_OUTPUT
-          echo "name=${{ github.event.client_payload.payload.agent.name }}" >> $GITHUB_OUTPUT
-          echo "role=${{ github.event.client_payload.payload.agent.role }}" >> $GITHUB_OUTPUT
+          get_field() {
+            jq -r "$1 // empty" <<<"${GITHUB_EVENT_PATH:+$(cat \"$GITHUB_EVENT_PATH\")}"
+          }
+
+          SLUG="$(get_field '.client_payload.payload.agent.slug')"
+          NAME="$(get_field '.client_payload.payload.agent.name')"
+          ROLE="$(get_field '.client_payload.payload.agent.role')"
+
+          # fallback direct: client_payload.agent
+          if [ -z "$SLUG" ]; then SLUG="$(get_field '.client_payload.agent.slug')"; fi
+          if [ -z "$NAME" ]; then NAME="$(get_field '.client_payload.agent.name')"; fi
+          if [ -z "$ROLE" ]; then ROLE="$(get_field '.client_payload.agent.role')"; fi
+
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+          echo "role=$ROLE" >> $GITHUB_OUTPUT
 
       - name: Validate payload
         run: |
@@ -56,7 +70,6 @@ jobs:
           AG_DIR="agents/$SLUG"
           KP_DIR="knowledge/agents/$SLUG"
 
-          # Agents template
           if [ -d "agents/_template" ]; then
             mkdir -p "$AG_DIR"
             rsync -a "agents/_template/" "$AG_DIR/" --exclude ".gitkeep" || true
@@ -64,27 +77,13 @@ jobs:
             mkdir -p "$AG_DIR/workflows"
             cat > "$AG_DIR/manifest.json" <<JSON
           { "name": "$NAME", "slug": "$SLUG", "version": "1.0.0" }
-          JSON
+JSON
             cat > "$AG_DIR/README.md" <<MD
           # $NAME
           Rôle: $ROLE
-          MD
-            cat > "$AG_DIR/workflows/agent_checks.yml" <<YML
-          name: Agent Template Checks
-          on:
-            pull_request:
-              paths:
-                - "agents/**"
-          jobs:
-            basic:
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                - run: echo "Template OK"
-          YML
+MD
           fi
 
-          # Knowledge template
           if [ -d "knowledge/agents/_template" ]; then
             mkdir -p "$KP_DIR"
             rsync -a "knowledge/agents/_template/" "$KP_DIR/" --exclude ".gitkeep" || true
@@ -93,8 +92,7 @@ jobs:
             echo "# SOURCES" > "$KP_DIR/SOURCES.md"
             cat > "$KP_DIR/knowledge_pack.json" <<JSON
           { "agent":{"name":"$NAME","slug":"$SLUG"}, "bench":{"file":"DATA/benchmarks.jsonl","pass_threshold":80} }
-          JSON
-            echo '{"input":"Checklist","expect":"items"}' > "$KP_DIR/DATA/benchmarks.jsonl"
+JSON
           fi
 
           git add "$AG_DIR" "$KP_DIR"
@@ -113,7 +111,6 @@ jobs:
           title: "Add Agent: ${{ steps.pl.outputs.name }}"
           body: |
             Auto-created via UA request.
-
             - Agent: `${{ steps.pl.outputs.slug }}`
             - Role:  `${{ steps.pl.outputs.role }}`
           branch: ${{ steps.bn.outputs.branch }}
