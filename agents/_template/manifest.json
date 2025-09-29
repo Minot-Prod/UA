@@ -1,0 +1,13 @@
+{
+  "name": "Agent Template",
+  "slug": "agent-template",
+  "version": "1.0.0",
+  "role": "Template",
+  "routing": [
+    "UA",
+    "MAP"
+  ],
+  "policies": {
+    "base44": true
+  }
+}
