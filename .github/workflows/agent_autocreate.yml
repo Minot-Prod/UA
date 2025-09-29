@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           get_field() {
-            jq -r "$1 // empty" <<<"${GITHUB_EVENT_PATH:+$(cat \"$GITHUB_EVENT_PATH\")}"
+            jq -r "$1 // empty" <<<"${GITHUB_EVENT_PATH:+$(cat "$GITHUB_EVENT_PATH")}"
           }
 
           SLUG="$(get_field '.client_payload.payload.agent.slug')"
