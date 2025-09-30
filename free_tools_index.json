@@ -1,0 +1,58 @@
+[
+  {
+    "id": "headline_grader",
+    "name": "Headline & Hook Grader",
+    "category": "marketing",
+    "file": "Parlios_FreeTools_Library.md",
+    "output": "score_card_png"
+  },
+  {
+    "id": "persona_express",
+    "name": "Persona Express",
+    "category": "strategie",
+    "file": "Parlios_FreeTools_Library.md",
+    "output": "pdf"
+  },
+  {
+    "id": "website_copy_grade",
+    "name": "Website Copy Grade (Hero)",
+    "category": "marketing",
+    "file": "Parlios_Teasers_BonusPackages.md",
+    "output": "text_png"
+  },
+  {
+    "id": "contract_risk",
+    "name": "Contract Clause Risk Finder",
+    "category": "juridique",
+    "file": "UA_Prompts_JuridiqueCompta.md",
+    "output": "pdf"
+  },
+  {
+    "id": "checklist_comptable",
+    "name": "Checklist Comptable Mensuelle",
+    "category": "finance",
+    "file": "Parlios_Teasers_BonusPackages.md",
+    "output": "pdf_ics"
+  },
+  {
+    "id": "mini_bizplan",
+    "name": "Mini Business Plan Express",
+    "category": "strategie",
+    "file": "Parlios_Teasers_BonusPackages.md",
+    "output": "pdf"
+  },
+  {
+    "id": "invoice_starter",
+    "name": "Invoice PDF Starter",
+    "category": "pratique",
+    "file": "Parlios_FreeTools_Bibliotheque.md",
+    "output": "pdf"
+  },
+  {
+    "id": "subventions_radar",
+    "name": "Subventions/Aides Radar",
+    "category": "finance",
+    "file": "Parlios_FreeTools_Bibliotheque.md",
+    "output": "pdf"
+  }
+]
