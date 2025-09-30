@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --radius-md: 8px;
+}
+
+html, body {
+  background: #0D0D0D;
+  color: #FFFFFF;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji';
+}
+
+.container-xl { @apply max-w-6xl mx-auto px-6; }
+.card {
+  background: #111111;
+  border-radius: var(--radius-md);
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.btn-primary {
+  @apply inline-flex items-center justify-center font-semibold;
+  background: #FF6A00; color: #fff; padding: 0.75rem 1rem; border-radius: var(--radius-md);
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+}
+.btn-primary:hover { background: #CC5200; box-shadow: 0px 4px 12px rgba(0,0,0,0.25); }
+.badge { @apply inline-flex items-center gap-2 text-xs uppercase tracking-wide; color: #fff; background: rgba(255,255,255,0.06); padding: .35rem .6rem; border-radius: 9999px; }
+.input {
+  background: #0f0f0f; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: .65rem .8rem; color: #fff; width: 100%;
+}
+.input:focus { outline: none; border-color: #FF6A00; box-shadow: 0 0 0 3px rgba(255,106,0,.25); }
+textarea.input { min-height: 120px; }
