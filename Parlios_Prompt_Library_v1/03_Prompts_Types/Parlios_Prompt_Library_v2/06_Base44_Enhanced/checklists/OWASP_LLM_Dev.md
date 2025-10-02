@@ -1,0 +1,4 @@
+- Contrainte de rôle
+- Entrées attendues uniquement
+- Format strict
+- Aucune exécution non demandée

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "proto_bundle",
+  "type": "object",
+  "required": [
+    "summary",
+    "files",
+    "tests",
+    "notes"
+  ],
+  "properties": {
+    "summary": {
+      "type": "string"
+    },
+    "files": {
+      "description": "Ensemble multi-fichiers (code, docs, scripts)",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "language",
+          "content"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "tests": {
+      "description": "Commandes test/e2e ou scripts",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
