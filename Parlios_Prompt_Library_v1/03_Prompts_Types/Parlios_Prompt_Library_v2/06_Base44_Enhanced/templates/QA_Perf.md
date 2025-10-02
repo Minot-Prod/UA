@@ -1,0 +1,2 @@
+- Mesurer TTFB, mémoire, CPU
+- Pagination, cache, memo/useCallback

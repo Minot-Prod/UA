@@ -1,0 +1,4 @@
+- Journalisation
+- Validation schéma
+- Rejet sorties non conformes
+- Regénération contrôlée
