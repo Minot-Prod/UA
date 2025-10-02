@@ -1,0 +1,38 @@
+[
+  {
+    "id": "archi_mvp",
+    "category": "architecture",
+    "title": "Architecture MVP marketplace",
+    "file": "03_Prompts_Types/3.1_Architecture.md"
+  },
+  {
+    "id": "flows_ui",
+    "category": "ui",
+    "title": "User flows & Prototype UI",
+    "file": "03_Prompts_Types/3.2_UserFlows_Prototype.md"
+  },
+  {
+    "id": "frontend_ios",
+    "category": "frontend",
+    "title": "iOS SwiftUI feed",
+    "file": "03_Prompts_Types/3.3_Code_Frontend_iOS.md"
+  },
+  {
+    "id": "frontend_react",
+    "category": "frontend",
+    "title": "React ProductCard",
+    "file": "03_Prompts_Types/3.3b_Code_Frontend_React.md"
+  },
+  {
+    "id": "backend_api",
+    "category": "backend",
+    "title": "Node service Produits",
+    "file": "03_Prompts_Types/3.4_Backend_APIs.md"
+  },
+  {
+    "id": "qa_review",
+    "category": "qa",
+    "title": "Évaluation & charge",
+    "file": "03_Prompts_Types/3.5_Critiques_Qualite.md"
+  }
+]
