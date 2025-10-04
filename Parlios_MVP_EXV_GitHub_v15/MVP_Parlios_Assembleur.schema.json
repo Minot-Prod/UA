@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parlios MVP Assembleur — Étape 15 (observability)",
+  "type": "object",
+  "required": [
+    "observability"
+  ],
+  "properties": {
+    "observability": {
+      "type": "object",
+      "required": [
+        "analytics_opt_in_scope",
+        "sampling",
+        "buffer",
+        "endpoints",
+        "collectors",
+        "privacy"
+      ],
+      "properties": {
+        "analytics_opt_in_scope": {
+          "type": "string"
+        },
+        "session_cookie": {
+          "type": "string"
+        },
+        "session_fallback_local_key": {
+          "type": "string"
+        },
+        "sampling": {
+          "type": "object"
+        },
+        "buffer": {
+          "type": "object"
+        },
+        "endpoints": {
+          "type": "object"
+        },
+        "collectors": {
+          "type": "object"
+        },
+        "headers_forward": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "privacy": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
