@@ -1,0 +1,20 @@
+%% agents_hierarchy.mmd
+graph TD
+  UA[Ultimate Agent (UA)]
+  MA[Master Agent (MA)]
+  MAP[Master Agent Project (MAP)]
+  QA[QA Guardian]
+  OPS[Ops Agent]
+  CONT[Content Agent]
+
+  UA --> MA
+  UA --> MAP
+  UA --> QA
+  UA --> OPS
+  UA --> CONT
+
+  MA -->|Idéation| UA
+  MAP -->|Production (Base44)| UA
+  QA -->|QA/DocOps| UA
+  OPS -->|CI/CD/Sec| UA
+  CONT -->|Prompts/Content| UA
