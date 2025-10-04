@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "project": "Parlios MVP EXV",
+    "version": "v20_RC1",
+    "updated_at": "2025-10-04T05:29:16",
+    "stage": 20,
+    "stage_name": "Release Candidate"
+  },
+  "release_candidate": {
+    "tag": "v20_RC1",
+    "frozen_components": [
+      "consent_v11",
+      "auth_v12",
+      "rbac_v12b",
+      "security_v13",
+      "plans_v14",
+      "observability_v15",
+      "packaging_cli_v16",
+      "ai_generators_v17",
+      "billing_v18",
+      "qa_perf_v19"
+    ],
+    "smoke_tests": [
+      "home_loads",
+      "consent_accept_all",
+      "upgrade_mock_pro",
+      "ai_generate_business_plan",
+      "telemetry_health_ok",
+      "security_headers_present"
+    ],
+    "deploy_targets": [
+      "netlify",
+      "vercel"
+    ],
+    "env_required": [
+      "NODE_ENV=production",
+      "NEXT_TELEMETRY_DISABLED=1",
+      "STRIPE_SECRET_KEY (optionnel)",
+      "STRIPE_WEBHOOK_SECRET (optionnel)"
+    ],
+    "build": {
+      "command": "npm run build",
+      "output": "out",
+      "headers_file": "_headers"
+    },
+    "artifacts": [
+      "Parlios_MVP_EXV_GitHub_v20_RC1.zip",
+      "CHANGELOG.md",
+      "QA_Report_RC1.md"
+    ],
+    "notes": "RC figée pour validation go-to-market. Pas de nouvelles features, uniquement fixes blockants."
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parlios MVP Assembleur — Étape 20 (release_candidate)",
+  "type": "object",
+  "required": [
+    "release_candidate"
+  ],
+  "properties": {
+    "release_candidate": {
+      "type": "object",
+      "required": [
+        "tag",
+        "frozen_components",
+        "smoke_tests",
+        "deploy_targets",
+        "env_required",
+        "build",
+        "artifacts",
+        "notes"
+      ],
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "frozen_components": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "smoke_tests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deploy_targets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "env_required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "build": {
+          "type": "object"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

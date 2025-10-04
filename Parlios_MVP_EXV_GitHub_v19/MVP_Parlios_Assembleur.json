@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "project": "Parlios MVP EXV",
+    "version": "v19",
+    "updated_at": "2025-10-04T05:27:42",
+    "stage": 19,
+    "stage_name": "QA E2E + Perf Budgets"
+  },
+  "qa_perf": {
+    "routes": [
+      "/",
+      "/billing",
+      "/upgrade",
+      "/api/plan/me",
+      "/api/telemetry/health"
+    ],
+    "scenarios": [
+      "visit_home_and_click",
+      "upgrade_mock_flow",
+      "generate_business_plan_mock",
+      "consent_accept_all",
+      "rate_limit_login_abuse"
+    ],
+    "a11y_checks": {
+      "required_landmarks": [
+        "main",
+        "h1"
+      ],
+      "focus_visible": true,
+      "aria_labels_on_buttons": true
+    },
+    "perf_budgets": {
+      "lcp_ms": 2500,
+      "cls": 0.1,
+      "ttfb_ms": 800,
+      "js_kb": 300
+    },
+    "security_headers_required": [
+      "x-content-type-options:nosniff",
+      "x-frame-options:deny",
+      "referrer-policy:strict-origin-when-cross-origin",
+      "permissions-policy",
+      "strict-transport-security",
+      "content-security-policy"
+    ]
+  }
+}
