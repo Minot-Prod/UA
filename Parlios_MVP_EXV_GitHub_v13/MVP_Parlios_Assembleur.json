@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "project": "Parlios MVP EXV",
+    "version": "v13",
+    "updated_at": "2025-10-04T05:05:23",
+    "stage": 13,
+    "stage_name": "Sécurité backend avancée"
+  },
+  "security_backend": {
+    "cors": {
+      "enabled": true,
+      "allow_origin": [
+        "https://parlios.ca",
+        "http://localhost:3000"
+      ],
+      "allow_methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "OPTIONS"
+      ],
+      "allow_headers": [
+        "Content-Type",
+        "x-csrf-token"
+      ],
+      "allow_credentials": true,
+      "max_age_seconds": 600
+    },
+    "rate_limit": {
+      "enabled": true,
+      "window_seconds": 60,
+      "max_requests": 60,
+      "key_strategy": "ip"
+    },
+    "audit": {
+      "enabled": true,
+      "events": [
+        "login",
+        "logout",
+        "me",
+        "error",
+        "rate_limited"
+      ],
+      "sink": "file",
+      "file_path": "/var/log/parlios_audit.log"
+    },
+    "headers": {
+      "strict_transport_security": "max-age=31536000; includeSubDomains; preload",
+      "content_security_policy": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'",
+      "x_content_type_options": "nosniff",
+      "x_frame_options": "DENY",
+      "referrer_policy": "strict-origin-when-cross-origin",
+      "permissions_policy": "camera=(), microphone=(), geolocation=(self)"
+    }
+  }
+}
