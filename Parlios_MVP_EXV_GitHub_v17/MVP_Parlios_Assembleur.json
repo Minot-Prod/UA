@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "project": "Parlios MVP EXV",
+    "version": "v17",
+    "updated_at": "2025-10-04T05:15:18",
+    "stage": 17,
+    "stage_name": "Générateurs IA prêts-prod"
+  },
+  "ai_generators": {
+    "providers": {
+      "mock": {
+        "type": "local",
+        "enabled": true
+      },
+      "openai": {
+        "type": "remote",
+        "enabled": false,
+        "base_url": "https://api.openai.com/v1",
+        "model_chat": "gpt-4o-mini",
+        "timeout_ms": 25000
+      }
+    },
+    "defaults": {
+      "provider": "mock",
+      "timeout_ms": 20000,
+      "retry": {
+        "retries": 2,
+        "backoff_ms": 500,
+        "factor": 2.0
+      },
+      "max_tokens": 1200,
+      "streaming": false,
+      "idempotency": true
+    },
+    "workflows": [
+      {
+        "id": "business_plan",
+        "name": "Générateur — Plan d’affaires",
+        "inputs_schema": {
+          "type": "object",
+          "required": [
+            "projet",
+            "cible",
+            "marche"
+          ],
+          "properties": {
+            "projet": {
+              "type": "string",
+              "minLength": 3
+            },
+            "cible": {
+              "type": "string",
+              "minLength": 3
+            },
+            "marche": {
+              "type": "string",
+              "minLength": 3
+            },
+            "lang": {
+              "type": "string",
+              "enum": [
+                "fr",
+                "en"
+              ],
+              "default": "fr"
+            }
+          }
+        },
+        "output": {
+          "format": "markdown",
+          "filename": "plan_affaires.md"
+        },
+        "rate_limit": {
+          "window_seconds": 60,
+          "max_requests": 10
+        }
+      },
+      {
+        "id": "finance_brief",
+        "name": "Générateur — Brief financier",
+        "inputs_schema": {
+          "type": "object",
+          "required": [
+            "periode",
+            "objectif"
+          ],
+          "properties": {
+            "periode": {
+              "type": "string"
+            },
+            "objectif": {
+              "type": "string"
+            },
+            "lang": {
+              "type": "string",
+              "enum": [
+                "fr",
+                "en"
+              ],
+              "default": "fr"
+            }
+          }
+        },
+        "output": {
+          "format": "markdown",
+          "filename": "brief_finance.md"
+        },
+        "rate_limit": {
+          "window_seconds": 60,
+          "max_requests": 10
+        }
+      }
+    ],
+    "prompts": {
+      "business_plan.fr": "Tu es un consultant. Rédige un plan d’affaires structuré et concret pour le projet: {projet}. Cible: {cible}. Marché: {marche}. Ton direct, sections actionnables. Format: Markdown.",
+      "business_plan.en": "You are a consultant. Write a structured, actionable business plan for project: {projet}. Target: {cible}. Market: {marche}. Tone: direct. Format: Markdown.",
+      "finance_brief.fr": "Tu es un analyste financier. Fais un brief clair et synthétique pour la période {periode}, objectif {objectif}. Ajoute risques/opportunités. Format: Markdown.",
+      "finance_brief.en": "You are a financial analyst. Produce a clear brief for period {periode}, goal {objectif}. Include risks/opportunities. Format: Markdown."
+    },
+    "safety": {
+      "max_input_chars": 4000,
+      "ban_patterns": [
+        "<script",
+        "</script",
+        "DROP TABLE",
+        "UNION SELECT"
+      ],
+      "sanitize_html": true
+    }
+  }
+}
