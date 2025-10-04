@@ -1,0 +1,18 @@
+{
+  "common.title": "Parlios",
+  "nav.home": "Accueil",
+  "nav.modules": "Modules",
+  "cta.start": "Démarrer",
+  "a11y.skip_to_content": "Aller au contenu",
+  "hero.title": "MVP Parlios — Démo A11Y & i18n",
+  "hero.subtitle": "Focus visible, clavier, live regions, et traductions FR/EN sans dépendances externes.",
+  "i18n.language": "Langue",
+  "status.ready": "Interface prête.",
+  "form.title": "Formulaire d’exemple",
+  "form.name": "Votre prénom",
+  "form.submit": "Envoyer",
+  "form.clear": "Effacer",
+  "form.error_required": "Le prénom est requis.",
+  "form.hello": "Bonjour {name} !",
+  "footer.copy": "© Parlios"
+}
