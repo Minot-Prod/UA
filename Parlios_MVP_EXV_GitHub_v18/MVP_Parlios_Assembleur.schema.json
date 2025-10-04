@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parlios MVP Assembleur — Étape 18 (billing_stripe)",
+  "type": "object",
+  "required": [
+    "billing_stripe"
+  ],
+  "properties": {
+    "billing_stripe": {
+      "type": "object",
+      "required": [
+        "mode",
+        "currency",
+        "products",
+        "success_url",
+        "cancel_url",
+        "webhook_endpoint",
+        "env"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "checkout"
+          ]
+        },
+        "currency": {
+          "type": "string"
+        },
+        "products": {
+          "type": "object"
+        },
+        "success_url": {
+          "type": "string"
+        },
+        "cancel_url": {
+          "type": "string"
+        },
+        "webhook_endpoint": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

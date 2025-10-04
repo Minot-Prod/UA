@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "project": "Parlios MVP EXV",
+    "version": "v18",
+    "updated_at": "2025-10-04T05:24:53",
+    "stage": 18,
+    "stage_name": "Paiement & Facturation (Stripe Light)"
+  },
+  "billing_stripe": {
+    "mode": "checkout",
+    "currency": "CAD",
+    "products": {
+      "pro": {
+        "name": "Parlios Pro (mensuel)",
+        "price_month_cad": 19,
+        "price_id": "price_pro_month_placeholder"
+      },
+      "pro_plus": {
+        "name": "Parlios Pro+ (mensuel)",
+        "price_month_cad": 49,
+        "price_id": "price_pro_plus_month_placeholder"
+      }
+    },
+    "success_url": "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
+    "cancel_url": "http://localhost:3000/cancel",
+    "webhook_endpoint": "/api/stripe/webhook",
+    "env": {
+      "secret_key_var": "STRIPE_SECRET_KEY",
+      "webhook_secret_var": "STRIPE_WEBHOOK_SECRET"
+    }
+  }
+}
