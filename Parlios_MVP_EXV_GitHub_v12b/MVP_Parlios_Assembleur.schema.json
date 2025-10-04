@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parlios MVP Assembleur — Étape 11B (roles)",
+  "type": "object",
+  "required": [
+    "auth"
+  ],
+  "properties": {
+    "auth": {
+      "type": "object",
+      "required": [
+        "roles",
+        "routes"
+      ],
+      "properties": {
+        "roles": {
+          "type": "object",
+          "required": [
+            "supported",
+            "default",
+            "permissions"
+          ],
+          "properties": {
+            "supported": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "default": {
+              "type": "string"
+            },
+            "permissions": {
+              "type": "object",
+              "required": [
+                "admin",
+                "user",
+                "guest"
+              ],
+              "properties": {
+                "admin": {
+                  "$ref": "#/$defs/perm"
+                },
+                "user": {
+                  "$ref": "#/$defs/perm"
+                },
+                "guest": {
+                  "$ref": "#/$defs/perm"
+                }
+              }
+            }
+          }
+        },
+        "routes": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "perm": {
+      "type": "object",
+      "required": [
+        "paths",
+        "scopes"
+      ],
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
