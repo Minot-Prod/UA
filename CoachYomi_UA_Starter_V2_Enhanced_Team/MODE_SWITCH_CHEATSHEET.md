@@ -1,0 +1,1 @@
+# mode switch cheatsheet same as v1
