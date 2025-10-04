@@ -1,0 +1,673 @@
+{
+  "vision_kpi": {
+    "pitch": "Parlios réunit une nouvelle génération d’entrepreneurs qui choisissent l’IA comme partenaire de croissance, pour reprendre le contrôle de leur temps, de leur business et de leur plein potentiel.",
+    "public_cible": [
+      "jeunes entrepreneurs ambitieux",
+      "entrepreneurs expérimentés cherchant liberté et équilibre"
+    ],
+    "kpi": [],
+    "contraintes": [
+      "Budget : low-cost, avec option 20–100$/mois pour onboarding et IA renforcée",
+      "Clients pilotes : Taslow (priorité test dashboard), MySafeCup ensuite",
+      "Roadmap : finaliser préparation du dashboard avant pilotes",
+      "Financement : autofinancement jusqu’à papiers, MVP prêt à scaler dès ouverture",
+      "Stack imposée : Next.js + Tailwind + Netlify",
+      "Langue principale : FR (EN optionnel)",
+      "KPI clé : TTV < 60s",
+      "Rythme : 1 étape EXV/jour, sessions 16h30–17h30",
+      "Horizon : MVP complet en 3 mois (avec marge de 1 mois pour lancement officiel)"
+    ]
+  },
+  "personas_jtbd": {
+    "personas": [
+      {
+        "id": "p1",
+        "nom": "Alexandre",
+        "age": "18–26",
+        "profil": "Visionnaire précoce (souvent étudiant ou tout juste diplômé)",
+        "motivations": [
+          "liberté",
+          "innovation",
+          "impact rapide"
+        ],
+        "douleurs": [
+          "ne sait pas par où commencer",
+          "peu de repères",
+          "pas de moyens pour déléguer"
+        ],
+        "jtdb": "Quand je me lance jeune, je veux un allié simple et pro qui m’aide à bâtir mon business sans perdre du temps à tout apprendre seul.",
+        "citation": "Je n’ai pas envie d’attendre 10 ans pour vivre de mes idées."
+      },
+      {
+        "id": "p2",
+        "nom": "Sophie",
+        "age": "28–38",
+        "profil": "Experte indépendante (ex-salariée)",
+        "motivations": [
+          "contrôle de l’horaire",
+          "fierté pro",
+          "meilleure rémunération"
+        ],
+        "douleurs": [
+          "paperasse/compta",
+          "web/marketing",
+          "RH & obligations"
+        ],
+        "jtdb": "Quand je quitte mon emploi pour être libre, je veux un partenaire d’affaires fiable qui m’aide à structurer et automatiser ce que je ne maîtrise pas.",
+        "citation": "Je veux être ma propre patronne, mais sans devenir esclave de mon entreprise."
+      },
+      {
+        "id": "p3",
+        "nom": "Marc",
+        "age": "35–45",
+        "profil": "Familial en quête d’équilibre (lance son activité pour maîtriser son temps)",
+        "motivations": [
+          "équilibre vie pro/perso",
+          "stabilité",
+          "temps pour la famille"
+        ],
+        "douleurs": [
+          "charge mentale élevée",
+          "peur de l’instabilité",
+          "organisation à mettre en place"
+        ],
+        "jtdb": "Quand je me lance à mon compte pour mieux vivre, je veux des outils IA qui m’aident à être efficace pour garder du temps pour ma famille et mes passions.",
+        "citation": "Je veux réussir, mais pas au prix de ma liberté."
+      },
+      {
+        "id": "p4",
+        "nom": "Julie",
+        "age": "30–40",
+        "profil": "Entrepreneure installée qui veut évoluer (coach, tatoueuse, salon, petite agence…)",
+        "motivations": [
+          "compétitivité",
+          "visibilité",
+          "prise de virage IA"
+        ],
+        "douleurs": [
+          "manque de temps pour se former",
+          "peur de rater le train numérique"
+        ],
+        "jtdb": "Quand je vois que mes concurrents évoluent avec l’IA, je veux des outils simples à adopter pour rester dans la course et améliorer mon offre.",
+        "citation": "Je n’ai pas le temps d’apprendre l’IA, mais je ne peux plus l’ignorer."
+      }
+    ],
+    "jobs_to_be_done": [
+      "Découvrir rapidement ce que je dois faire à mon stade (onboarding guidé)",
+      "Générer un premier livrable pro en < 60s (preuve de valeur)",
+      "Automatiser les tâches qui ne rapportent pas (admin, comm, planning)",
+      "Structurer mon activité (offres, devis/factures, calendrier, paiements)",
+      "Développer ma visibilité (site, SEO local, réseaux, partenaires)",
+      "Rester en sécurité (obligations, consentements, sauvegardes)",
+      "Progresser avec une communauté (France–Canada) et des modèles adaptés"
+    ],
+    "contexte_usage": "Desktop et mobile (responsive). Sessions courtes et fréquentes. Onboarding guidé puis modules rapides à la demande."
+  },
+  "branding": {},
+  "architecture_sitemap": {
+    "layout": {
+      "type": "sidebar_topbar",
+      "features": [
+        "recherche_universelle",
+        "onboarding_guidé",
+        "switch_thème",
+        "fils_ariane"
+      ],
+      "ttr_cible": "<=60s",
+      "clics_max": 3
+    },
+    "categories": [
+      {
+        "id": "cat1",
+        "nom": "Démarrage express",
+        "modules": [
+          "Checklist lancement 7 jours",
+          "Générateur Proposition de valeur",
+          "Plan d’action 30/60/90 jours"
+        ]
+      },
+      {
+        "id": "cat2",
+        "nom": "Identité & Web",
+        "modules": [
+          "Arborescence site vitrine",
+          "Textes de base (Accueil/À propos/Contact)",
+          "Pack assets logo/brand",
+          "Page Offre prête à déployer (Netlify)"
+        ]
+      },
+      {
+        "id": "cat3",
+        "nom": "Marketing & Contenu",
+        "modules": [
+          "Calendrier éditorial 30 jours",
+          "Générateur posts (IG/FB/LI) + visuels",
+          "Landing d’acquisition + A/B copy",
+          "Email welcome + 3 follow-ups"
+        ]
+      },
+      {
+        "id": "cat4",
+        "nom": "Ventes & CRM",
+        "modules": [
+          "Script d’appel découverte",
+          "Modèle devis/facture PDF",
+          "Tunnel d’onboarding client",
+          "Tableau de suivi prospects"
+        ]
+      },
+      {
+        "id": "cat5",
+        "nom": "Admin & Finance",
+        "modules": [
+          "Suivi dépenses & revenus",
+          "Dashboard mini-compta",
+          "Export Firefly III (CSV)",
+          "Prévision flux de trésorerie"
+        ]
+      },
+      {
+        "id": "cat6",
+        "nom": "Temps & Productivité",
+        "modules": [
+          "Agenda IA (auto-blocage)",
+          "Score productivité quotidien",
+          "Routine 3 objectifs/jour",
+          "Plan hebdomadaire focus"
+        ]
+      },
+      {
+        "id": "cat7",
+        "nom": "RH & Conformité light",
+        "modules": [
+          "Checklist RH Canada/France",
+          "Template contrats prestataires",
+          "Gestion congés / dispo"
+        ]
+      },
+      {
+        "id": "cat8",
+        "nom": "Données & Insights",
+        "modules": [
+          "Tableau KPI personnalisé",
+          "Rapport IA hebdomadaire",
+          "Alertes performance"
+        ]
+      },
+      {
+        "id": "cat9",
+        "nom": "Communauté & Partenaires",
+        "modules": [
+          "Annuaire France–Canada",
+          "Forum / Q&A automatisé",
+          "Événements virtuels mensuels"
+        ]
+      }
+    ]
+  },
+  "free_pro": {
+    "free": {
+      "valeur": [
+        "Checklist lancement personnalisée",
+        "Texte À propos auto-généré",
+        "Post de présentation LinkedIn/Instagram"
+      ],
+      "limites": {
+        "livrables_max": 2,
+        "sauvegarde": false,
+        "connexion_compte": false
+      },
+      "objectif": "Offrir une preuve de valeur en moins de 60 secondes sans friction"
+    },
+    "pro": {
+      "prix_mensuel": 12,
+      "fonctionnalites": [
+        "Modules IA avancés",
+        "Sauvegarde et historique cloud",
+        "Brand pack illimité",
+        "Support IA continu",
+        "Connecteurs premium (Google, CRM, Notion)"
+      ],
+      "kpi": {
+        "conversion_cible": "10%",
+        "ttv_moyen": "<60s",
+        "rétention_free_14j": ">40%"
+      }
+    },
+    "pro_plus": {
+      "prix_mensuel": 25,
+      "fonctionnalites": [
+        "Reporting IA avancé",
+        "Multi-comptes client",
+        "Export pro (PDF, Notion, Sheets)"
+      ]
+    },
+    "paywall": {
+      "type": "soft_modal",
+      "déclencheur": "2 livrables générés",
+      "message": "Tu as déjà produit 2 outils avec Parlios. Passe en Pro pour débloquer tout ton potentiel.",
+      "cta": "Essai 7 jours gratuit"
+    }
+  },
+  "module_gabarit": {
+    "nom": "Checklist lancement 7 jours",
+    "objectif_utilisateur": "Obtenir en <60 s un plan d’action personnalisé sur 7 jours pour lancer ou relancer son activité.",
+    "inputs_validations": [
+      {
+        "champ": "persona",
+        "type": "enum",
+        "valeurs": [
+          "Alexandre",
+          "Sophie",
+          "Marc",
+          "Julie"
+        ],
+        "requis": true
+      },
+      {
+        "champ": "secteur",
+        "type": "string",
+        "min": 3,
+        "max": 40,
+        "requis": true
+      },
+      {
+        "champ": "objectif_prioritaire",
+        "type": "enum",
+        "valeurs": [
+          "1er client",
+          "visibilité",
+          "structuration",
+          "équilibre temps"
+        ],
+        "requis": true
+      },
+      {
+        "champ": "niveau",
+        "type": "enum",
+        "valeurs": [
+          "début",
+          "intermédiaire",
+          "avancé"
+        ],
+        "requis": true
+      },
+      {
+        "champ": "canaux",
+        "type": "array",
+        "valeurs": [
+          "site",
+          "IG",
+          "FB",
+          "LinkedIn",
+          "bouche-à-oreille"
+        ],
+        "min_items": 1,
+        "requis": true
+      },
+      {
+        "champ": "contraintes",
+        "type": "string",
+        "max": 200,
+        "requis": false
+      },
+      {
+        "champ": "email",
+        "type": "email",
+        "requis": false
+      }
+    ],
+    "outputs": [
+      "plan_7_jours_structuré",
+      "calendrier_ics",
+      "pdf_export",
+      "notion_block",
+      "metriques_temps_gain"
+    ],
+    "latence_cible": {
+      "p50": "<4s",
+      "p95": "<8s"
+    },
+    "edge_cases": [
+      "secteur_vide_suggéré",
+      "email_invalide",
+      "timeout_ia_fallback",
+      "réseau_hors_ligne_reessayer"
+    ],
+    "interactions_ui": {
+      "flow": [
+        "form",
+        "loading",
+        "plan"
+      ],
+      "cta": [
+        "générer",
+        "exporter_pdf",
+        "ajouter_notion",
+        "activer_rappels"
+      ]
+    },
+    "analytics": [
+      "plan7_form_started",
+      "plan7_form_submitted",
+      "plan7_generated",
+      "plan7_export_pdf",
+      "plan7_export_notion",
+      "plan7_reminders_enabled",
+      "paywall_viewed",
+      "paywall_accepted"
+    ],
+    "a11y": {
+      "wcag": "AA",
+      "keyboard": true,
+      "aria_live": true
+    }
+  },
+  "bibliotheque_io": {
+    "inputs": {
+      "persona": {
+        "type": "enum",
+        "values": [
+          "Alexandre",
+          "Sophie",
+          "Marc",
+          "Julie"
+        ],
+        "i18n_key": "input.persona.label",
+        "required": true
+      },
+      "secteur": {
+        "type": "string",
+        "min": 3,
+        "max": 40,
+        "pattern": "^[\\p{L}0-9 &\\-\\/',\\.]{3,40}$",
+        "placeholder": "ex: coiffure, tattoo, coaching…",
+        "i18n_key": "input.secteur.label",
+        "required": true
+      },
+      "objectif_prioritaire": {
+        "type": "enum",
+        "values": [
+          "1er client",
+          "visibilité",
+          "structuration",
+          "équilibre temps"
+        ],
+        "i18n_key": "input.objectif.label",
+        "required": true
+      },
+      "niveau": {
+        "type": "enum",
+        "values": [
+          "début",
+          "intermédiaire",
+          "avancé"
+        ],
+        "i18n_key": "input.niveau.label",
+        "required": true
+      },
+      "canaux": {
+        "type": "array",
+        "values": [
+          "site",
+          "IG",
+          "FB",
+          "LinkedIn",
+          "bouche-à-oreille"
+        ],
+        "min_items": 1,
+        "i18n_key": "input.canaux.label",
+        "required": true
+      },
+      "contraintes": {
+        "type": "string",
+        "max": 200,
+        "i18n_key": "input.contraintes.label",
+        "required": false
+      },
+      "email": {
+        "type": "email",
+        "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+        "i18n_key": "input.email.label",
+        "required": false
+      },
+      "date_range": {
+        "type": "object",
+        "fields": {
+          "start": "ISO8601",
+          "end": "ISO8601"
+        },
+        "i18n_key": "input.date_range.label",
+        "required": false
+      }
+    },
+    "outputs": {
+      "pdf_export": {
+        "type": "file",
+        "format": "PDF/A-1b",
+        "filename_template": "parlios_${module}_${date}.pdf"
+      },
+      "notion_block": {
+        "type": "object",
+        "schema": "notion.paragraph[]",
+        "notes": "créé si connecteur Notion actif"
+      },
+      "ics_calendar": {
+        "type": "file",
+        "format": "text/calendar",
+        "filename_template": "parlios_${module}_${date}.ics"
+      },
+      "csv_export": {
+        "type": "file",
+        "format": "text/csv",
+        "delimiter": ",",
+        "encoding": "utf-8"
+      },
+      "kpi_object": {
+        "type": "object",
+        "schema": {
+          "ttv_seconds": "number",
+          "estimated_hours_saved": "number"
+        }
+      }
+    },
+    "errors": {
+      "required": {
+        "code": "E_REQUIRED",
+        "message_key": "error.required"
+      },
+      "pattern": {
+        "code": "E_PATTERN",
+        "message_key": "error.pattern"
+      },
+      "email": {
+        "code": "E_EMAIL",
+        "message_key": "error.email"
+      },
+      "timeout": {
+        "code": "E_TIMEOUT",
+        "message_key": "error.timeout",
+        "fallback": "gabarit_minimal"
+      }
+    },
+    "i18n": {
+      "default_locale": "fr",
+      "fallback_locale": "en",
+      "namespaces": [
+        "common",
+        "inputs",
+        "errors",
+        "modules"
+      ]
+    }
+  },
+  "design_system": {
+    "tokens": {
+      "shared": {
+        "radius": "14px",
+        "shadow": "0 8px 24px rgba(0,0,0,.08)",
+        "typography": {
+          "heading": "Poppins",
+          "body": "Inter",
+          "accent_mono": "JetBrains Mono"
+        }
+      },
+      "themes": {
+        "human": {
+          "bg": "#F4F7FA",
+          "text": "#1E1E1E",
+          "primary": "#2B5EFF",
+          "accent": "#00D1B2",
+          "cta": "#FFD460"
+        },
+        "future": {
+          "bg": "#0B1120",
+          "text": "#F5F7FA",
+          "primary": "#00E0FF",
+          "accent": "#A47CF5",
+          "cta": "#18FFB2"
+        }
+      }
+    },
+    "default_theme_strategy": "onboarding_inference_with_user_override",
+    "a11y_targets": {
+      "contrast": "WCAG AA",
+      "keyboard_navigation": true,
+      "focus_visible": true
+    },
+    "components": {
+      "button": {
+        "variants": [
+          "primary",
+          "ghost",
+          "outline"
+        ],
+        "sizes": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "states": [
+          "default",
+          "hover",
+          "focus-visible",
+          "active",
+          "disabled",
+          "loading"
+        ],
+        "a11y": [
+          "role=button",
+          "focus-ring",
+          "aria-busy when loading"
+        ]
+      },
+      "link_button": {
+        "inherits": "button",
+        "as": "a",
+        "props": [
+          "href",
+          "target",
+          "rel"
+        ]
+      },
+      "input": {
+        "types": [
+          "text",
+          "email",
+          "number"
+        ],
+        "a11y": [
+          "label+id",
+          "aria-invalid when error"
+        ],
+        "states": [
+          "default",
+          "focus-visible",
+          "disabled",
+          "error"
+        ]
+      },
+      "textarea": {
+        "a11y": [
+          "label+id",
+          "aria-invalid"
+        ],
+        "rows_default": 4
+      },
+      "select": {
+        "a11y": [
+          "label+id",
+          "keyboard"
+        ],
+        "states": [
+          "default",
+          "focus-visible",
+          "disabled"
+        ]
+      },
+      "checkbox": {
+        "hit_area": ">=40px",
+        "a11y": [
+          "label click",
+          "focus-visible"
+        ]
+      },
+      "radio": {
+        "grouping": "name required",
+        "a11y": [
+          "label click",
+          "focus-visible"
+        ]
+      },
+      "card": {
+        "elevation": "shadow token",
+        "border": "tokenized"
+      },
+      "tabs": {
+        "a11y": [
+          "aria-current",
+          "keyboard arrows optional"
+        ],
+        "max_tabs": 6
+      },
+      "modal": {
+        "a11y": [
+          "role=dialog",
+          "aria-modal=true",
+          "Esc to close",
+          "backdrop click"
+        ],
+        "focus_trap": "recommended",
+        "sizes": [
+          "sm",
+          "md",
+          "lg"
+        ]
+      },
+      "toast": {
+        "positions": [
+          "bottom-right"
+        ],
+        "variants": [
+          "info",
+          "success",
+          "error"
+        ],
+        "auto_hide_ms": 3000,
+        "stack_max": 3
+      }
+    }
+  },
+  "accessibilite_i18n": {},
+  "performance": {},
+  "data_api": {},
+  "securite_privacy": {},
+  "integrations": {},
+  "analytics": {},
+  "microcopy": {},
+  "qa_acceptation": {},
+  "ci_cd": {},
+  "roadmap_v1": {},
+  "prototype_integral": {},
+  "ops_handover": {}
+}

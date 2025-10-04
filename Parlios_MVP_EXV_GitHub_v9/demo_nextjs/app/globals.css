@@ -1,0 +1,23 @@
+:root {
+  --radius: 14px;
+  --shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+
+/* Themes */
+html[data-theme="human"] {
+  --bg: #F4F7FA;
+  --text: #1E1E1E;
+  --primary: #2B5EFF;
+  --accent: #00D1B2;
+  --cta: #FFD460;
+}
+
+html[data-theme="future"] {
+  --bg: #0B1120;
+  --text: #F5F7FA;
+  --primary: #00E0FF;
+  --accent: #A47CF5;
+  --cta: #18FFB2;
+}
+
+body { background: var(--bg); color: var(--text); }
