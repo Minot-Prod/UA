@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "project": "Parlios MVP EXV",
+    "version": "v12b",
+    "updated_at": "2025-10-04T05:03:22",
+    "stage": "11B",
+    "stage_name": "Comptes & Rôles (RBAC light)"
+  },
+  "auth": {
+    "strategy": "session_cookie",
+    "cookie": {
+      "name": "parlios.session",
+      "path": "/",
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax",
+      "maxAgeSeconds": 604800
+    },
+    "csrf": {
+      "enabled": true,
+      "pattern": "double_submit",
+      "cookie_name": "parlios.csrf",
+      "header_name": "x-csrf-token"
+    },
+    "roles": {
+      "supported": [
+        "admin",
+        "user",
+        "guest"
+      ],
+      "default": "user",
+      "permissions": {
+        "admin": {
+          "paths": [
+            "/dashboard",
+            "/admin"
+          ],
+          "scopes": [
+            "analytics",
+            "ai",
+            "session",
+            "security"
+          ]
+        },
+        "user": {
+          "paths": [
+            "/dashboard"
+          ],
+          "scopes": [
+            "analytics",
+            "ai",
+            "session",
+            "security"
+          ]
+        },
+        "guest": {
+          "paths": [
+            "/"
+          ],
+          "scopes": [
+            "session",
+            "security"
+          ]
+        }
+      }
+    },
+    "routes": {
+      "login": "/api/auth/login",
+      "logout": "/api/auth/logout",
+      "csrf": "/api/auth/csrf",
+      "me": "/api/auth/me",
+      "protectedPaths": [
+        "/dashboard",
+        "/admin"
+      ]
+    }
+  }
+}
