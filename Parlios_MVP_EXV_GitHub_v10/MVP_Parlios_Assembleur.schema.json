@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MVP_Parlios_Assembleur",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "progress": {
+          "type": "object",
+          "properties": {
+            "current": {
+              "type": "integer"
+            },
+            "total": {
+              "type": "integer"
+            },
+            "percent": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "current",
+            "total",
+            "percent"
+          ]
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "updated_at"
+      ]
+    },
+    "accessibilite_i18n": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "meta",
+    "accessibilite_i18n"
+  ]
+}
