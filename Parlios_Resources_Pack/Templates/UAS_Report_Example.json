@@ -1,0 +1,18 @@
+{
+  "status": "OK",
+  "summary": [
+    "Livrable conforme aux standards 2025",
+    "Artefacts qualité (Perf/A11Y/Sécu/UX) publiés"
+  ],
+  "decisions": [
+    "Go production"
+  ],
+  "next_actions": [
+    {
+      "owner": "QA Guardian",
+      "action": "Renforcer contrastes sur /pricing",
+      "deadline": "J+2"
+    }
+  ],
+  "confidence": 95
+}
