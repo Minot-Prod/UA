@@ -1,0 +1,12 @@
+{
+  "status": "OK",
+  "summary": [
+    "Livrable conforme aux standards 2025",
+    "Artefacts qualité publiés (Perf/A11Y/Sécu/UX)"
+  ],
+  "decisions": [
+    "Go production (CI vert)"
+  ],
+  "next_actions": [],
+  "confidence": 95
+}
