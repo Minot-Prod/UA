@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MVP Parlios Assembleur",
+  "type": "object",
+  "required": ["vision_kpi", "design_system", "architecture_sitemap", "free_pro", "module_gabarit"],
+  "properties": {
+    "vision_kpi": { "type": "object", "required": ["pitch", "public_cible"] },
+    "design_system": { "type": "object", "required": ["tokens", "default_theme_strategy", "a11y_targets"] },
+    "architecture_sitemap": { "type": "object", "required": ["layout", "categories"] },
+    "free_pro": { "type": "object", "required": ["free", "pro", "paywall"] },
+    "module_gabarit": { "type": "object", "required": ["nom","inputs_validations","outputs"] }
+  }
+}
