@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parlios MVP Assembleur — Étape 14 (plans & gating)",
+  "type": "object",
+  "required": [
+    "plans",
+    "gating"
+  ],
+  "properties": {
+    "plans": {
+      "type": "object",
+      "required": [
+        "tiers",
+        "billing"
+      ],
+      "properties": {
+        "tiers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "price_month_cad",
+              "limits",
+              "features",
+              "support"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "price_month_cad": {
+                "type": "number"
+              },
+              "limits": {
+                "type": "object"
+              },
+              "features": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "support": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "billing": {
+          "type": "object"
+        }
+      }
+    },
+    "gating": {
+      "type": "object",
+      "required": [
+        "feature_flags",
+        "modules_rules",
+        "metering",
+        "ui",
+        "runtime"
+      ],
+      "properties": {
+        "feature_flags": {
+          "type": "object"
+        },
+        "modules_rules": {
+          "type": "array"
+        },
+        "metering": {
+          "type": "object"
+        },
+        "ui": {
+          "type": "object"
+        },
+        "runtime": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

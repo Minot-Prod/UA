@@ -1,0 +1,141 @@
+{
+  "meta": {
+    "project": "Parlios MVP EXV",
+    "version": "v14",
+    "updated_at": "2025-10-04T05:07:21",
+    "stage": 14,
+    "stage_name": "Plans & Freemium gating"
+  },
+  "plans": {
+    "tiers": [
+      {
+        "id": "free",
+        "name": "Free",
+        "price_month_cad": 0,
+        "limits": {
+          "livrables_per_day": 1,
+          "ai_tokens_per_day": 2000
+        },
+        "features": [
+          "basic_dashboard",
+          "checklist_7j"
+        ],
+        "support": "community"
+      },
+      {
+        "id": "pro",
+        "name": "Pro",
+        "price_month_cad": 19,
+        "limits": {
+          "livrables_per_day": 10,
+          "ai_tokens_per_day": 10000
+        },
+        "features": [
+          "basic_dashboard",
+          "checklist_7j",
+          "content_agent",
+          "export_pdf_png"
+        ],
+        "support": "email"
+      },
+      {
+        "id": "pro_plus",
+        "name": "Pro+",
+        "price_month_cad": 49,
+        "limits": {
+          "livrables_per_day": 100,
+          "ai_tokens_per_day": 100000
+        },
+        "features": [
+          "all",
+          "priority_queue",
+          "team_sharing"
+        ],
+        "support": "priority"
+      }
+    ],
+    "billing": {
+      "currency": "CAD",
+      "cycle": [
+        "monthly"
+      ],
+      "upgrade_url": "/upgrade",
+      "manage_url": "/account/billing",
+      "coupon_supported": true
+    }
+  },
+  "gating": {
+    "feature_flags": {
+      "generator_finance": {
+        "free": false,
+        "pro": true,
+        "pro_plus": true
+      },
+      "generator_business": {
+        "free": false,
+        "pro": true,
+        "pro_plus": true
+      },
+      "export_pdf_png": {
+        "free": false,
+        "pro": true,
+        "pro_plus": true
+      },
+      "ai_high_tokens": {
+        "free": false,
+        "pro": false,
+        "pro_plus": true
+      },
+      "team_sharing": {
+        "free": false,
+        "pro": false,
+        "pro_plus": true
+      }
+    },
+    "modules_rules": [
+      {
+        "module_id": "finance",
+        "required_flag": "generator_finance"
+      },
+      {
+        "module_id": "business",
+        "required_flag": "generator_business"
+      },
+      {
+        "module_id": "exporter",
+        "required_flag": "export_pdf_png"
+      }
+    ],
+    "metering": {
+      "window": "daily",
+      "counters": [
+        "livrables_per_day",
+        "ai_tokens_per_day"
+      ],
+      "enforcement": "front_guard",
+      "storage": "localStorage",
+      "key_prefix": "parlios.meter."
+    },
+    "ui": {
+      "paywall_copy": {
+        "title": "Passe en Pro pour débloquer cette fonctionnalité",
+        "bullets": [
+          "Jusqu’à 10 livrables/jour",
+          "Exports PDF/PNG",
+          "Accès aux générateurs avancés"
+        ],
+        "cta": "Découvrir les offres",
+        "cta_url": "/upgrade"
+      },
+      "badge_labels": {
+        "pro": "Pro",
+        "pro_plus": "Pro+"
+      }
+    },
+    "runtime": {
+      "plan_cookie": "parlios.plan",
+      "default_plan": "free",
+      "header_forward": "X-Parlios-Plan"
+    }
+  }
+}
