@@ -1,0 +1,27 @@
+    <!doctype html><html lang="fr"><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Parlios — Pitch Builder</title>
+    <body style="background:#000;color:#fff;font-family:system-ui;margin:0;padding:2rem">
+      <h1>Pitch Builder</h1>
+      <p>Présente ton projet en 3 phrases claires.</p>
+      <form id="f">
+        <label>Ton activité <input name="activity" required></label><br><br>
+        <label>Ton public cible <input name="audience" required></label><br><br>
+        <label>Bénéfice clé <input name="benefit" required></label><br><br>
+        <button type="submit">Générer</button>
+      </form>
+      <pre id="out" style="white-space:pre-wrap;margin-top:1rem"></pre>
+      <script>
+        document.getElementById('f').addEventListener('submit', async (e)=>{
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const activity = fd.get('activity'), audience = fd.get('audience'), benefit = fd.get('benefit');
+          const text = `Je suis ${activity}.
+J’aide ${audience} à ${benefit}.
+Voici comment on démarre dès aujourd’hui.
+
+Généré par Parlios — parlios.ca · #BuiltWithParlios`;
+          document.getElementById('out').textContent = text;
+        });
+      </script>
+    </body></html>

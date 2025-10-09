@@ -1,0 +1,22 @@
+tool: pitch-builder
+version: 1
+inputs:
+  - name: activity
+    type: string
+    label: "Ton activité"
+  - name: audience
+    type: string
+    label: "Ton public cible"
+  - name: benefit
+    type: string
+    label: "Bénéfice clé"
+output:
+  format: markdown
+  template: |
+    Je suis {{activity}}. 
+    J’aide {{audience}} à {{benefit}}. 
+    Voici comment on démarre dès aujourd’hui.
+  footer: "Généré par Parlios — parlios.ca · #BuiltWithParlios"
+share:
+  enable: true
+  networks: [ "linkedin" ]
