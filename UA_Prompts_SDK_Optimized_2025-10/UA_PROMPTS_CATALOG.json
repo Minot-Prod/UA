@@ -1,0 +1,560 @@
+[
+  {
+    "id": 1,
+    "title": "UA Arbitration & Routing",
+    "agent": "UltimateAgent",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Arbitre MA vs MAP, justification, confidence; applique Base44 & Yomi."
+  },
+  {
+    "id": 2,
+    "title": "MA Ideation Sprint",
+    "agent": "MasterAgent",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Génère concepts libres + shortlists; passe le témoin à UA."
+  },
+  {
+    "id": 3,
+    "title": "MAP Production Plan",
+    "agent": "MasterAgentProject",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Contrainte Base44, plan d’exécution, dépendances et checkpoints."
+  },
+  {
+    "id": 4,
+    "title": "UA Consolidated Report",
+    "agent": "ReportingAgent",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Génère UA_Report avec decisions/risks/next_actions."
+  },
+  {
+    "id": 5,
+    "title": "Back to Yomi Watchdog",
+    "agent": "LeadershipAgent",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Détecte déviation et déclenche rappel 'Back to Yomi'."
+  },
+  {
+    "id": 6,
+    "title": "Risk Tolerance Profile Update",
+    "agent": "OpsAgent",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Maintient Risk_Tolerance_Profile.md versionné et référencé."
+  },
+  {
+    "id": 7,
+    "title": "Credit Log Append",
+    "agent": "CreditAgent",
+    "category": "Core/UA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Calcule coûts IA et met à jour CREDIT_LOG.md via SDK."
+  },
+  {
+    "id": 8,
+    "title": "CI/CD Trigger & Artefacts",
+    "agent": "OpsAgent",
+    "category": "Core/UA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Déclenche workflow GHA, récupère artefacts via SDK."
+  },
+  {
+    "id": 9,
+    "title": "Schema Guard (UAS)",
+    "agent": "QAGuardian",
+    "category": "Core/UA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Valide JSON (status, summary, justification, confidence)."
+  },
+  {
+    "id": 10,
+    "title": "DocOps Review",
+    "agent": "DocOpsAgent",
+    "category": "Core/UA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Scan README/links/tables; ouvre PR auto via SDK."
+  },
+  {
+    "id": 11,
+    "title": "Prompts Library Curator (A/B)",
+    "agent": "LibraryAgent",
+    "category": "Knowledge",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Classe, évalue et promeut les prompts gagnants (A/B)."
+  },
+  {
+    "id": 12,
+    "title": "Archivist Semantic Snapshot",
+    "agent": "ArchivistAgent",
+    "category": "Knowledge",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Snapshot mensuel + diff sémantique; changelog."
+  },
+  {
+    "id": 13,
+    "title": "Sync Notion ↔ GitHub",
+    "agent": "SyncAgent",
+    "category": "Knowledge",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Compare sources, alerte divergences, ouvre issues."
+  },
+  {
+    "id": 14,
+    "title": "RAG Memory Refresh",
+    "agent": "OpsAgent",
+    "category": "Knowledge",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Vector store intégré: (re)indexe rapports et logs."
+  },
+  {
+    "id": 15,
+    "title": "Knowledge Coherence QA",
+    "agent": "QAGuardian",
+    "category": "Knowledge",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Audit cohérence README/Blueprint/Manifest, propose fixes."
+  },
+  {
+    "id": 16,
+    "title": "Strategy Alignment (Quarterly)",
+    "agent": "StrategyAgent",
+    "category": "Parlios/Global",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Revue trimestrielle: priorités, ROI, risques, focus."
+  },
+  {
+    "id": 17,
+    "title": "Finance Sync → Firefly",
+    "agent": "FinanceAgent",
+    "category": "Parlios/Global",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Synchronise CREDIT_LOG avec Firefly III via SDK."
+  },
+  {
+    "id": 18,
+    "title": "Growth ROI Analysis",
+    "agent": "GrowthAgent",
+    "category": "Parlios/Global",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Croise coût IA, leads, revenus; recommandations d’investissement."
+  },
+  {
+    "id": 19,
+    "title": "Leadership Weekly",
+    "agent": "LeadershipAgent",
+    "category": "Parlios/Global",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Rapport hebdo: progrès, blocages, décisions."
+  },
+  {
+    "id": 20,
+    "title": "Security Baseline",
+    "agent": "SecurityAgent",
+    "category": "Parlios/Global",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Scan TLS/DNS/secrets projets Parlios; fixes proposés."
+  },
+  {
+    "id": 21,
+    "title": "MVP Dashboard Build",
+    "agent": "DashboardAgent",
+    "category": "Parlios/MVP",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Assemble logs GitHub + CREDIT_LOG + leads HubSpot (SDK)."
+  },
+  {
+    "id": 22,
+    "title": "Lead Scoring + Telegram",
+    "agent": "LeadScoringAgent",
+    "category": "Parlios/MVP",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Classe leads hot/warm/cold; push top-5 Telegram."
+  },
+  {
+    "id": 23,
+    "title": "MVP Finance Daily View",
+    "agent": "FinanceSyncAgent",
+    "category": "Parlios/MVP",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Vue budgétaire quotidienne Firefly III (SDK)."
+  },
+  {
+    "id": 24,
+    "title": "MVP QA Checkpoint 70%",
+    "agent": "QAGuardian",
+    "category": "Parlios/MVP",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Exécute checkpoint Base44; Go/No-Go."
+  },
+  {
+    "id": 25,
+    "title": "MVP Postmortem Writer",
+    "agent": "ReportingAgent",
+    "category": "Parlios/MVP",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Rédige leçons apprises par run (succès/échecs)."
+  },
+  {
+    "id": 26,
+    "title": "Content FR/EN Generator",
+    "agent": "ContentAgent",
+    "category": "Parlios/Web",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Rédige/actualise les pages et CTA avec ton Parlios."
+  },
+  {
+    "id": 27,
+    "title": "SEO Pack (sitemap/robots/schema)",
+    "agent": "SEOAgent",
+    "category": "Parlios/Web",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Génère sitemap, robots, meta, schema.org via SDK browser."
+  },
+  {
+    "id": 28,
+    "title": "Lighthouse Gate ≥90",
+    "agent": "QAGuardian",
+    "category": "Parlios/Web",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Échoue CI si score < 90; loge détails perf."
+  },
+  {
+    "id": 29,
+    "title": "Netlify Deploy + SSL",
+    "agent": "OpsAgent",
+    "category": "Parlios/Web",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Build & deploy; vérifie SSL/redirects via SDK."
+  },
+  {
+    "id": 30,
+    "title": "Branding Consistency Review",
+    "agent": "LeadershipAgent",
+    "category": "Parlios/Web",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Valide ton/branding, cohérence visuelle."
+  },
+  {
+    "id": 31,
+    "title": "Media→Text Generator",
+    "agent": "ContentAgent_Tazlow",
+    "category": "Tazlow",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Convertit photos/vidéos en posts adaptés par réseau."
+  },
+  {
+    "id": 32,
+    "title": "Planner Calendar Sync",
+    "agent": "PlannerAgent_Tazlow",
+    "category": "Tazlow",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Planifie dans Google Calendar via SDK."
+  },
+  {
+    "id": 33,
+    "title": "Social Drafts Builder",
+    "agent": "GrowthAgent_Tazlow",
+    "category": "Tazlow",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Crée brouillons FB/IG avec variantes A/B."
+  },
+  {
+    "id": 34,
+    "title": "Daily Email Recap",
+    "agent": "EmailAgent_Tazlow",
+    "category": "Tazlow",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Envoie récap quotidien (SDK email)."
+  },
+  {
+    "id": 35,
+    "title": "Content QA Balance",
+    "agent": "QAGuardian_Tazlow",
+    "category": "Tazlow",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Vérifie équilibre texte/médias; alerte manquants."
+  },
+  {
+    "id": 36,
+    "title": "n8n Workflow Generator",
+    "agent": "WorkflowAgent_MySafeCup",
+    "category": "MySafeCup",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Génère workflow Shopify→Sellsy→Drive."
+  },
+  {
+    "id": 37,
+    "title": "Shopify Quote Parser",
+    "agent": "FunctionAgent_MySafeCup",
+    "category": "MySafeCup",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Fonction parsing + JSON formaté pour Sellsy."
+  },
+  {
+    "id": 38,
+    "title": "Error Workflow (Slack/Email)",
+    "agent": "ErrorAgent_MySafeCup",
+    "category": "MySafeCup",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Alerte et journalisation erreurs (SDK web.request)."
+  },
+  {
+    "id": 39,
+    "title": "QA Pack (edge cases)",
+    "agent": "QAGuardian_MySafeCup",
+    "category": "MySafeCup",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "5 scénarios (PDF manquant, doublon, 429...)."
+  },
+  {
+    "id": 40,
+    "title": "Client Logo Overlay",
+    "agent": "DesignAgent_MySafeCup",
+    "category": "MySafeCup",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Génère overlay logo via Canva-like; attache aux devis."
+  },
+  {
+    "id": 41,
+    "title": "HIPAA SRA 2025 Audit",
+    "agent": "SecurityAgent_HIPAA",
+    "category": "HIPAA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Évalue sécurité/accès/chiffrement; recommandations."
+  },
+  {
+    "id": 42,
+    "title": "PHI De-identification Linter",
+    "agent": "QAGuardian_HIPAA",
+    "category": "HIPAA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Détecte identifiants PHI; bloque si fuite possible."
+  },
+  {
+    "id": 43,
+    "title": "Ops Infra Audit (DNS/Proxy)",
+    "agent": "OpsAgent_HIPAA",
+    "category": "HIPAA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Vérifie DNS, reverse proxy, webhooks sécurisés."
+  },
+  {
+    "id": 44,
+    "title": "Compliance Report Weekly",
+    "agent": "LeadershipAgent_HIPAA",
+    "category": "HIPAA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Rapport hebdo de conformité et écarts."
+  },
+  {
+    "id": 45,
+    "title": "Agents↔Prompts Graph Builder",
+    "agent": "ArchivistAgent",
+    "category": "Meta/Graph",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Génère Mermaid JSON→graph; détecte orphelins."
+  },
+  {
+    "id": 46,
+    "title": "Orphan/Conflict Detector",
+    "agent": "SyncAgent",
+    "category": "Meta/Graph",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Détecte collisions, doublons, prompts inactifs."
+  },
+  {
+    "id": 47,
+    "title": "Auto-Eval & Promotion Weekly",
+    "agent": "LibraryAgent",
+    "category": "Meta/Graph",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Exécute micro-evals; promeut/déclasse prompts."
+  },
+  {
+    "id": 48,
+    "title": "LLM Observability Collector",
+    "agent": "OpsAgent",
+    "category": "Core/UA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Collecte latence/tokens/erreurs; export ND-JSON."
+  },
+  {
+    "id": 49,
+    "title": "Automated Log Summary",
+    "agent": "ReportingAgent",
+    "category": "Core/UA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Résume artefacts CI et incidents en Markdown."
+  },
+  {
+    "id": 50,
+    "title": "Late-Idea Override",
+    "agent": "MasterAgent",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Module d'exception post-checkpoint 70% (Base44)."
+  },
+  {
+    "id": 51,
+    "title": "Technical Report Mode",
+    "agent": "ContentAgent",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Ton neutre; bypass Yomi pour rapports techniques."
+  },
+  {
+    "id": 52,
+    "title": "Gemini Cross-Audit Pipeline",
+    "agent": "UltimateAgent",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Audit par IA externes (Gemini/Claude/GPT/Perplexity)."
+  },
+  {
+    "id": 53,
+    "title": "Disaster Drill T-0",
+    "agent": "QAGuardian",
+    "category": "Core/UA",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Simulation panne totale; mesure RTO/RPO."
+  },
+  {
+    "id": 54,
+    "title": "Dashboard Base44 Credits",
+    "agent": "ContentAgent",
+    "category": "Core/UA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Résumé crédits par run; intégration README."
+  },
+  {
+    "id": 55,
+    "title": "Failover n8n Queue (Generic)",
+    "agent": "OpsAgent",
+    "category": "Core/UA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "File locale CSV/S3 si endpoint n8n down."
+  },
+  {
+    "id": 56,
+    "title": "Analytics Config (GA/GTM)",
+    "agent": "AnalyticsAgent",
+    "category": "Parlios/Web",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Configure GA/GTM + events de base."
+  },
+  {
+    "id": 57,
+    "title": "A/B Wording Optimizer",
+    "agent": "GrowthAgent_Tazlow",
+    "category": "Tazlow",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Génère 2–3 variantes et sélection heuristique."
+  },
+  {
+    "id": 58,
+    "title": "Editorial Observability Report",
+    "agent": "ReportingAgent_Tazlow",
+    "category": "Tazlow",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Tableau 'post|network|ETA|status' hebdo."
+  },
+  {
+    "id": 59,
+    "title": "Blue-Green Plan (MySafeCup)",
+    "agent": "OpsAgent_MySafeCup",
+    "category": "MySafeCup",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Stratégie de déploiement sans downtime."
+  },
+  {
+    "id": 60,
+    "title": "Design QA Overlay",
+    "agent": "QAGuardian_MySafeCup",
+    "category": "MySafeCup",
+    "type": "strategic",
+    "sdk_native": false,
+    "summary": "Vérifie overlay/logo attaché correctement."
+  },
+  {
+    "id": 61,
+    "title": "Data Provenance Audit",
+    "agent": "SecurityAgent_HIPAA",
+    "category": "HIPAA",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Trace source→prompt→résultat pour audit."
+  },
+  {
+    "id": 62,
+    "title": "Knowledge Snapshot Weekly",
+    "agent": "ReportingAgent",
+    "category": "Meta/Graph",
+    "type": "operational",
+    "sdk_native": true,
+    "summary": "Snapshot hebdo + synthèse changements."
+  }
+]

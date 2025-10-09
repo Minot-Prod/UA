@@ -1,0 +1,63 @@
+id,title,agent,category,type,sdk_native,summary
+1,UA Arbitration & Routing,UltimateAgent,Core/UA,strategic,False,"Arbitre MA vs MAP, justification, confidence; applique Base44 & Yomi."
+2,MA Ideation Sprint,MasterAgent,Core/UA,strategic,False,Génère concepts libres + shortlists; passe le témoin à UA.
+3,MAP Production Plan,MasterAgentProject,Core/UA,strategic,False,"Contrainte Base44, plan d’exécution, dépendances et checkpoints."
+4,UA Consolidated Report,ReportingAgent,Core/UA,strategic,False,Génère UA_Report avec decisions/risks/next_actions.
+5,Back to Yomi Watchdog,LeadershipAgent,Core/UA,strategic,False,Détecte déviation et déclenche rappel 'Back to Yomi'.
+6,Risk Tolerance Profile Update,OpsAgent,Core/UA,strategic,False,Maintient Risk_Tolerance_Profile.md versionné et référencé.
+7,Credit Log Append,CreditAgent,Core/UA,operational,True,Calcule coûts IA et met à jour CREDIT_LOG.md via SDK.
+8,CI/CD Trigger & Artefacts,OpsAgent,Core/UA,operational,True,"Déclenche workflow GHA, récupère artefacts via SDK."
+9,Schema Guard (UAS),QAGuardian,Core/UA,operational,True,"Valide JSON (status, summary, justification, confidence)."
+10,DocOps Review,DocOpsAgent,Core/UA,operational,True,Scan README/links/tables; ouvre PR auto via SDK.
+11,Prompts Library Curator (A/B),LibraryAgent,Knowledge,strategic,False,"Classe, évalue et promeut les prompts gagnants (A/B)."
+12,Archivist Semantic Snapshot,ArchivistAgent,Knowledge,strategic,False,Snapshot mensuel + diff sémantique; changelog.
+13,Sync Notion ↔ GitHub,SyncAgent,Knowledge,operational,True,"Compare sources, alerte divergences, ouvre issues."
+14,RAG Memory Refresh,OpsAgent,Knowledge,operational,True,Vector store intégré: (re)indexe rapports et logs.
+15,Knowledge Coherence QA,QAGuardian,Knowledge,strategic,False,"Audit cohérence README/Blueprint/Manifest, propose fixes."
+16,Strategy Alignment (Quarterly),StrategyAgent,Parlios/Global,strategic,False,"Revue trimestrielle: priorités, ROI, risques, focus."
+17,Finance Sync → Firefly,FinanceAgent,Parlios/Global,operational,True,Synchronise CREDIT_LOG avec Firefly III via SDK.
+18,Growth ROI Analysis,GrowthAgent,Parlios/Global,strategic,False,"Croise coût IA, leads, revenus; recommandations d’investissement."
+19,Leadership Weekly,LeadershipAgent,Parlios/Global,strategic,False,"Rapport hebdo: progrès, blocages, décisions."
+20,Security Baseline,SecurityAgent,Parlios/Global,strategic,False,Scan TLS/DNS/secrets projets Parlios; fixes proposés.
+21,MVP Dashboard Build,DashboardAgent,Parlios/MVP,operational,True,Assemble logs GitHub + CREDIT_LOG + leads HubSpot (SDK).
+22,Lead Scoring + Telegram,LeadScoringAgent,Parlios/MVP,strategic,False,Classe leads hot/warm/cold; push top-5 Telegram.
+23,MVP Finance Daily View,FinanceSyncAgent,Parlios/MVP,operational,True,Vue budgétaire quotidienne Firefly III (SDK).
+24,MVP QA Checkpoint 70%,QAGuardian,Parlios/MVP,strategic,False,Exécute checkpoint Base44; Go/No-Go.
+25,MVP Postmortem Writer,ReportingAgent,Parlios/MVP,strategic,False,Rédige leçons apprises par run (succès/échecs).
+26,Content FR/EN Generator,ContentAgent,Parlios/Web,strategic,False,Rédige/actualise les pages et CTA avec ton Parlios.
+27,SEO Pack (sitemap/robots/schema),SEOAgent,Parlios/Web,operational,True,"Génère sitemap, robots, meta, schema.org via SDK browser."
+28,Lighthouse Gate ≥90,QAGuardian,Parlios/Web,operational,True,Échoue CI si score < 90; loge détails perf.
+29,Netlify Deploy + SSL,OpsAgent,Parlios/Web,operational,True,Build & deploy; vérifie SSL/redirects via SDK.
+30,Branding Consistency Review,LeadershipAgent,Parlios/Web,strategic,False,"Valide ton/branding, cohérence visuelle."
+31,Media→Text Generator,ContentAgent_Tazlow,Tazlow,strategic,False,Convertit photos/vidéos en posts adaptés par réseau.
+32,Planner Calendar Sync,PlannerAgent_Tazlow,Tazlow,operational,True,Planifie dans Google Calendar via SDK.
+33,Social Drafts Builder,GrowthAgent_Tazlow,Tazlow,strategic,False,Crée brouillons FB/IG avec variantes A/B.
+34,Daily Email Recap,EmailAgent_Tazlow,Tazlow,operational,True,Envoie récap quotidien (SDK email).
+35,Content QA Balance,QAGuardian_Tazlow,Tazlow,strategic,False,Vérifie équilibre texte/médias; alerte manquants.
+36,n8n Workflow Generator,WorkflowAgent_MySafeCup,MySafeCup,strategic,False,Génère workflow Shopify→Sellsy→Drive.
+37,Shopify Quote Parser,FunctionAgent_MySafeCup,MySafeCup,strategic,False,Fonction parsing + JSON formaté pour Sellsy.
+38,Error Workflow (Slack/Email),ErrorAgent_MySafeCup,MySafeCup,operational,True,Alerte et journalisation erreurs (SDK web.request).
+39,QA Pack (edge cases),QAGuardian_MySafeCup,MySafeCup,strategic,False,"5 scénarios (PDF manquant, doublon, 429...)."
+40,Client Logo Overlay,DesignAgent_MySafeCup,MySafeCup,strategic,False,Génère overlay logo via Canva-like; attache aux devis.
+41,HIPAA SRA 2025 Audit,SecurityAgent_HIPAA,HIPAA,strategic,False,Évalue sécurité/accès/chiffrement; recommandations.
+42,PHI De-identification Linter,QAGuardian_HIPAA,HIPAA,strategic,False,Détecte identifiants PHI; bloque si fuite possible.
+43,Ops Infra Audit (DNS/Proxy),OpsAgent_HIPAA,HIPAA,operational,True,"Vérifie DNS, reverse proxy, webhooks sécurisés."
+44,Compliance Report Weekly,LeadershipAgent_HIPAA,HIPAA,operational,True,Rapport hebdo de conformité et écarts.
+45,Agents↔Prompts Graph Builder,ArchivistAgent,Meta/Graph,strategic,False,Génère Mermaid JSON→graph; détecte orphelins.
+46,Orphan/Conflict Detector,SyncAgent,Meta/Graph,operational,True,"Détecte collisions, doublons, prompts inactifs."
+47,Auto-Eval & Promotion Weekly,LibraryAgent,Meta/Graph,strategic,False,Exécute micro-evals; promeut/déclasse prompts.
+48,LLM Observability Collector,OpsAgent,Core/UA,operational,True,Collecte latence/tokens/erreurs; export ND-JSON.
+49,Automated Log Summary,ReportingAgent,Core/UA,operational,True,Résume artefacts CI et incidents en Markdown.
+50,Late-Idea Override,MasterAgent,Core/UA,strategic,False,Module d'exception post-checkpoint 70% (Base44).
+51,Technical Report Mode,ContentAgent,Core/UA,strategic,False,Ton neutre; bypass Yomi pour rapports techniques.
+52,Gemini Cross-Audit Pipeline,UltimateAgent,Core/UA,strategic,False,Audit par IA externes (Gemini/Claude/GPT/Perplexity).
+53,Disaster Drill T-0,QAGuardian,Core/UA,strategic,False,Simulation panne totale; mesure RTO/RPO.
+54,Dashboard Base44 Credits,ContentAgent,Core/UA,operational,True,Résumé crédits par run; intégration README.
+55,Failover n8n Queue (Generic),OpsAgent,Core/UA,operational,True,File locale CSV/S3 si endpoint n8n down.
+56,Analytics Config (GA/GTM),AnalyticsAgent,Parlios/Web,operational,True,Configure GA/GTM + events de base.
+57,A/B Wording Optimizer,GrowthAgent_Tazlow,Tazlow,operational,True,Génère 2–3 variantes et sélection heuristique.
+58,Editorial Observability Report,ReportingAgent_Tazlow,Tazlow,strategic,False,Tableau 'post|network|ETA|status' hebdo.
+59,Blue-Green Plan (MySafeCup),OpsAgent_MySafeCup,MySafeCup,strategic,False,Stratégie de déploiement sans downtime.
+60,Design QA Overlay,QAGuardian_MySafeCup,MySafeCup,strategic,False,Vérifie overlay/logo attaché correctement.
+61,Data Provenance Audit,SecurityAgent_HIPAA,HIPAA,operational,True,Trace source→prompt→résultat pour audit.
+62,Knowledge Snapshot Weekly,ReportingAgent,Meta/Graph,operational,True,Snapshot hebdo + synthèse changements.
