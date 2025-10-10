@@ -1,0 +1,3 @@
+# Language prefixes (example)
+/fr/*   /fr/index.html   200
+/en/*   /en/index.html   200

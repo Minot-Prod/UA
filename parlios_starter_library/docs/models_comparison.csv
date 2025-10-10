@@ -1,0 +1,11 @@
+Modèle,Stack,UX,Performance,Viralité,Licence
+Next.js Starter (Netlify),"Next.js, Netlify Functions","Base SSR/SSG, i18n",Très élevée,Moyen,MIT
+Eleventy Starter,"Eleventy, Nunjucks, Tailwind","Blog/docs, SEO",Extrême,Faible,CC0/MIT
+Astro B2B SaaS Kit,"Astro, React, Stripe, Supabase",SaaS complet,Élevée,Moyen,MIT
+Next.js Startup Template,"Next.js, Tailwind",Landing SaaS complète,Élevée,Moyen,MIT
+Nuxt SaaS Template,"Nuxt 3, Nuxt UI, Content",Vue + docs/blog,Élevée,Faible,MIT
+SvelteKit Shadcn Landing,"SvelteKit, Tailwind, Shadcn",Ultra léger,Très élevée,Bas,MIT
+Astro Landing Page,"Astro, Tailwind",100/100 SEO/Perf,Max,Bas,MIT
+Gatsby MDX Blog,"Gatsby, MDX, Tailwind",Blog MDX rapide,Très élevée,Bas,0BSD
+TeleportHQ Templates,HTML/CSS/JS,Rapide à livrer,Moyenne,Bas,Libre export
+Remix SaaSStellar,"Remix, Tailwind, Shadcn","Multi-thèmes, SEO",Élevée,Moyen,MIT

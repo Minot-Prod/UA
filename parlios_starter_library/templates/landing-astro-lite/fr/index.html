@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parlios — Starter Landing (FR)</title>
+  <meta name="description" content="Parlios — Mouvement & outils pour entrepreneurs / Movement & tools for entrepreneurs">
+  <link rel="stylesheet" href="../assets/css/styles.css"/>
+</head>
+<body>
+  <div class="lang">
+    <a href="../fr/" class="fr">FR</a><a href="../en/" class="en">EN</a>
+  </div>
+  <div class="container">
+    <span class="badge">Parlios Starter</span>
+    <h1>Construisons vite, <br/>livrons mieux.</h1>
+    <p>Base statique prête pour Netlify Drop. Sections: Vision, Outils gratuits, Projets, Communauté, International.</p>
+    <a class="cta" href="#">Découvrir le mouvement</a>
+
+    <div class="grid">
+      <div class="card"><strong>Performance</strong><p>Static-first, SEO & accessibilité prêtes.</p></div>
+      <div class="card"><strong>Viralité</strong><p>Modules d'outils gratuits intégrables.</p></div>
+      <div class="card"><strong>Reproductible</strong><p>Code simple, bilingue FR/EN.</p></div>
+    </div>
+    <p class="footer">© Parlios — Starter landing (FR)</p>
+  </div>
+  <script>
+    // simple lang highlight
+    const href = location.pathname.includes('/en/') ? 'EN' : 'FR';
+    document.querySelectorAll('.lang a').forEach(a=>{
+      if(a.textContent.toUpperCase()===href) a.classList.add('active');
+    });
+  </script>
+</body>
+</html>
