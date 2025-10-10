@@ -1,0 +1,12 @@
+{
+  "key": "ai:chatbot",
+  "repo": "https://github.com/vercel/ai-chatbot.git",
+  "license": "MIT",
+  "stack": [
+    "Next.js",
+    "Tailwind",
+    "Vercel AI SDK",
+    "Auth.js"
+  ],
+  "category": "ai"
+}
