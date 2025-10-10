@@ -1,0 +1,21 @@
+{
+  "name": "parlios-starter-monorepo",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "format": "prettier -w ."
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  }
+}
