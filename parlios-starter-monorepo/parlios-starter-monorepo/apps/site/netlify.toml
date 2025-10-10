@@ -1,0 +1,3 @@
+[build]
+  command = "pnpm --filter @parlios/site build"
+  publish = "apps/site/dist"
