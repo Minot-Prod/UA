@@ -1,0 +1,16 @@
+{
+  "name": "parlios-starters",
+  "private": true,
+  "packageManager": "pnpm@9",
+  "scripts": {
+    "scaffold": "node ./tools/scaffold.mjs",
+    "lint": "eslint .",
+    "build": "echo \"nothing to build here\"",
+    "uas:credit": "node -e \"const fs=require('fs');const d=new Date().toISOString().slice(0,10);fs.appendFileSync('CREDIT_LOG.md', `${d} | STARTERS | PASS | 1 credit | notes: scaffold\\n`)\""
+  },
+  "devDependencies": {
+    "eslint": "^9.11.0",
+    "eslint-config-next": "^15.0.0",
+    "prettier": "^3.3.3"
+  }
+}
