@@ -1,0 +1,105 @@
+{
+  "generated_at": "2025-10-10T02:32:48",
+  "project": "UA_Base44_Templates",
+  "apps": [
+    {
+      "slug": "code-master",
+      "title": "Code Master",
+      "category": "education",
+      "priority": "P0",
+      "archive_name": "code-master-copy-3dac61c9.zip",
+      "archive_sha256": "b33d1009e56e776a9a3af5c1d4453609c6193aa0b5bd1538950331af0cf07a69",
+      "path": "apps/base44/code-master/"
+    },
+    {
+      "slug": "time-flow",
+      "title": "Time Flow",
+      "category": "utilities",
+      "priority": "P2",
+      "archive_name": "time-flow-copy-b6e78135.zip",
+      "archive_sha256": "044588999bd3c0654e26a25d3d8a4350b3326484c9091265ffc91a13ea957405",
+      "path": "apps/base44/time-flow/"
+    },
+    {
+      "slug": "market-genius",
+      "title": "Market Genius",
+      "category": "marketing",
+      "priority": "P0",
+      "archive_name": "market-genius-copy-f6223c23.zip",
+      "archive_sha256": "a406962e49c29a3f691b8edd62ce3194b7fbd0b85a0de31b7d8da6246cb5909f",
+      "path": "apps/base44/market-genius/"
+    },
+    {
+      "slug": "god-ko-video-studio",
+      "title": "God Ko Video Studio",
+      "category": "media",
+      "priority": "P2",
+      "archive_name": "god-ko-video-studio-copy-82d12ac0.zip",
+      "archive_sha256": "8bcfea3d4b5135d90ccd7489b6ac082cb6fc36baf23e878559b1f2b52fc6142e",
+      "path": "apps/base44/god-ko-video-studio/"
+    },
+    {
+      "slug": "comrades",
+      "title": "Comrades",
+      "category": "site-vitrine",
+      "priority": "P1",
+      "archive_name": "comrades-copy-b062fd89.zip",
+      "archive_sha256": "6d7d2a9a0962172fcedfbd27511d0aeb3376b042e0d4cb515b9244b923d77df9",
+      "path": "apps/base44/comrades/"
+    },
+    {
+      "slug": "client-flow",
+      "title": "Client Flow",
+      "category": "productivity",
+      "priority": "P0",
+      "archive_name": "client-flow-copy-ada5e52c.zip",
+      "archive_sha256": "62f94d6abd200326029ee19d747561ddb8f90d480dd34159eeb1008941d84449",
+      "path": "apps/base44/client-flow/"
+    },
+    {
+      "slug": "apex-executive-suite",
+      "title": "Apex Executive Suite",
+      "category": "productivity",
+      "priority": "P1",
+      "archive_name": "apex-executive-suite-copy-622eb449.zip",
+      "archive_sha256": "8f052b3341d4b75717bbfe18376ed3107b1ab11c053f686ab501f1d5eea8e096",
+      "path": "apps/base44/apex-executive-suite/"
+    },
+    {
+      "slug": "ocr-scan-ai",
+      "title": "OCR Scan AI",
+      "category": "tools",
+      "priority": "P1",
+      "archive_name": "ocr-scan-ai-copy-607ab08e.zip",
+      "archive_sha256": "b98635457f322ac087f549e2785144f4cad175747c2f3f8fa697d6791a2031c7",
+      "path": "apps/base44/ocr-scan-ai/"
+    },
+    {
+      "slug": "task-flow",
+      "title": "Task Flow",
+      "category": "productivity",
+      "priority": "P0",
+      "archive_name": "task-flow-copy-45902e7f.zip",
+      "archive_sha256": "4dd3c30fb15edcec85c1e9b0aa1fa7d12f5c5f5c0b9464f1d7c69b585d80828d",
+      "path": "apps/base44/task-flow/"
+    },
+    {
+      "slug": "logo-spark",
+      "title": "Logo Spark",
+      "category": "creative",
+      "priority": "P0",
+      "archive_name": "logo-spark-copy-86457486.zip",
+      "archive_sha256": "34d072894ad50530fb8900af3cef5520f2a2e345a3c24e461b6b9f4fed5bb6b2",
+      "path": "apps/base44/logo-spark/"
+    },
+    {
+      "slug": "logo-spark-alt",
+      "title": "Logo Spark (alt)",
+      "category": "creative",
+      "priority": "P0",
+      "archive_name": "logo-spark-copy-86457486 (1).zip",
+      "archive_sha256": "1f919a333f7951455e83716e02760f1b3fbaefb2c1f4157209f71d5c38fa786b",
+      "path": "apps/base44/logo-spark-alt/"
+    }
+  ]
+}
