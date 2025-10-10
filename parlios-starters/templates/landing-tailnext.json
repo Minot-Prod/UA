@@ -1,0 +1,10 @@
+{
+  "key": "landing:tailnext",
+  "repo": "https://github.com/arthelokyo/tailnext.git",
+  "license": "MIT",
+  "stack": [
+    "Next.js",
+    "Tailwind"
+  ],
+  "category": "landing"
+}

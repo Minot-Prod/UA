@@ -1,0 +1,11 @@
+{
+  "key": "commerce:next",
+  "repo": "https://github.com/vercel/commerce.git",
+  "license": "MIT",
+  "stack": [
+    "Next.js",
+    "Tailwind",
+    "Shopify/BigCommerce/etc."
+  ],
+  "category": "ecommerce"
+}
