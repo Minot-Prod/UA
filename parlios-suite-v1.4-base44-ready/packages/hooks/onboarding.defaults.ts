@@ -1,0 +1,1 @@
+export const ONBOARDING_STEPS_DEFAULT=[] as const;
