@@ -1,0 +1,24 @@
+{
+  "default": {
+    "mode": "ollama",
+    "host": "http://127.0.0.1:11434",
+    "model": "mistral"
+  },
+  "profiles": {
+    "ollama:mistral": {
+      "mode": "ollama",
+      "host": "http://127.0.0.1:11434",
+      "model": "mistral"
+    },
+    "ollama:llama3": {
+      "mode": "ollama",
+      "host": "http://127.0.0.1:11434",
+      "model": "llama3"
+    },
+    "lmstudio:mistral-7b-instruct": {
+      "mode": "lmstudio",
+      "host": "http://127.0.0.1:1234",
+      "model": "mistral-7b-instruct"
+    }
+  }
+}
