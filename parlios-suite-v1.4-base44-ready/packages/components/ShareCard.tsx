@@ -1,0 +1,1 @@
+export function ShareCard(p:{title:string;subtitle?:string;watermark?:string;children?:any}){return null}

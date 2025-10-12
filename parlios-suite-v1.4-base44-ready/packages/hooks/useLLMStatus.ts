@@ -1,0 +1,1 @@
+export function useLLMStatus(){return 'absent' as const}
