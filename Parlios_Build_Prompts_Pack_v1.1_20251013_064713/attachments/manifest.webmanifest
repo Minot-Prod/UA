@@ -1,0 +1,15 @@
+{
+  "name": "Parlios App",
+  "short_name": "Parlios",
+  "icons": [
+    {
+      "src": "/attachments/logo_parlios.svg",
+      "sizes": "180x40",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0B0F",
+  "theme_color": "#0B0B0F"
+}
