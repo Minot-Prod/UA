@@ -1,0 +1,62 @@
+# Agent Tasks (Backlog priorisé)
+# Format: YAML
+
+version: 1
+tasks:
+  - id: PAGES-001
+    title: "Créer/compléter les pages pour les liens menu"
+    routes:
+      - "/projet-parlios/"
+      - "/boite-a-outils/"
+      - "/application-parlios/"
+      - "/communaute/"
+      - "/temoignages-impact/"
+      - "/actualites/"
+      - "/contact/"
+    done_when:
+      - "Chaque route a aussi un équivalent .html"
+      - "Pas de 404 sur le menu"
+  - id: CONTENT-001
+    title: "Injecter contenus validés"
+    from: "content/*.md"
+    mapping: "data/routes.json"
+    done_when:
+      - "Les sections contiennent le texte complet (sans troncature)"
+      - "Titres H1/H2 sémantiques corrects"
+  - id: HUB-001
+    title: "Ajouter la Preview du Hub Parlios"
+    target:
+      - "/application-parlios/"
+      - "/projet-parlios/"
+    spec:
+      - "Bloc expliquant le Hub : espace central, projets/outils/collab/perf"
+      - "Statut: bientôt (pas de promesse non réaliste)"
+      - "CTA: rejoindre la communauté / gagner des points / découvrir la boîte à outils"
+  - id: TOOLS-001
+    title: "Intégrer les outils gratuits (4 actifs + 4 à débloquer)"
+    details:
+      active:
+        - "MessageCraft AI"
+        - "MarketScope AI"
+        - "Studio Express"
+        - "SiteSpark AI"
+      unlockable:
+        - "PromoPulse"
+        - "ContentSpark"
+        - "BrandSpark"
+        - "AdPulse"
+    done_when:
+      - "Liste affichée avec descriptions (voir content/tools_free.md)"
+      - "Prévoir export HTML simple (download) si besoin"
+  - id: SEO-001
+    title: "Sitemap, 404, Meta"
+    done_when:
+      - "sitemap.xml inclut les routes jolies"
+      - "404.html redirige vers pages clés"
+      - "Chaque page a <title> et meta description"
+  - id: LINKS-001
+    title: "Brancher liens réels communauté"
+    from: "data/links_placeholders.json"
+    done_when:
+      - "Discord/Newsletter/X/LinkedIn remplacés"
+      - "Email contact confirmé"
