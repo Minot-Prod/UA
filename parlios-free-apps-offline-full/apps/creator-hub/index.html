@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parlios Creator Hub — Preview Offline</title>
+<link rel="stylesheet" href="../../styles/base.css"/>
+<body>
+<div class="container">
+  <h1>Parlios Creator Hub — Preview</h1>
+  <p aria-live="polite">Génération d’idées + planification 1–4 semaines (0 API).</p>
+  <div class="grid-2">
+    <div>
+      <label>Thème / Campagne</label>
+      <input id="theme" placeholder="Ex: Lancement offre automne"/>
+      <label>Fenêtre</label>
+      <select id="window"><option>1 semaine</option><option selected>2 semaines</option><option>3 semaines</option><option>4 semaines</option></select>
+      <label>Médias disponibles (approx.)</label>
+      <input id="media" type="number" min="0" value="10"/>
+      <div class="row" style="margin-top:12px">
+        <button id="btn" class="primary">Générer un calendrier</button>
+        <button id="btnCSV">Export CSV</button>
+        <button id="btnJSON">Export JSON</button>
+      </div>
+      <small class="help">Alerte “pas assez de médias” si besoin.</small>
+    </div>
+    <div>
+      <div id="cal" class="output" aria-label="Calendrier"></div>
+      <div id="alert" class="output" aria-label="Alertes" style="margin-top:12px"></div>
+    </div>
+  </div>
+  <p><a href="../../index.html"><button>Retour au Hub</button></a></p>
+</div>
+<script type="module">
+import { generateVariants } from "../../lib/mock_ai.js";
+import { exportCSV, exportJSON } from "../../lib/exporters.js";
+const $=s=>document.querySelector(s);
+const cal=$("#cal"), alertBox=$("#alert");
+$("#btn").addEventListener("click",()=>{
+  const theme=$("#theme").value||"Campagne Parlios";
+  const weeks=Number($("#window").value.split(" ")[0]);
+  const media=Number($("#media").value||0);
+  const posts=weeks*3;
+  const ideas = generateVariants({seed:Date.now(), tone:"fun", goal:"generic", count:posts, length:"short"});
+  const rows = [["Jour","Idée"]];
+  cal.innerHTML = "<strong>Calendrier</strong>\n";
+  for(let i=0;i<posts;i++){
+    rows.push([`J${i+1}`, ideas[i]]);
+    cal.innerHTML += `- J${i+1}: ${ideas[i]}\n`;
+  }
+  const need = posts - media;
+  alertBox.textContent = (need>0) ? `⚠️ Médias insuffisants : il manque environ ${need} visuels.` : `✅ Médias suffisants pour ${posts} posts.`;
+  window.__creatorLast = { theme, weeks, media, posts, ideas };
+});
+$("#btnCSV").addEventListener("click",()=>{
+  const d = window.__creatorLast; if(!d) return;
+  const rows = [["Jour","Idée"]].concat(d.ideas.map((x,i)=>[i+1,x]));
+  exportCSV(`parlios-creator-hub-${Date.now()}.csv`, rows);
+});
+$("#btnJSON").addEventListener("click",()=>{
+  const d = window.__creatorLast; if(!d) return;
+  exportJSON(`parlios-creator-hub-${Date.now()}.json`, d);
+});
+</script>
+</body>
+</html>
