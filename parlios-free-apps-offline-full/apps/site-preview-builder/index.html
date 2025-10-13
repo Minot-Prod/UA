@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parlios Créateur de Site — Preview Offline</title>
+<link rel="stylesheet" href="../../styles/base.css"/>
+<body>
+<div class="container">
+  <h1>Parlios Créateur de Site — Preview</h1>
+  <p role="status" aria-live="polite">Preview site (0 API) + export HTML.</p>
+  <div class="grid-2">
+    <div>
+      <label for="brand">Nom de l’entreprise</label>
+      <input id="brand" placeholder="Ex: Parlios Studio"/>
+      <label for="industry">Secteur</label>
+      <select id="industry"><option>Photographe</option><option>Restaurant</option><option>Coach</option><option>Portfolio</option><option>Agence</option></select>
+      <label for="cta">CTA</label>
+      <select id="cta"><option>Voir mon portfolio</option><option>Réserver une séance</option><option>Réserver une table</option><option>Nous contacter</option></select>
+      <label for="color">Couleur principale</label>
+      <input id="color" type="color" value="#9EE37D"/>
+      <label for="logo">Logo (PNG/SVG ≤ 2 Mo)</label>
+      <input id="logo" type="file" accept=".png,.svg" />
+      <div class="row" style="margin-top:12px">
+        <button id="btnBuild" class="primary">Générer l’aperçu</button>
+        <button id="btnDL">Télécharger HTML</button>
+      </div>
+    </div>
+    <div>
+      <label>Aperçu</label>
+      <iframe id="frame" title="Preview" style="width:100%;height:420px;border:1px solid var(--border);border-radius:12px;background:#111"></iframe>
+    </div>
+  </div>
+  <p><a href="../../index.html"><button>Retour au Hub</button></a></p>
+</div>
+<script type="module">
+import { exportHTML } from "../../lib/exporters.js";
+const brand = document.querySelector("#brand");
+const industry = document.querySelector("#industry");
+const cta = document.querySelector("#cta");
+const color = document.querySelector("#color");
+const logo = document.querySelector("#logo");
+const frame = document.querySelector("#frame");
+const btnBuild = document.querySelector("#btnBuild");
+const btnDL = document.querySelector("#btnDL");
+let lastHTML = "";
+function sanitize(text){ return String(text||"").replace(/[<>]/g, ""); }
+function tpl({brand, industry, cta, color, logoData}){
+  const accent = color || "#9EE37D";
+  const logoTag = logoData? `<img src="${logoData}" alt="${sanitize(brand)} logo" style="height:42px;border-radius:6px"/>` : `<div aria-hidden="true" style="width:42px;height:42px;border-radius:10px;background:${accent}"></div>`;
+  return `<!doctype html>
+<html lang="fr">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>${sanitize(brand)} — Aperçu</title>
+<style>
+  :root{{ --bg:#0B0B0F; --text:#F5F5F5; --sub:#CFCFD2; --border:rgba(255,255,255,.15); --accent:${accent}; }}
+  *{{box-sizing:border-box}} body{{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}}
+  .wrap{{max-width:1000px;margin:0 auto;padding:24px}}
+  header{{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}}
+  .hero{{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center;padding:24px 0}}
+  h1{{font-size:28px;margin:12px 0}}
+  p.lead{{color:var(--sub)}}
+  button.primary{{background:linear-gradient(90deg,var(--accent),#7FD4FF);color:#0b0b0f;border:0;border-radius:12px;padding:12px 16px;font-weight:600;cursor:pointer}}
+  .card{{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:16px}}
+  :focus-visible{{outline:2px solid #7FD4FF;outline-offset:3px;border-radius:12px}}
+</style>
+<body>
+<div class="wrap">
+  <header>
+    <div style="display:flex;gap:12px;align-items:center">{logoTag}<strong>${sanitize(brand)}</strong></div>
+    <nav aria-label="navigation"><a href="#services" style="color:var(--sub);margin-right:12px">Services</a><a href="#contact" style="color:var(--sub)">Contact</a></nav>
+  </header>
+  <section class="hero">
+    <div>
+      <h1>${sanitize(brand)} — ${sanitize(industry)}</h1>
+      <p class="lead">Une expérience ${industry.toLowerCase()} pensée pour convertir, accessible et performante.</p>
+      <button class="primary" aria-label="${sanitize(cta)}">${sanitize(cta)}</button>
+    </div>
+    <div class="card">
+      <h3 id="services">Points forts</h3>
+      <ul>
+        <li>Design cohérent, contrastes AA</li>
+        <li>Rapidité de chargement</li>
+        <li>Structure claire et CTA visible</li>
+      </ul>
+    </div>
+  </section>
+  <footer id="contact" style="color:var(--sub);margin-top:16px">© ${new Date().getFullYear()} ${sanitize(brand)} — Aperçu généré offline</footer>
+</div>
+</body>`;
+}
+btnBuild.addEventListener("click", async ()=>{
+  if(btnBuild.disabled) return;
+  btnBuild.disabled = true;
+  let logoData = "";
+  const file = logo.files[0];
+  if(file && file.size <= 2*1024*1024){
+    const extOK = /\.(png|svg)$/i.test(file.name);
+    if(extOK){ logoData = await fileToDataURL(file); }
+  }
+  lastHTML = tpl({brand:brand.value||"Ma Marque", industry:industry.value, cta:cta.value, color:color.value, logoData});
+  const doc = frame.contentWindow.document;
+  doc.open(); doc.write(lastHTML); doc.close();
+  setTimeout(()=>{ btnBuild.disabled=false; }, 500);
+});
+btnDL.addEventListener("click", ()=>{
+  if(!lastHTML){ lastHTML = tpl({brand:brand.value||"Ma Marque", industry:industry.value, cta:cta.value, color:color.value}); }
+  exportHTML(`parlios-site-preview-${Date.now()}.html`, lastHTML);
+});
+function fileToDataURL(file){
+  return new Promise((res, rej)=>{
+    const r = new FileReader();
+    r.onload = ()=>res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+</script>
+</body>
+</html>

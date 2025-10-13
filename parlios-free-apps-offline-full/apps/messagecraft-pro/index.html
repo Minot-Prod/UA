@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parlios Message Pro — Preview Offline</title>
+<link rel="stylesheet" href="../../styles/base.css"/>
+<body>
+<div class="container">
+  <h1>Parlios Message Pro — Preview</h1>
+  <p role="status" aria-live="polite">Générez des variantes réellement différentes (aucune API).</p>
+  <div class="grid-2">
+    <div>
+      <label for="goal">Objectif</label>
+      <select id="goal" aria-label="Objectif">
+        <option value="generic">Générique</option>
+        <option value="portfolio">Voir un portfolio</option>
+        <option value="booking">Réserver une séance</option>
+        <option value="table">Réserver une table</option>
+      </select>
+      <label for="tone">Ton</label>
+      <select id="tone" aria-label="Ton">
+        <option value="pro">Pro</option>
+        <option value="friendly">Friendly</option>
+        <option value="fun">Fun</option>
+        <option value="direct">Direct</option>
+      </select>
+      <label for="length">Longueur</label>
+      <select id="length" aria-label="Longueur">
+        <option value="short">Court</option>
+        <option value="medium" selected>Moyen</option>
+        <option value="long">Long</option>
+      </select>
+      <label for="seed">Seed (optionnel)</label>
+      <input id="seed" type="number" inputmode="numeric" placeholder="Random par défaut"/>
+      <div class="row" style="margin-top:12px">
+        <button id="btnGen" class="primary">Générer 5 variantes</button>
+        <button id="btnClear">Effacer</button>
+      </div>
+      <hr/>
+      <div class="row">
+        <button id="expCSV">Export CSV</button>
+        <button id="expMD">Export MD</button>
+        <button id="expJSON">Export JSON</button>
+      </div>
+      <small class="help">PDF : Fichier → Imprimer → Enregistrer en PDF.</small>
+    </div>
+    <div>
+      <label for="out">Variantes</label>
+      <div id="out" class="output" tabindex="0" aria-label="Variantes générées"></div>
+    </div>
+  </div>
+  <p><a href="../../index.html"><button>Retour au Hub</button></a></p>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden>
+  <h4 id="toastTitle">Info</h4>
+  <p id="toastMsg"></p>
+</div>
+<script type="module">
+import { generateVariants } from "../../lib/mock_ai.js";
+import { exportCSV, exportMD, exportJSON } from "../../lib/exporters.js";
+const q = (x)=>document.querySelector(x);
+const btn = q("#btnGen");
+const btnClear = q("#btnClear");
+const out = q("#out");
+const toast = q("#toast"), tTitle=q("#toastTitle"), tMsg=q("#toastMsg");
+function showToast(title, msg){
+  tTitle.textContent = title; tMsg.textContent = msg; toast.hidden=false;
+  setTimeout(()=>toast.hidden=true, 2200);
+}
+function collect(){
+  return {
+    goal: q("#goal").value,
+    tone: q("#tone").value,
+    length: q("#length").value,
+    seed: q("#seed").value? Number(q("#seed").value) : Date.now()
+  };
+}
+let last = [];
+btn.addEventListener("click", ()=>{
+  if(btn.disabled) return;
+  btn.disabled = true;
+  const cfg = collect();
+  last = generateVariants({...cfg, count:5});
+  out.innerHTML = last.map((v,i)=>`<p><strong>#${i+1}</strong> — ${v}</p>`).join("");
+  showToast("Génération", "5 variantes prêtes");
+  setTimeout(()=>{ btn.disabled=false; }, 600);
+});
+btnClear.addEventListener("click", ()=>{
+  out.innerHTML = ""; last = []; showToast("Réinitialisé", "Variantes effacées");
+});
+q("#expCSV").addEventListener("click", ()=>{
+  if(!last.length) return showToast("Export", "Rien à exporter");
+  const rows = [["index","texte"]].concat(last.map((v,i)=>[i+1, v]));
+  exportCSV(`parlios-message-${Date.now()}.csv`, rows);
+});
+q("#expMD").addEventListener("click", ()=>{
+  if(!last.length) return showToast("Export", "Rien à exporter");
+  const md = last.map((v,i)=>`**Variante ${i+1}**\n\n${v}`);
+  exportMD(`parlios-message-${Date.now()}.md`, md);
+});
+q("#expJSON").addEventListener("click", ()=>{
+  if(!last.length) return showToast("Export", "Rien à exporter");
+  exportJSON(`parlios-message-${Date.now()}.json`, { variants: last });
+});
+</script>
+</body>
+</html>

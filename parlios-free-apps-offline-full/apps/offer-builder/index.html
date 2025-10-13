@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parlios Constructeur d’Offres — Preview Offline</title>
+<link rel="stylesheet" href="../../styles/base.css"/>
+<body>
+<div class="container">
+  <h1>Parlios Constructeur d’Offres — Preview</h1>
+  <p aria-live="polite">Génère une offre (titre, promesse, bénéfices, preuves, objections, CTA) — 0 API.</p>
+  <div class="grid-2">
+    <div>
+      <label>Produit / Service</label><input id="product" placeholder="Ex: Coaching IA pour freelances"/>
+      <label>Audience</label><input id="audience" placeholder="Ex: Designers indé, Montréal"/>
+      <label>Ton</label>
+      <select id="tone"><option>pro</option><option>friendly</option><option>fun</option><option>direct</option></select>
+      <div class="row" style="margin-top:12px">
+        <button id="btn" class="primary">Construire l’offre</button>
+        <button id="btnMD">Export MD</button>
+      </div>
+    </div>
+    <div>
+      <div id="out" class="output"></div>
+    </div>
+  </div>
+  <p><a href="../../index.html"><button>Retour au Hub</button></a></p>
+</div>
+<script type="module">
+import { generateVariants } from "../../lib/mock_ai.js";
+import { exportMD } from "../../lib/exporters.js";
+const $=s=>document.querySelector(s);
+$("#btn").addEventListener("click",()=>{
+  const seed = Date.now();
+  const tone = $("#tone").value;
+  const product = $("#product").value||"Offre Parlios";
+  const audience = $("#audience").value||"Audience locale";
+  const title = generateVariants({seed,tone,goal:"generic",count:1,length:"short"})[0];
+  const benefits = generateVariants({seed:seed+1,tone,goal:"generic",count:3,length:"short"});
+  const proofs = generateVariants({seed:seed+2,tone,goal:"generic",count:2,length:"short"});
+  const objections = ["Trop cher ? → garantie satisfait ou remboursé 14j","Pas le temps ? → plan en 3 étapes, < 3h setup"];
+  const cta = generateVariants({seed:seed+3,tone,goal:"generic",count:1,length:"short"})[0];
+  $("#out").innerHTML = `
+    <strong>Titre:</strong> ${title}<br/><br/>
+    <strong>Promesse:</strong> ${product} pour ${audience}.<br/><br/>
+    <strong>Bénéfices:</strong><br/>- ${benefits.join("<br/>- ")}<br/><br/>
+    <strong>Preuves:</strong><br/>- ${proofs.join("<br/>- ")}<br/><br/>
+    <strong>Objections & réponses:</strong><br/>- ${objections.join("<br/>- ")}<br/><br/>
+    <strong>CTA:</strong> ${cta}
+  `;
+  window.__offerLast = { product, audience, tone, title, benefits, proofs, objections, cta };
+});
+$("#btnMD").addEventListener("click",()=>{
+  const d = window.__offerLast; if(!d) return;
+  exportMD(`parlios-offer-${Date.now()}.md`, [
+    `# Offre\n\n**Produit**: ${d.product}\n**Audience**: ${d.audience}\n**Ton**: ${d.tone}`,
+    `## Titre\n${d.title}`,
+    `## Bénéfices\n- ${d.benefits.join("\n- ")}`,
+    `## Preuves\n- ${d.proofs.join("\n- ")}`,
+    `## Objections\n- ${d.objections.join("\n- ")}`,
+    `## CTA\n${d.cta}`
+  ]);
+});
+</script>
+</body>
+</html>
