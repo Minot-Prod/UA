@@ -1,0 +1,29 @@
+name,category,description,status,points_per_use,unlock_points,complexity,outputs
+MessageCraft AI,Communication & Copy,"Emails, posts et pitchs pro en quelques secondes.",active,20,,XS,"TXT, MD"
+CopyForge AI,Communication & Copy,"Titres, slogans, punchlines et variantes A/B.",active,20,,XS,"TXT, MD"
+EmailFlow AI,Communication & Copy,"Séquences d’e-mails (welcome, relance, remerciement).",active,25,,S,MD
+ClientEase,Communication & Copy,"Réponses support (FAQ, SAV) adaptées à ton ton de marque.",active,15,,XS,"TXT, MD"
+PromoPulse,Créateurs & Visuel,"Storyboard texte pour teaser/reels : hooks, scènes, timings, CTA.",active,20,,XS,MD
+PageCraft,Branding & Site,"Sections de landing (héros, bénéfices, preuves, CTA).",active,20,,XS,"HTML, MD"
+MarketScope AI,Business & Marché,"Positionnement, différenciation et messages clés.",active,25,,XS,"MD, PDF"
+PersonaForge Lite,Business & Marché,"Personas rapides : motivations, freins, canaux.",active,20,,XS,"MD, JSON"
+IdeaForge,Business & Marché,"Idées de produits, offres, lead magnets, contenus.",active,15,,XS,MD
+BudgetBuddy Lite,Business & Marché,"Budget prévisionnel simple (charges, revenus, marge).",active,25,,S,"CSV, MD"
+AutoWizard,Business & Marché,Blueprints d’automatisation (Zapier/n8n/Make) à copier.,active,20,,S,MD
+Studio Express,Créateurs & Visuel,"Visuels, slides et mini-pages statiques à partir d’idées.",active,30,,XS,"PNG, HTML"
+LogoSpark Lite,Créateurs & Visuel,Idées de logo + palettes + associations sémantiques (préviews statiques).,active,20,,XS,"PNG, JSON, MD"
+SiteSpark AI,Branding & Site,Prévisualisation de landing statique sans code.,active,20,,S,ZIP HTML
+PlanifyPro Lite,Productivité & Org,"Plan de projet auto (tâches, jalons, responsables).",active,25,,S,"CSV, ICS"
+AI Coach,Productivité & Org,Mini‑coach de déblocage : questions-guides + plan d’action.,active,15,,XS,MD
+SEOBrief Pro,Contenu & SEO,"Brief SEO complet (Hn, mots‑clés, intents, outline).",active,25,,S,MD
+HookGenerator,Contenu & SEO,"50 hooks courts pour posts, ads, vidéos courtes.",active,15,,XS,MD
+CaptionMixer,Contenu & SEO,Légendes sociales multi‑tons + hashtags.,active,15,,XS,MD
+OfferCraft,Sales & Relation,"Page d’offre : promesse, bonus, garantie, urgence.",active,20,,XS,"MD, HTML"
+BrandSpark,Branding & Site,"Identité : nom, slogan, promesse, tonalité, palettes (textuelles).",locked,,150,XS,"MD, JSON"
+SectionStack,Branding & Site,Assemblage multi‑sections → export HTML multipage.,locked,,300,S,HTML
+TopicMap,Contenu & SEO,Piliers de contenu + sous‑sujets + séries hebdo.,locked,,200,XS,"MD, CSV"
+KeywordExpander,Contenu & SEO,"Clusters de mots‑clés, LSI, questions PAA.",locked,,300,S,"CSV, MD"
+AdSet Builder,Acquisition & Ads,"Sets d’annonces complets par canal (titres, descriptions, CTA).",locked,,350,S,MD
+CompetitorScan,Business & Marché,"Matrice concurrents : promesse, différenciation, prix indicatifs.",locked,,300,S,"CSV, MD"
+PricingSketch,Business & Marché,"Cadres de pricing : packages, options, ancrage.",locked,,400,S,MD
+Carrousel Coach,Créateurs & Visuel,Plan de carrousel (slides 1‑7) pour IG/LinkedIn.,locked,,200,XS,MD

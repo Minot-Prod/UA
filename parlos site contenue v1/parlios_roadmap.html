@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parlios — Roadmap & Étapes à venir</title>
+  <meta name="description" content="La roadmap Parlios : paliers de points, déblocages d’outils, et ouverture du Hub Parlios.">
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --bg:#0B0B0F; --text:#F5F5F5; --muted:#CFCFD2; --border:rgba(255,255,255,.12);
+      --accent:#9EE37D; --accent-2:#7FD4FF; --surface:rgba(255,255,255,.04);
+      --locked: rgba(255,255,255,.06);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:clamp(40px,6vw,80px) 16px}
+    .topbar{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px}
+    .lang-btn{background:transparent;border:1px solid var(--border);color:var(--muted);
+      padding:6px 10px;border-radius:10px;cursor:pointer}
+    .lang-btn.is-active{border-color:var(--accent);color:var(--text)}
+    .lang-btn:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+
+    .head h1{font-size:clamp(26px,4.6vw,40px);line-height:1.12;margin:0 0 10px}
+    .head p{color:var(--muted);max-width:76ch;margin:0 0 18px}
+
+    /* Progress tiers */
+    .tiers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:12px 0}
+    @media (max-width: 960px){ .tiers{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width: 540px){ .tiers{grid-template-columns:1fr} }
+    .tier{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:14px}
+    .tier h3{margin:0 0 6px;font-size:16px}
+    .tier p{margin:0;color:var(--muted);font-size:14px}
+    .pts{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:6px}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+
+    /* Timeline */
+    .timeline{margin-top:16px;border-top:1px solid var(--border);padding-top:16px}
+    .milestones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    @media (max-width: 860px){ .milestones{grid-template-columns:1fr} }
+    .card{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:16px}
+    .card h3{margin:0 0 6px;font-size:18px}
+    .meta{font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;gap:8px;flex-wrap:wrap}
+    .badge{border:1px solid var(--border);border-radius:10px;padding:6px 8px;background:rgba(255,255,255,.04)}
+
+    .cta-row{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:12px;
+      border:1px solid var(--border);text-decoration:none;font-weight:600;transition:transform .12s ease, background .2s ease, border-color .2s ease}
+    .btn-primary{background:linear-gradient(180deg, rgba(158,227,125,.18), rgba(158,227,125,.10));border-color:rgba(158,227,125,.45)}
+    .btn-primary:hover{transform:translateY(-1px);border-color:rgba(158,227,125,.8)}
+    .btn-ghost{background:var(--surface)}
+    .btn-ghost:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.28)}
+    @media (prefers-reduced-motion: reduce){ .btn{transition:none} }
+  </style>
+</head>
+<body>
+  <div class="topbar" aria-label="Langue / Language">
+    <button class="lang-btn is-active" data-lang="fr" aria-pressed="true">FR</button>
+    <button class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+
+  <section class="roadmap" aria-labelledby="roadmap-title">
+    <div class="container">
+      <div class="head">
+        <h1 id="roadmap-title" data-i18n data-fr="Roadmap & Étapes à venir" data-en="Roadmap & What’s Next">Roadmap & Étapes à venir</h1>
+        <p data-i18n data-fr="Une progression claire : tes points débloquent de nouveaux modules — et nous ouvrons progressivement le Hub Parlios avec la communauté."
+           data-en="A clear progression: your points unlock new modules—and we progressively open the Parlios Hub with the community.">
+          Une progression claire : tes points débloquent de nouveaux modules — et nous ouvrons progressivement le Hub Parlios avec la communauté.
+        </p>
+      </div>
+
+      <!-- Point Tiers -->
+      <div class="tiers" aria-label="Paliers de points">
+        <div class="tier">
+          <div class="pts"><span class="dot" aria-hidden="true"></span><span data-i18n data-fr="Niveau 1 — 0 pts" data-en="Level 1 — 0 pts">Niveau 1 — 0 pts</span></div>
+          <h3 data-i18n data-fr="4 outils gratuits" data-en="4 free tools">4 outils gratuits</h3>
+          <p data-i18n data-fr="MessageCraft AI, MarketScope AI, Studio Express, SiteSpark AI."
+             data-en="MessageCraft AI, MarketScope AI, Studio Express, SiteSpark AI.">
+            MessageCraft AI, MarketScope AI, Studio Express, SiteSpark AI.
+          </p>
+        </div>
+
+        <div class="tier">
+          <div class="pts"><span class="dot" aria-hidden="true"></span><span data-i18n data-fr="Niveau 2 — 250 pts" data-en="Level 2 — 250 pts">Niveau 2 — 250 pts</span></div>
+          <h3 data-i18n data-fr="PromoPulse" data-en="PromoPulse">PromoPulse</h3>
+          <p data-i18n data-fr="Scripts de teaser : storyboard textuel, hooks, scènes, timings et CTA."
+             data-en="Teaser scripts: textual storyboard, hooks, scenes, timings & CTAs.">
+            Scripts de teaser : storyboard textuel, hooks, scènes, timings et CTA.
+          </p>
+        </div>
+
+        <div class="tier">
+          <div class="pts"><span class="dot" aria-hidden="true"></span><span data-i18n data-fr="Niveau 3 — 500 pts" data-en="Level 3 — 500 pts">Niveau 3 — 500 pts</span></div>
+          <h3 data-i18n data-fr="ContentSpark" data-en="ContentSpark">ContentSpark</h3>
+          <p data-i18n data-fr="Plan éditorial prêt à l’emploi : thèmes, calendrier, prompts par canal."
+             data-en="Ready-to-use editorial plan: themes, calendar, per-channel prompts.">
+            Plan éditorial prêt à l’emploi : thèmes, calendrier, prompts par canal.
+          </p>
+        </div>
+
+        <div class="tier">
+          <div class="pts"><span class="dot" aria-hidden="true"></span><span data-i18n data-fr="Niveau 4 — 1000 pts" data-en="Level 4 — 1000 pts">Niveau 4 — 1000 pts</span></div>
+          <h3 data-i18n data-fr="BrandSpark" data-en="BrandSpark">BrandSpark</h3>
+          <p data-i18n data-fr="Identité de marque express : nom, slogan, positionnement, palette émotionnelle."
+             data-en="Express brand identity: name, slogan, positioning, emotional palette.">
+            Identité de marque express : nom, slogan, positionnement, palette émotionnelle.
+          </p>
+        </div>
+
+        <div class="tier">
+          <div class="pts"><span class="dot" aria-hidden="true"></span><span data-i18n data-fr="Niveau 5 — 1500 pts" data-en="Level 5 — 1500 pts">Niveau 5 — 1500 pts</span></div>
+          <h3 data-i18n data-fr="AdPulse" data-en="AdPulse">AdPulse</h3>
+          <p data-i18n data-fr="Campagnes publicitaires prêtes à publier : textes, variantes, hooks vidéo."
+             data-en="Ready-to-publish ad campaigns: copy, variants, video hooks.">
+            Campagnes publicitaires prêtes à publier : textes, variantes, hooks vidéo.
+          </p>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline">
+        <h2 class="visually-hidden">Timeline</h2>
+        <div class="milestones">
+          <article class="card">
+            <h3 data-i18n data-fr="Phase 1 — Boîte à outils gratuite" data-en="Phase 1—Free toolbox">Phase 1 — Boîte à outils gratuite</h3>
+            <div class="meta">
+              <span class="badge" data-i18n data-fr="Maintenant" data-en="Now">Maintenant</span>
+              <span class="badge" data-i18n data-fr="Sans backend" data-en="No backend">Sans backend</span>
+            </div>
+            <p data-i18n data-fr="4 outils disponibles, points pionniers activés, invitations et premiers paliers de déblocage."
+               data-en="4 tools available, pioneer points activated, invitations and first unlock milestones.">
+              4 outils disponibles, points pionniers activés, invitations et premiers paliers de déblocage.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 data-i18n data-fr="Phase 2 — Nouvelles fonctionnalités communautaires" data-en="Phase 2—Community features">Phase 2 — Nouvelles fonctionnalités communautaires</h3>
+            <div class="meta">
+              <span class="badge" data-i18n data-fr="Prochainement" data-en="Soon">Prochainement</span>
+              <span class="badge" data-i18n data-fr="Ambassadeurs" data-en="Ambassadors">Ambassadeurs</span>
+            </div>
+            <p data-i18n data-fr="Espaces d’échange, feedback collectif, missions communautaires pour débloquer des modules."
+               data-en="Spaces for exchange, collective feedback, and community missions to unlock modules.">
+              Espaces d’échange, feedback collectif, missions communautaires pour débloquer des modules.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 data-i18n data-fr="Phase 3 — Connexions aux outils" data-en="Phase 3—Tool connections">Phase 3 — Connexions aux outils</h3>
+            <div class="meta">
+              <span class="badge" data-i18n data-fr="À venir" data-en="Upcoming">À venir</span>
+              <span class="badge">Notion / Shopify / n8n</span>
+            </div>
+            <p data-i18n data-fr="Export amélioré, intégrations simples (quand disponibles), toujours optionnelles."
+               data-en="Improved exports, simple integrations (when available), always optional.">
+              Export amélioré, intégrations simples (quand disponibles), toujours optionnelles.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 data-i18n data-fr="Phase 4 — Ouverture du Hub Parlios" data-en="Phase 4—Opening the Parlios Hub">Phase 4 — Ouverture du Hub Parlios</h3>
+            <div class="meta">
+              <span class="badge" data-i18n data-fr="Avec la communauté" data-en="With the community">Avec la communauté</span>
+              <span class="badge" data-i18n data-fr="Accès anticipé" data-en="Early access">Accès anticipé</span>
+            </div>
+            <p data-i18n data-fr="Espace central de pilotage : projets, outils, collaborations, performances — pensé comme ton partenaire d’affaires IA."
+               data-en="Central control space: projects, tools, collaborations, performance—designed as your AI business partner.">
+              Espace central de pilotage : projets, outils, collaborations, performances — pensé comme ton partenaire d’affaires IA.
+            </p>
+          </article>
+        </div>
+      </div>
+
+      <div class="cta-row" role="group" aria-label="Actions">
+        <a class="btn btn-primary" href="#communaute" data-i18n data-fr="Rejoindre la communauté" data-en="Join the community">Rejoindre la communauté</a>
+        <a class="btn btn-ghost" href="#outils-gratuits" data-i18n data-fr="Gagner des points maintenant" data-en="Earn points now">Gagner des points maintenant</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function(){
+      const root = document.documentElement;
+      function setLang(lang){
+        document.querySelectorAll('[data-i18n]').forEach(el=>{
+          const val = el.getAttribute(lang === 'en' ? 'data-en' : 'data-fr');
+          if(val) el.textContent = val;
+        });
+        document.querySelectorAll('.lang-btn').forEach(b=>{
+          const is = b.getAttribute('data-lang') === lang;
+          b.classList.toggle('is-active', is);
+          b.setAttribute('aria-pressed', is);
+        });
+        root.setAttribute('lang', lang);
+      }
+      document.querySelectorAll('.lang-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=> setLang(btn.getAttribute('data-lang')));
+      });
+    })();
+  </script>
+</body>
+</html>

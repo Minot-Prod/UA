@@ -1,0 +1,513 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Parlios — Outils gratuits</title>
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --bg:#0B0B0F; --text:#F6F7F9; --muted:#C8CAD1; --border:rgba(255,255,255,.12);
+      --accent:#9EE37D; --accent-2:#7FD4FF; --surface:rgba(255,255,255,.04);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif}
+    .container{max-width:1180px;margin:0 auto;padding:clamp(40px,6vw,80px) 16px}
+    h1{font-size:clamp(26px,4.8vw,42px);line-height:1.1;margin:0 0 12px}
+    .intro{color:var(--muted);max-width:80ch;margin:0 0 22px}
+
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .tab{padding:8px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);font-weight:600;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    @media (max-width: 1080px){ .grid{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width: 760px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width: 520px){ .grid{grid-template-columns:1fr} }
+
+    .card{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:14px;display:flex;flex-direction:column;gap:10px}
+    .card h3{margin:0 0 2px;font-size:16px}
+    .desc{color:var(--muted);margin:0 0 6px}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+    .points{font-weight:700;color:var(--text)}
+    .cta{margin-top:auto;display:flex;gap:10px}
+    .btn{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);text-decoration:none;font-weight:600}
+    .btn-primary{background:linear-gradient(180deg, rgba(158,227,125,.18), rgba(158,227,125,.10));border-color:rgba(158,227,125,.45)}
+    .note{font-size:13px;color:var(--muted);margin-top:12px}
+
+    .locked{opacity:.6;position:relative}
+    .locked::after{content:"🔒";position:absolute;top:10px;right:10px;opacity:.9}
+    .unlock{font-size:12px;color:var(--muted)}
+    .section-title{margin-top:40px;margin-bottom:10px;font-size:22px}
+  </style>
+</head>
+<body>
+  <section aria-labelledby="tools-title">
+    <div class="container">
+      <h1 id="tools-title">Découvre les outils gratuits Parlios</h1>
+      <p class="intro">Le meilleur de l’IA, sans code et sans friction. Chaque outil est front‑only : input simple → output immédiat → export (TXT/MD/HTML/CSV/ICS). Active l’option “Brand Parlios” pour amplifier l’effet viral.</p>
+
+      <div class="tabs" aria-label="Catégories">
+        <span class="tab">Communication</span>
+        <span class="tab">Branding & Site</span>
+        <span class="tab">Contenu & SEO</span>
+        <span class="tab">Business & Marché</span>
+        <span class="tab">Productivité</span>
+        <span class="tab">Créateurs & Visuel</span>
+      </div>
+
+      <h2 class="section-title">Outils disponibles</h2>
+      <div class="grid">
+
+<article class="card" aria-label="MessageCraft AI">
+  <h3>MessageCraft AI</h3>
+  <p class="desc">Emails, posts et pitchs pro en quelques secondes.</p>
+  <div class="chips">
+    <span class="chip">Communication & Copy</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: TXT, MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-messagecraft-ai" class="btn btn-primary">Essayer</a>
+    <a href="#learn-messagecraft-ai" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="CopyForge AI">
+  <h3>CopyForge AI</h3>
+  <p class="desc">Titres, slogans, punchlines et variantes A/B.</p>
+  <div class="chips">
+    <span class="chip">Communication & Copy</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: TXT, MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-copyforge-ai" class="btn btn-primary">Essayer</a>
+    <a href="#learn-copyforge-ai" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="EmailFlow AI">
+  <h3>EmailFlow AI</h3>
+  <p class="desc">Séquences d’e-mails (welcome, relance, remerciement).</p>
+  <div class="chips">
+    <span class="chip">Communication & Copy</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité S</span>
+    <span class="chip points">+25 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-emailflow-ai" class="btn btn-primary">Essayer</a>
+    <a href="#learn-emailflow-ai" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="ClientEase">
+  <h3>ClientEase</h3>
+  <p class="desc">Réponses support (FAQ, SAV) adaptées à ton ton de marque.</p>
+  <div class="chips">
+    <span class="chip">Communication & Copy</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: TXT, MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+15 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-clientease" class="btn btn-primary">Essayer</a>
+    <a href="#learn-clientease" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="PromoPulse">
+  <h3>PromoPulse</h3>
+  <p class="desc">Storyboard texte pour teaser/reels : hooks, scènes, timings, CTA.</p>
+  <div class="chips">
+    <span class="chip">Créateurs & Visuel</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-promopulse" class="btn btn-primary">Essayer</a>
+    <a href="#learn-promopulse" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="PageCraft">
+  <h3>PageCraft</h3>
+  <p class="desc">Sections de landing (héros, bénéfices, preuves, CTA).</p>
+  <div class="chips">
+    <span class="chip">Branding & Site</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: HTML, MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-pagecraft" class="btn btn-primary">Essayer</a>
+    <a href="#learn-pagecraft" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="MarketScope AI">
+  <h3>MarketScope AI</h3>
+  <p class="desc">Positionnement, différenciation et messages clés.</p>
+  <div class="chips">
+    <span class="chip">Business & Marché</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD, PDF</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+25 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-marketscope-ai" class="btn btn-primary">Essayer</a>
+    <a href="#learn-marketscope-ai" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="PersonaForge Lite">
+  <h3>PersonaForge Lite</h3>
+  <p class="desc">Personas rapides : motivations, freins, canaux.</p>
+  <div class="chips">
+    <span class="chip">Business & Marché</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD, JSON</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-personaforge-lite" class="btn btn-primary">Essayer</a>
+    <a href="#learn-personaforge-lite" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="IdeaForge">
+  <h3>IdeaForge</h3>
+  <p class="desc">Idées de produits, offres, lead magnets, contenus.</p>
+  <div class="chips">
+    <span class="chip">Business & Marché</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+15 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-ideaforge" class="btn btn-primary">Essayer</a>
+    <a href="#learn-ideaforge" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="BudgetBuddy Lite">
+  <h3>BudgetBuddy Lite</h3>
+  <p class="desc">Budget prévisionnel simple (charges, revenus, marge).</p>
+  <div class="chips">
+    <span class="chip">Business & Marché</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: CSV, MD</span>
+    <span class="chip">Complexité S</span>
+    <span class="chip points">+25 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-budgetbuddy-lite" class="btn btn-primary">Essayer</a>
+    <a href="#learn-budgetbuddy-lite" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="AutoWizard">
+  <h3>AutoWizard</h3>
+  <p class="desc">Blueprints d’automatisation (Zapier/n8n/Make) à copier.</p>
+  <div class="chips">
+    <span class="chip">Business & Marché</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité S</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-autowizard" class="btn btn-primary">Essayer</a>
+    <a href="#learn-autowizard" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="Studio Express">
+  <h3>Studio Express</h3>
+  <p class="desc">Visuels, slides et mini-pages statiques à partir d’idées.</p>
+  <div class="chips">
+    <span class="chip">Créateurs & Visuel</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: PNG, HTML</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+30 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-studio-express" class="btn btn-primary">Essayer</a>
+    <a href="#learn-studio-express" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="LogoSpark Lite">
+  <h3>LogoSpark Lite</h3>
+  <p class="desc">Idées de logo + palettes + associations sémantiques (préviews statiques).</p>
+  <div class="chips">
+    <span class="chip">Créateurs & Visuel</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: PNG, JSON, MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-logospark-lite" class="btn btn-primary">Essayer</a>
+    <a href="#learn-logospark-lite" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="SiteSpark AI">
+  <h3>SiteSpark AI</h3>
+  <p class="desc">Prévisualisation de landing statique sans code.</p>
+  <div class="chips">
+    <span class="chip">Branding & Site</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: ZIP HTML</span>
+    <span class="chip">Complexité S</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-sitespark-ai" class="btn btn-primary">Essayer</a>
+    <a href="#learn-sitespark-ai" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="PlanifyPro Lite">
+  <h3>PlanifyPro Lite</h3>
+  <p class="desc">Plan de projet auto (tâches, jalons, responsables).</p>
+  <div class="chips">
+    <span class="chip">Productivité & Org</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: CSV, ICS</span>
+    <span class="chip">Complexité S</span>
+    <span class="chip points">+25 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-planifypro-lite" class="btn btn-primary">Essayer</a>
+    <a href="#learn-planifypro-lite" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="AI Coach">
+  <h3>AI Coach</h3>
+  <p class="desc">Mini‑coach de déblocage : questions-guides + plan d’action.</p>
+  <div class="chips">
+    <span class="chip">Productivité & Org</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+15 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-ai-coach" class="btn btn-primary">Essayer</a>
+    <a href="#learn-ai-coach" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="SEOBrief Pro">
+  <h3>SEOBrief Pro</h3>
+  <p class="desc">Brief SEO complet (Hn, mots‑clés, intents, outline).</p>
+  <div class="chips">
+    <span class="chip">Contenu & SEO</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité S</span>
+    <span class="chip points">+25 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-seobrief-pro" class="btn btn-primary">Essayer</a>
+    <a href="#learn-seobrief-pro" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="HookGenerator">
+  <h3>HookGenerator</h3>
+  <p class="desc">50 hooks courts pour posts, ads, vidéos courtes.</p>
+  <div class="chips">
+    <span class="chip">Contenu & SEO</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+15 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-hookgenerator" class="btn btn-primary">Essayer</a>
+    <a href="#learn-hookgenerator" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="CaptionMixer">
+  <h3>CaptionMixer</h3>
+  <p class="desc">Légendes sociales multi‑tons + hashtags.</p>
+  <div class="chips">
+    <span class="chip">Contenu & SEO</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+15 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-captionmixer" class="btn btn-primary">Essayer</a>
+    <a href="#learn-captionmixer" class="btn">En savoir +</a>
+  </div>
+</article>
+
+<article class="card" aria-label="OfferCraft">
+  <h3>OfferCraft</h3>
+  <p class="desc">Page d’offre : promesse, bonus, garantie, urgence.</p>
+  <div class="chips">
+    <span class="chip">Sales & Relation</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD, HTML</span>
+    <span class="chip">Complexité XS</span>
+    <span class="chip points">+20 pts/usage</span>
+  </div>
+  <div class="cta">
+    <a href="#start-offercraft" class="btn btn-primary">Essayer</a>
+    <a href="#learn-offercraft" class="btn">En savoir +</a>
+  </div>
+</article>
+
+</div>
+
+<h2 class="section-title">À débloquer bientôt</h2>
+<div class="grid">
+
+<article class="card locked" aria-label="BrandSpark (verrouillé)">
+  <h3>BrandSpark</h3>
+  <p class="desc">Identité : nom, slogan, promesse, tonalité, palettes (textuelles).</p>
+  <div class="chips">
+    <span class="chip">Branding & Site</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD, JSON</span>
+    <span class="chip">Complexité XS</span>
+  </div>
+  <p class="unlock">Débloqué à partir de <strong>150 points</strong>.</p>
+  <div class="cta">
+    <a href="#how-to-earn" class="btn">Gagner des points</a>
+  </div>
+</article>
+
+<article class="card locked" aria-label="SectionStack (verrouillé)">
+  <h3>SectionStack</h3>
+  <p class="desc">Assemblage multi‑sections → export HTML multipage.</p>
+  <div class="chips">
+    <span class="chip">Branding & Site</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: HTML</span>
+    <span class="chip">Complexité S</span>
+  </div>
+  <p class="unlock">Débloqué à partir de <strong>300 points</strong>.</p>
+  <div class="cta">
+    <a href="#how-to-earn" class="btn">Gagner des points</a>
+  </div>
+</article>
+
+<article class="card locked" aria-label="TopicMap (verrouillé)">
+  <h3>TopicMap</h3>
+  <p class="desc">Piliers de contenu + sous‑sujets + séries hebdo.</p>
+  <div class="chips">
+    <span class="chip">Contenu & SEO</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD, CSV</span>
+    <span class="chip">Complexité XS</span>
+  </div>
+  <p class="unlock">Débloqué à partir de <strong>200 points</strong>.</p>
+  <div class="cta">
+    <a href="#how-to-earn" class="btn">Gagner des points</a>
+  </div>
+</article>
+
+<article class="card locked" aria-label="KeywordExpander (verrouillé)">
+  <h3>KeywordExpander</h3>
+  <p class="desc">Clusters de mots‑clés, LSI, questions PAA.</p>
+  <div class="chips">
+    <span class="chip">Contenu & SEO</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: CSV, MD</span>
+    <span class="chip">Complexité S</span>
+  </div>
+  <p class="unlock">Débloqué à partir de <strong>300 points</strong>.</p>
+  <div class="cta">
+    <a href="#how-to-earn" class="btn">Gagner des points</a>
+  </div>
+</article>
+
+<article class="card locked" aria-label="AdSet Builder (verrouillé)">
+  <h3>AdSet Builder</h3>
+  <p class="desc">Sets d’annonces complets par canal (titres, descriptions, CTA).</p>
+  <div class="chips">
+    <span class="chip">Acquisition & Ads</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité S</span>
+  </div>
+  <p class="unlock">Débloqué à partir de <strong>350 points</strong>.</p>
+  <div class="cta">
+    <a href="#how-to-earn" class="btn">Gagner des points</a>
+  </div>
+</article>
+
+<article class="card locked" aria-label="CompetitorScan (verrouillé)">
+  <h3>CompetitorScan</h3>
+  <p class="desc">Matrice concurrents : promesse, différenciation, prix indicatifs.</p>
+  <div class="chips">
+    <span class="chip">Business & Marché</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: CSV, MD</span>
+    <span class="chip">Complexité S</span>
+  </div>
+  <p class="unlock">Débloqué à partir de <strong>300 points</strong>.</p>
+  <div class="cta">
+    <a href="#how-to-earn" class="btn">Gagner des points</a>
+  </div>
+</article>
+
+<article class="card locked" aria-label="PricingSketch (verrouillé)">
+  <h3>PricingSketch</h3>
+  <p class="desc">Cadres de pricing : packages, options, ancrage.</p>
+  <div class="chips">
+    <span class="chip">Business & Marché</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité S</span>
+  </div>
+  <p class="unlock">Débloqué à partir de <strong>400 points</strong>.</p>
+  <div class="cta">
+    <a href="#how-to-earn" class="btn">Gagner des points</a>
+  </div>
+</article>
+
+<article class="card locked" aria-label="Carrousel Coach (verrouillé)">
+  <h3>Carrousel Coach</h3>
+  <p class="desc">Plan de carrousel (slides 1‑7) pour IG/LinkedIn.</p>
+  <div class="chips">
+    <span class="chip">Créateurs & Visuel</span>
+    <span class="chip">Sans code</span>
+    <span class="chip">Export: MD</span>
+    <span class="chip">Complexité XS</span>
+  </div>
+  <p class="unlock">Débloqué à partir de <strong>200 points</strong>.</p>
+  <div class="cta">
+    <a href="#how-to-earn" class="btn">Gagner des points</a>
+  </div>
+</article>
+
+      </div>
+
+      <p class="note">Plus tu explores, plus tu découvres. Ces outils sont ton premier pas vers le <strong>Hub Parlios</strong> — ton espace intelligent pour piloter, créer et avancer.</p>
+    </div>
+  </section>
+</body>
+</html>

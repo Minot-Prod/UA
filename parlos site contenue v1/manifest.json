@@ -1,0 +1,16 @@
+{
+  "name": "Parlios",
+  "short_name": "Parlios",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0B0F",
+  "theme_color": "#0B0B0F",
+  "icons": [
+    {
+      "src": "/assets/brand/parlios-logo.svg",
+      "sizes": "256x256",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
