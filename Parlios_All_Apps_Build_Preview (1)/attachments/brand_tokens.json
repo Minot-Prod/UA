@@ -1,0 +1,9 @@
+{
+  "background": "#0B0B0F",
+  "text": "#F5F5F5",
+  "accent": "#9EE37D",
+  "secondary": "#7FD4FF",
+  "radius": "16px",
+  "motion": "200ms ease",
+  "shadow": "0 0 30px rgba(127,212,255,0.15)"
+}
