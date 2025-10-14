@@ -1,0 +1,91 @@
+{
+  "name": "UA Router",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ua/router"
+      },
+      "id": "Webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "propertyName": "app_id"
+      },
+      "id": "Switch",
+      "name": "Switch app_id",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{ok:true, source:'router', app_id: $json.app_id, intent: $json.intent}}];"
+      },
+      "id": "FnDefault",
+      "name": "Default",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "const p=$json.payload||{}; const txt=(p.input||'Texte'); const vars=[txt, txt.toUpperCase(), txt+' ✅']; return [{json:{title:'CopyForge Variants', variants:vars}}];"
+      },
+      "id": "FnCopyforge",
+      "name": "copyforge-ai",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "const p=$json.payload||{}; return [{json:{adset:{product:p.product||'Produit', audience:p.audience||'Audience', budget_daily:20}}}];"
+      },
+      "id": "FnAdset",
+      "name": "adset-builder",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch app_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch app_id": {
+      "main": [
+        [
+          {
+            "node": "FnCopyforge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FnAdset",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FnDefault",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": {}
+}
