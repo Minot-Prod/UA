@@ -1,0 +1,46 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Parlios Widget — financeflow</title>
+<style>
+:root{color-scheme:dark light}
+body{margin:0;background:#0d0f12;color:#e6e9ef;font:15px/1.5 system-ui}
+.wrap{padding:12px}
+.card{background:#12151a;border:1px solid #1e232b;border-radius:12px;padding:12px}
+.btn{padding:.5rem .8rem;border:1px solid #2a3340;border-radius:10px;background:#111a;cursor:pointer}
+.grid{display:grid;gap:10px}
+textarea,input,select{background:#0f1318;border:1px solid #263041;border-radius:8px;color:#e6e9ef;padding:.5rem}
+footer{opacity:.7;margin-top:10px;font-size:12px;text-align:center}
+</style>
+<div class="wrap">
+  <div class="card grid" role="region" aria-label="Widget financeflow">
+    <strong id="title">financeflow</strong>
+    <label>Intent <select id="intent"><option>RUN</option><option>DEMO</option><option>PING</option></select></label>
+    <label>Payload JSON <textarea id="payload" rows="5">{{"input":"texte..."}}</textarea></label>
+    <button class="btn" id="go">Exécuter</button>
+    <pre id="out" aria-live="polite">Prêt.</pre>
+  </div>
+  <footer>Made with Parlios</footer>
+</div>
+<script>
+const getUA=()=>new URLSearchParams(location.search).get("ua")||window.UA_BASE||localStorage.getItem("UA_BASE")||"";
+async function run(){
+  const intent=document.getElementById('intent').value||"RUN";
+  let data={}; try{ data=JSON.parse(document.getElementById('payload').value||"{{}}"); }catch(_){
+    data={};
+  }
+  const out=document.getElementById('out');
+  out.textContent="Exécution...";
+  const ua=getUA();
+  const body={app_id:"financeflow", intent, payload:data};
+  if(ua){
+    try{
+      const r=await fetch(ua,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+      const j=await r.json(); out.textContent=JSON.stringify(j,null,2); return;
+    }catch(_){
+      // fall through
+    }
+  }
+  out.textContent=JSON.stringify({ok:true, source:"local", app_id:"financeflow", intent, payload:data},null,2);
+}
+document.getElementById('go').onclick=run;
+</script>

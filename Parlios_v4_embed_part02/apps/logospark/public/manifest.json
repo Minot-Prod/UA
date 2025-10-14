@@ -1,0 +1,20 @@
+{
+  "app_id": "logospark",
+  "version": "1.0.0",
+  "intents": [
+    "PING",
+    "DEMO",
+    "RUN"
+  ],
+  "schema": {
+    "DEMO": {
+      "input": "string"
+    },
+    "RUN": {
+      "payload": "object"
+    }
+  },
+  "backend": {
+    "endpoint": "${UA_BASE}"
+  }
+}
