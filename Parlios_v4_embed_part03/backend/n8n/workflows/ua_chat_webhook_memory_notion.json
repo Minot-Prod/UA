@@ -1,0 +1,180 @@
+{
+  "name": "UA Chat Webhook + Notion Mirror",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ua/chat",
+        "responseMode": "responseNode"
+      },
+      "id": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "rules": [
+          {
+            "conditions": {
+              "string": [
+                {
+                  "value1": "={{$json.intent}}",
+                  "operation": "equal",
+                  "value2": "PING"
+                }
+              ]
+            }
+          },
+          {
+            "conditions": {
+              "string": [
+                {
+                  "value1": "={{$json.intent}}",
+                  "operation": "equal",
+                  "value2": "DEMO"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "id": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 2,
+      "position": [
+        450,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "pageId": "",
+        "databaseId": "={{$env.NOTION_DB_ID}}",
+        "simple": false,
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Name",
+              "title": [
+                {
+                  "text": {
+                    "content": "={{$json.intent || \"UNKNOWN\"}} \u2014 {{$now}}"
+                  }
+                }
+              ]
+            },
+            {
+              "key": "Date",
+              "date": {
+                "start": "={{$now}}"
+              }
+            },
+            {
+              "key": "Intent",
+              "select": {
+                "name": "={{$json.intent || \"UNKNOWN\"}}"
+              }
+            },
+            {
+              "key": "Status",
+              "select": {
+                "name": "OK"
+              }
+            },
+            {
+              "key": "LatencyMs",
+              "number": "={{$json.latency || 0}}"
+            },
+            {
+              "key": "CostCredits",
+              "number": "={{$json.cost || 0}}"
+            },
+            {
+              "key": "Notes",
+              "rich_text": [
+                {
+                  "text": {
+                    "content": "n8n mirror \u2705"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "id": "Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2,
+      "position": [
+        700,
+        340
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "={{$env.NOTION_CRED_ID || \"NOTION\"}}",
+          "name": "Notion API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "responseBody": "={{ {\"ok\": true, \"intent\": $json.intent || \"UNKNOWN\", \"mirrors\": [\"notion\"]} }}",
+        "responseCode": 200
+      },
+      "id": "ReturnJson",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        950,
+        260
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion": {
+      "main": [
+        [
+          {
+            "node": "ReturnJson",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

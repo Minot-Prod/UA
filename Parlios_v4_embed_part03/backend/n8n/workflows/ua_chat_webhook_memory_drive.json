@@ -1,0 +1,81 @@
+{
+  "name": "UA Chat Webhook + Google Sheets Mirror",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ua/chat",
+        "responseMode": "responseNode"
+      },
+      "id": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "={{$env.GSHEET_ID}}",
+        "range": "Sheet1!A:F",
+        "options": {
+          "valueInputMode": "USER_ENTERED"
+        },
+        "columns": "Date,Intent,Status,LatencyMs,CostCredits,Notes",
+        "values": "={{ [$now, $json.intent || 'UNKNOWN', 'OK', $json.latency || 0, $json.cost || 0, 'mirror \u2705'] }}"
+      },
+      "id": "AppendSheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        700,
+        260
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "={{$env.GSHEETS_CRED_ID || 'GSHEETS'}}",
+          "name": "Google Sheets OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "responseBody": "={{ {\"ok\": true, \"intent\": $json.intent || \"UNKNOWN\", \"mirrors\": [\"sheets\"]} }}",
+        "responseCode": 200
+      },
+      "id": "ReturnJson",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        950,
+        260
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AppendSheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AppendSheet": {
+      "main": [
+        [
+          {
+            "node": "ReturnJson",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
