@@ -1,0 +1,7 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Parlios",
+  "url": "https://parlios.ca/",
+  "logo": "https://parlios.ca/assets/brand/opengraph.png"
+}
