@@ -1,0 +1,11 @@
+{
+  "intent": "DEMO",
+  "payload": {
+    "example": "Show capabilities",
+    "echo": true
+  },
+  "meta": {
+    "source": "ua-external-agent",
+    "ts": "AUTO"
+  }
+}

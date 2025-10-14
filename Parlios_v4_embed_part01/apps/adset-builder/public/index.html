@@ -1,0 +1,39 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Parlios — Preview</title>
+<style>
+:root{color-scheme:dark light}
+body{margin:0;font:16px/1.5 system-ui;background:#0d0f12;color:#e6e9ef}
+.wrap{max-width:960px;margin:40px auto;padding:24px}
+.card{background:#12151a;border:1px solid #1e232b;border-radius:16px;padding:16px}
+footer{opacity:.8;margin-top:24px;font-size:14px;text-align:center}
+.btn{padding:.6rem 1rem;border-radius:12px;border:1px solid #2a3340;background:#111a;cursor:pointer}
+.grid{display:grid;gap:12px}
+input{background:#0f1318;border:1px solid #263041;border-radius:10px;padding:.5rem;color:#e6e9ef}
+label{display:grid;gap:8px}
+h1{font-weight:600}
+</style>
+<div class="wrap">
+  <h1>Parlios — <span id="appName">Preview</span></h1>
+  <div class="card grid" role="region" aria-label="Aperçu interactif">
+    <label>Entrée démo <input id="input" aria-label="Entrée"/></label>
+    <button class="btn" id="gen">Générer</button>
+    <pre id="out" aria-live="polite">Prêt.</pre>
+  </div>
+  <footer>Made with Parlios</footer>
+</div>
+<script>
+const segs=location.pathname.split('/').filter(Boolean);
+const idx=Math.max(0,segs.indexOf('apps'));
+const name=segs[idx+1]||'Preview';
+document.getElementById('appName').textContent=name;
+document.getElementById('gen').onclick=()=>{
+  const v=document.getElementById('input').value||'';
+  const res={app:name, echo:v, ts:new Date().toISOString()};
+  document.getElementById('out').textContent='Résultat local: '+JSON.stringify(res,null,2);
+};
+</script>
+</html>
+
+<script src="app.js"></script>
+</html>
