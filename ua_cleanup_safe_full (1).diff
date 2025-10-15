@@ -1,0 +1,105 @@
+
+diff --git a/.gitignore b/.gitignore
+index 0000000..1111111 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,0 +1,8 @@
++.ua_backup_*
++UA_Report_*.md
++PING.json
++DEMO.json
++replay.*
++archive/
++*.zip
++
+diff --git a/.github/workflows/cleanup_artifacts.yml b/.github/workflows/cleanup_artifacts.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/workflows/cleanup_artifacts.yml
+@@ -0,0 +1,52 @@
++name: Cleanup Artifacts (manual)
++on:
++  workflow_dispatch:
++    inputs:
++      keep_days:
++        description: "Supprimer les artifacts plus vieux que N jours"
++        required: true
++        default: "7"
++jobs:
++  cleanup:
++    runs-on: ubuntu-latest
++    permissions:
++      actions: write
++    steps:
++      - name: Purge old artifacts via API
++        env:
++          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          REPO: ${{ github.repository }}
++          KEEP_DAYS: ${{ github.event.inputs.keep_days }}
++        run: |
++          set -euo pipefail
++          now=$(date -u +%s)
++          page=1
++          deleted=0
++          while true; do
++            resp=$(gh api -H "Accept: application/vnd.github+json" "repos/${REPO}/actions/artifacts?per_page=100&page=${page}")
++            count=$(echo "$resp" | jq '.artifacts | length')
++            [ "$count" -eq 0 ] && break
++            echo "$resp" | jq -c '.artifacts[]' | while read -r art; do
++              id=$(echo "$art" | jq -r '.id')
++              created=$(echo "$art" | jq -r '.created_at')
++              ts=$(date -u -d "$created" +%s)
++              age_days=$(( (now - ts) / 86400 ))
++              if [ "$age_days" -gt "$KEEP_DAYS" ]; then
++                gh api -X DELETE "repos/${REPO}/actions/artifacts/${id}" && echo "Deleted artifact ${id} (${age_days}d)"
++              fi
++            done
++            page=$((page+1))
++          done
++          echo "Cleanup completed."
++
+diff --git a/archive/.gitkeep b/archive/.gitkeep
+new file mode 100644
+--- /dev/null
++++ b/archive/.gitkeep
+@@ -0,0 +1 @@
++# archive folder for old UA reports and analysis files
+
+
+diff --git a/.github/workflows/auto_comment.yml b/.github/workflows/auto_comment.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/workflows/auto_comment.yml
+@@ -0,0 +1,33 @@
++name: UA Bot – Auto Comment on Cleanup PR
++
++on:
++  pull_request:
++    types: [opened, reopened]
++    branches:
++      - main
++
++jobs:
++  auto-comment:
++    if: contains(github.event.pull_request.title, 'chore(ua-cleanup'))
++    runs-on: ubuntu-latest
++    permissions:
++      pull-requests: write
++    steps:
++      - name: Add cleanup reminder comment
++        env:
++          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          PR_NUMBER: ${{ github.event.pull_request.number }}
++          REPO: ${{ github.repository }}
++        run: |
++          gh api +            repos/${REPO}/issues/${PR_NUMBER}/comments +            -f body='### 🤖 UA Bot – Post-merge Reminder
++
++Merci d’avoir lancé le nettoyage sécurisé 🧹  
++Une fois cette PR fusionnée :
++
++1. Accède à **Actions → Cleanup Artifacts (manual)**  
++2. Clique sur **Run workflow**  
++3. Renseigne la variable `keep_days` (par défaut : `7`)  
++   → Cela supprimera automatiquement les artifacts CI/CD plus anciens que 7 jours.
++
++💡 _Ce workflow ne touche pas aux fichiers sources et peut être relancé à tout moment._'
