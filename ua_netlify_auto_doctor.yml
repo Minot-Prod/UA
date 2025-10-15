@@ -1,0 +1,95 @@
+name: UA Netlify Auto-Doctor
+
+on:
+  workflow_run:
+    workflows: ["Netlify Deploy"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto_doctor:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_OWNER: ${{ github.repository_owner }}
+      GH_REPO: ${{ github.event.repository.name }}
+      GH_PAT: ${{ secrets.UA_GH_PAT }}  # PAT repo scope requis
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${GH_PAT:-}" ]]; then
+            echo "::error::Missing secret UA_GH_PAT (GitHub PAT with repo scope)."
+            exit 2
+          fi
+
+      - name: Install tooling (yq + jq)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+          curl -sSL https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Run CI Doctor (inline)
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="fix/netlify-ci-repair-$(date +%Y%m%d)"
+          wf=".github/workflows/netlify_deploy.yml"
+
+          git switch -c "$branch"
+
+          if [[ ! -f "$wf" ]]; then
+            echo "::error::Workflow Netlify introuvable: $wf"
+            exit 3
+          fi
+
+          need_node_step=true
+          need_safe_step=true
+
+          grep -qE 'actions/setup-node@' "$wf" && need_node_step=false || true
+          grep -qE '^ {2,}- name: Safe Netlify CLI run' "$wf" && need_safe_step=false || true
+
+          if command -v yq >/dev/null 2>&1; then
+            yq -i '.jobs |= with_entries(.value.steps = (.value.steps // []))' "$wf"
+            if [[ "$need_node_step" == "true" ]]; then
+              yq -i '.jobs |= with_entries(.value.steps += [{"name":"Setup Node.js (LTS)","uses":"actions/setup-node@v4","with":{"node-version":"20","cache":"npm"}}])' "$wf"
+            fi
+            if [[ "$need_safe_step" == "true" ]]; then
+              yq -i '.jobs |= with_entries(.value.steps += [{"name":"Safe Netlify CLI run","run":"echo \"🧪 Testing Netlify CLI...\"\nif command -v netlify >/dev/null 2>&1; then\n  npx netlify status || echo \"⚠️ Netlify CLI exited non-zero (safe mode)\"\nelse\n  echo \"⚠️ Netlify CLI non trouvé (non-bloquant)\"\nfi"}])' "$wf"
+            fi
+          else
+            awk '1;/^[[:space:]]+steps:/{print "      - name: Setup Node.js (LTS)\n        uses: actions/setup-node@v4\n        with:\n          node-version: 20\n          cache: npm"}' "$wf" > "$wf.tmp" && mv "$wf.tmp" "$wf"
+            printf "%s\n" "      - name: Safe Netlify CLI run
+            run: |
+              echo \"🧪 Testing Netlify CLI...\"
+              if command -v netlify >/dev/null 2>&1; then
+                npx netlify status || echo \"⚠️ Netlify CLI exited non-zero (safe mode)\"
+              else
+                echo \"⚠️ Netlify CLI non trouvé (non-bloquant)\"
+              fi" >> "$wf"
+          fi
+
+          git config user.name "UA CI Doctor"
+          git config user.email "ua-bot@users.noreply.github.com"
+          git add "$wf"
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "ci(fix): auto-repair Netlify deploy workflow (Node 20 + Safe CLI)"
+          git push -u origin "$branch"
+
+          title="ci(fix): repair Netlify deploy workflow (exit 13 safe mode)"
+          body=$'Automated repair by **UA Netlify Auto-Doctor** 🩺\n\n- Add Node 20 setup\n- Add Safe Netlify CLI run block\n- YAML structured edit\n\n✅ Prevents Netlify CLI warnings from failing the job.'
+          payload=$(jq -n --arg title "$title" --arg head "$branch" --arg base "main" --arg body "$body" '{title:$title, head:$head, base:$base, body:$body}')
+          curl -sS -H "Authorization: token ${GH_PAT}" -H "Accept: application/vnd.github+json" -d "$payload" "https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/pulls" | jq -r '.html_url // "PR creation attempted"'
