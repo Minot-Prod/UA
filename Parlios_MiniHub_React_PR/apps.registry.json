@@ -1,0 +1,40 @@
+{
+  "updated": "2025-10-15 19:10",
+  "apps": [
+    {
+      "title": "CreatorHub Mini+",
+      "slug": "creatorhub-mini-plus",
+      "path": "/apps/creatorhub-mini-plus/",
+      "desc": "Plan express + mini visuels",
+      "icon": "🗂️"
+    },
+    {
+      "title": "Studio Express IA",
+      "slug": "studio-express-ia",
+      "path": "/apps/studio-express-ia/",
+      "desc": "Mock visuel rapide + PNG",
+      "icon": "🎨"
+    },
+    {
+      "title": "Prompt Designer Pro",
+      "slug": "prompt-designer-pro",
+      "path": "/apps/prompt-designer-pro/",
+      "desc": "Atelier prompts efficaces",
+      "icon": "🧪"
+    },
+    {
+      "title": "Logo Flash AI",
+      "slug": "logo-flash-ai",
+      "path": "/apps/logo-flash-ai/",
+      "desc": "Proto logo typographique",
+      "icon": "⚡"
+    },
+    {
+      "title": "Caption Craft",
+      "slug": "caption-craft",
+      "path": "/apps/caption-craft/",
+      "desc": "Légendes + hashtags",
+      "icon": "✍️"
+    }
+  ]
+}
