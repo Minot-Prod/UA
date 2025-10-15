@@ -1,0 +1,13 @@
+name: "UA Agent Runner"
+on:
+  workflow_dispatch:
+
+jobs:
+  ua-bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Install GitHub CLI"
+        run: sudo apt-get install gh -y
+      - name: "Run UA Full Bootstrap Agent"
+        run: bash .github/agents/UA_FULL_BOOTSTRAP.yaml
