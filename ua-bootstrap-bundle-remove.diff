@@ -1,0 +1,24 @@
+
+diff --git a/.github/agents/UA_FULL_BOOTSTRAP.yaml b/.github/agents/UA_FULL_BOOTSTRAP.yaml
+deleted file mode 100644
+index 1111111..0000000
+--- a/.github/agents/UA_FULL_BOOTSTRAP.yaml
++++ /dev/null
+@@ -1,123 +0,0 @@
+-(contenu supprimé)
+
+diff --git a/.github/workflows/run-ua-agent.yml b/.github/workflows/run-ua-agent.yml
+deleted file mode 100644
+index 2222222..0000000
+--- a/.github/workflows/run-ua-agent.yml
++++ /dev/null
+@@ -1,83 +0,0 @@
+-(contenu supprimé)
+
+diff --git a/.github/PULL_REQUEST_TEMPLATE/PR_BOOTSTRAP.md b/.github/PULL_REQUEST_TEMPLATE/PR_BOOTSTRAP.md
+deleted file mode 100644
+index 3333333..0000000
+--- a/.github/PULL_REQUEST_TEMPLATE/PR_BOOTSTRAP.md
++++ /dev/null
+@@ -1,65 +0,0 @@
+-(contenu supprimé)
