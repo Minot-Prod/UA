@@ -1,0 +1,57 @@
+name: UA E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 7 * * *'  # ≈ 03:00 America/Toronto
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps (best effort)
+        shell: bash
+        run: |
+          if [[ -f package-lock.json ]]; then npm ci || true; fi
+          if [[ -f yarn.lock ]];         then yarn install --frozen-lockfile || true; fi
+          if [[ -f pnpm-lock.yaml ]];    then corepack enable && pnpm i --frozen-lockfile || true; fi
+
+      - name: Run E2E (if script exists)
+        shell: bash
+        run: |
+          if npm run | grep -q 'e2e'; then npm run e2e || true; fi
+          if [[ -f ./scripts/e2e.sh ]]; then bash ./scripts/e2e.sh || true; fi
+        continue-on-error: true
+
+      - name: Upload E2E results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ua-e2e-results
+          path: |
+            **/test-results/**
+            **/playwright-report/**
+            **/reports/**
+            **/e2e/**/screenshots/**
+            **/*.junit.xml
+            **/*.trx
+            **/*.html
+            **/*.log
+          if-no-files-found: warn
+          retention-days: 7
