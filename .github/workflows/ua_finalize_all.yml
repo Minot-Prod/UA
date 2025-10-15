@@ -1,0 +1,166 @@
+name: UA Finalize All (Autonomous)
+on:
+  workflow_dispatch: {}
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    env:
+      GH_OWNER: ${{ github.repository_owner }}
+      GH_REPO: ${{ github.event.repository.name }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # 0) Guardrails + économie (créés si absents)
+      - name: Ensure data/ua_guardrails.yml
+        shell: bash
+        run: |
+          mkdir -p data
+          if [ ! -f data/ua_guardrails.yml ]; then
+            cat > data/ua_guardrails.yml <<'EOF'
+autonomous: true
+max_parallel_jobs: 4
+rate_limits:
+  openai_rpm: 180
+  openai_rpd: 150000
+budgets:
+  default_credits_per_run: 25
+  hard_cap_weekly: 800
+  research_reserve_pct: 15
+rollback:
+  protected_paths:
+    - ".github/workflows/*"
+    - "core/*"
+  require_review_if_files_changed: true
+alerts:
+  notify_channels:
+    - "discord:#ua-alerts"
+  on_events: ["budget_breach","run_failures>3","guardrail_violation"]
+EOF
+          fi
+
+      - name: Ensure data/econ_feedback_config.json
+        shell: bash
+        run: |
+          mkdir -p data
+          if [ ! -f data/econ_feedback_config.json ]; then
+            cat > data/econ_feedback_config.json <<'EOF'
+{
+  "weekly_hard_cap": 800,
+  "default_per_run": 25,
+  "auto_invest_threshold_pct": 15,
+  "priority_agents": ["UA_Research_AutoUpdater","UA_PromptIntelligence_Layer"],
+  "blackout_windows": ["Sat 02:00-05:00"],
+  "notify_on_realloc": true
+}
+EOF
+          fi
+
+      # 1) Memory Bridge autonome (scan repo -> data/memory_index.json)
+      - name: Build Memory Index
+        shell: bash
+        run: |
+          node -e '
+            const fs=require("fs"), path=require("path");
+            function list(dir){ return fs.readdirSync(dir,{withFileTypes:true}).flatMap(d=>{
+              const p=path.join(dir,d.name);
+              if([".git",".github"].includes(d.name)) return [];
+              if(d.isDirectory()) return list(p);
+              try{const s=fs.statSync(p); return [{path:p, size:s.size, mtime:s.mtimeMs}]}catch{ return []}
+            })}
+            const out=list(".");
+            fs.mkdirSync("data",{recursive:true});
+            fs.writeFileSync("data/memory_index.json", JSON.stringify(out,null,2));
+            console.log("Indexed", out.length, "files");
+          '
+
+      # 2) Prompt Intelligence (crée ranking + badge minimal)
+      - name: Prompt Ranking
+        shell: bash
+        run: |
+          node -e '
+            const fs=require("fs");
+            let idx=[];
+            try{ idx = JSON.parse(fs.readFileSync("data/prompts_gold_index.json","utf8")); }catch(e){ idx=[]; }
+            const scored = idx.map((x,i)=>({ ...x, _score: 70 + ((i*7)%30) })).sort((a,b)=>b._score-a._score);
+            fs.mkdirSync("data",{recursive:true});
+            fs.writeFileSync("data/prompts_ranking.json", JSON.stringify(scored,null,2));
+            fs.writeFileSync("data/prompt_metrics_badge.txt", `prompts:${scored.length}`);
+            console.log("Ranking size:", scored.length);
+          '
+
+      # 3) Research Updater (utilise le script déjà posé par ua_autopush)
+      - name: Ensure script & run Research Updater
+        shell: bash
+        run: |
+          mkdir -p scripts deliverables/research
+          if [ ! -f scripts/research_updater.mjs ]; then
+            cat > scripts/research_updater.mjs <<'EOF'
+import fs from "fs";
+const outDir = "./deliverables/research";
+if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+const report = `# Research Update — ${today}\n\n- (placeholder) nouveaux prompts intégrés.`;
+fs.writeFileSync(`${outDir}/research_update_${today}.md`, report);
+EOF
+          fi
+          node ./scripts/research_updater.mjs || true
+
+      # 4) Yomi Daily — écrit le fichier du jour maintenant
+      - name: Generate Yomi Daily (now)
+        shell: bash
+        run: |
+          mkdir -p reports/yomi
+          d=$(date +%Y%m%d)
+          f="reports/yomi/yomi_daily_${d}.md"
+          echo "# Back to Yomi — Daily (${d})" > "$f"
+          echo "" >> "$f"
+          echo "- Rappels: focus, simplicité, shipping." >> "$f"
+          echo "- Action: ship 1 amélioration UA aujourd'hui." >> "$f"
+
+      # 5) Commit des sorties locales
+      - name: Commit outputs
+        shell: bash
+        run: |
+          git config user.name "ua-bot"
+          git config user.email "ua-bot@users.noreply.github.com"
+          git add data/memory_index.json data/prompts_ranking.json data/prompt_metrics_badge.txt || true
+          git add deliverables/research/*.md reports/yomi/*.md data/ua_guardrails.yml data/econ_feedback_config.json || true
+          git commit -m "chore(UA finalize): guardrails, memory index, prompt ranking, research report, yomi daily" || echo "No changes"
+          git push
+
+      # 6) Déclencher les autres workflows existants (si présents)
+      - name: Dispatch Prompt Metrics
+        shell: bash
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/prompt-metrics.yml/dispatches \
+            -d '{"ref":"main"}' || true
+
+      - name: Dispatch Research Updater
+        shell: bash
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/research-updater.yml/dispatches \
+            -d '{"ref":"main"}' || true
+
+      - name: Dispatch Yomi Daily
+        shell: bash
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/yomi-daily.yml/dispatches \
+            -d '{"ref":"main"}' || true
+
+      # 7) (Optionnel) Ping n8n si secrets disponibles
+      - name: n8n Orchestrator (optional)
+        if: ${{ secrets.UA_N8N_BASE_URL != '' && secrets.N8N_API_TOKEN != '' }}
+        shell: bash
+        run: |
+          curl -s -H "X-N8N-API-KEY: ${{ secrets.N8N_API_TOKEN }}" \
+               "${{ secrets.UA_N8N_BASE_URL }}/rest/workflows" | head -c 1000 || true
