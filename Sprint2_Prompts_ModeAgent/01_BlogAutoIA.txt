@@ -1,0 +1,30 @@
+/run-mode-agent
+Name: Sprint2_BlogAutoIA_Production
+Goal: Générer un outil IA qui transforme une idée ou un sujet en article structuré optimisé SEO, avec design Parlios et export Netlify Drop.
+Assume_Yes: true
+
+# ===== BLUEPRINT =====
+Goal: Rédiger automatiquement un article de blog structuré (introduction, 3 parties, conclusion, SEO title + meta description).
+Scope:
+- Inclus : UI simple statique (Netlify Drop), intégration GPT (texte), module SEO auto (title/meta).
+- Exclu : base de données, authentification, CMS.
+Acceptance:
+- Article généré < 10 s.
+- Contenu > 500 mots, score SEO ≥ 85 (Lighthouse).
+- QA : Pa11y AA 0 erreur, Lighthouse ≥ 90.
+Edge cases:
+- Sujet vide → message clair.
+- Génération échouée → message d’erreur.
+Tests:
+1) Génération texte OK.
+2) Téléchargement HTML OK.
+3) Performance OK.
+ComplexityProfile:
+  scope_size: M  novelty: 3  data_volume: 2  integration_count: 2  ui_depth: 2  risk_level: 2  deadline_pressure: 3
+→ Budget ≈ 65 crédits (checkpoint 70 % = 45).
+
+Route_to: MAP → Ops Agent + QA Guardian.
+Outputs:
+- deliverables/blog-auto-ia/build.zip
+- docs/Blueprint_BlogAutoIA.md
+- docs/QA_REPORT_BlogAutoIA.md
