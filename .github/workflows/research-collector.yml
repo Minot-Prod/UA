@@ -1,0 +1,49 @@
+name: Research Collector
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * 1'   # Lundi 08:00 UTC ~ 04:00 Toronto
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Make report
+        shell: bash
+        run: |
+          set -e
+          TODAY="$(date +%Y%m%d)"
+          OUT="deliverables/research/research_update_${TODAY}.md"
+          mkdir -p deliverables/research docs/dashboard/cards
+          printf "# Free Resources Update — %s\n\n" "$(date +%F)" > "$OUT"
+          printf "Top 5 (stub)\n1. Ressource A\n2. Ressource B\n3. Ressource C\n4. Ressource D\n5. Ressource E\n\n_Source: Parlios Research Agent_\n" >> "$OUT"
+
+          IDX="deliverables/research/research_index.json"
+          if [ -f "$IDX" ]; then
+            jq ".updates += [{\"date\":\"$(date +%F)\",\"file\":\"$(basename \"$OUT\")\"}]" "$IDX" > "$IDX.tmp" || echo '{
+  "updates": []
+}' > "$IDX.tmp"
+          else
+            echo '{
+  "updates": []
+}' > "$IDX"
+            jq ".updates += [{\"date\":\"$(date +%F)\",\"file\":\"$(basename \"$OUT\")\"}]" "$IDX" > "$IDX.tmp" && mv "$IDX.tmp" "$IDX"
+          fi
+          mv "$IDX.tmp" "$IDX" 2>/dev/null || true
+
+          CARD="docs/dashboard/cards/free_resources_update.md"
+          cat > "$CARD" <<'MD'
+# Free Resources Update
+- Voir le dernier rapport dans `deliverables/research/` (fichier le plus récent).
+- Source: Parlios /research + Research Collector (GitHub Actions).
+MD
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Research: weekly update + index + dashboard card"
+          branch: ${{ github.ref_name }}

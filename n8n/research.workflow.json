@@ -1,0 +1,41 @@
+{
+  "name": "Parlios /research (stub)",
+  "nodes": [
+    {
+      "parameters": { "path": "research", "methods": ["POST"] },
+      "id": "Webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "const now = new Date().toISOString().slice(0,10);\nconst md = `# Free Resources Update — ${now}\n\nTop 5 (stub)\n1. Ressource A\n2. Ressource B\n3. Ressource C\n4. Ressource D\n5. Ressource E\n\n_Source: Parlios Research Agent_`;\nreturn [{ json: { ok: true, markdown: md } }];"
+      },
+      "id": "BuildMarkdown",
+      "name": "Build Markdown",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [440, 200]
+    },
+    {
+      "parameters": {
+        "responseMode": "lastNode",
+        "responseData": "={{ $json }}",
+        "responseCode": 200
+      },
+      "id": "Respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [620, 200]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [ [ { "node": "Build Markdown", "type": "main", "index": 0 } ] ] },
+    "Build Markdown": { "main": [ [ { "node": "Respond", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "saveExecutionProgress": true },
+  "pinData": {}
+}
