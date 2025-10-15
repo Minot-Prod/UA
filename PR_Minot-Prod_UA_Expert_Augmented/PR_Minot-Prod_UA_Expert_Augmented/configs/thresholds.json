@@ -1,0 +1,6 @@
+{
+  "elicitation_max_turns": 10,
+  "confidence_min_accept": 70,
+  "confidence_second_opinion": 65,
+  "auto_block_if_warn_count": 3
+}
