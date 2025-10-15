@@ -1,66 +1,3 @@
-name: UA Agent AutoCreate
-
-on:
-  repository_dispatch:
-    types: [ua_agent_request]
-  workflow_dispatch: {}
-
-permissions:
-  contents: write
-  pull-requests: write
-
-jobs:
-  scaffold:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Extract payload (supports client_payload.payload.agent or client_payload.agent)
-        id: pl
-        shell: bash
-        run: |
-          get_field() {
-            jq -r "$1 // empty" <<<"${GITHUB_EVENT_PATH:+$(cat "$GITHUB_EVENT_PATH")}"
-          }
-
-          SLUG="$(get_field '.client_payload.payload.agent.slug')"
-          NAME="$(get_field '.client_payload.payload.agent.name')"
-          ROLE="$(get_field '.client_payload.payload.agent.role')"
-
-          # fallback direct: client_payload.agent
-          if [ -z "$SLUG" ]; then SLUG="$(get_field '.client_payload.agent.slug')"; fi
-          if [ -z "$NAME" ]; then NAME="$(get_field '.client_payload.agent.name')"; fi
-          if [ -z "$ROLE" ]; then ROLE="$(get_field '.client_payload.agent.role')"; fi
-
-          echo "slug=$SLUG" >> $GITHUB_OUTPUT
-          echo "name=$NAME" >> $GITHUB_OUTPUT
-          echo "role=$ROLE" >> $GITHUB_OUTPUT
-
-      - name: Validate payload
-        run: |
-          test -n "${{ steps.pl.outputs.slug }}" || { echo "Missing slug"; exit 1; }
-          test -n "${{ steps.pl.outputs.name }}" || { echo "Missing name"; exit 1; }
-          test -n "${{ steps.pl.outputs.role }}" || { echo "Missing role"; exit 1; }
-
-      - name: Prepare branch name
-        id: bn
-        run: |
-          SLUG="${{ steps.pl.outputs.slug }}"
-          BR="feature/agent-$SLUG"
-          if git ls-remote --exit-code --heads origin "$BR" >/dev/null 2>&1; then
-            BR="${BR}-v2"
-          fi
-          echo "branch=$BR" >> $GITHUB_OUTPUT
-
-      - name: Create feature branch
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "${{ steps.bn.outputs.branch }}"
-
       - name: Scaffold agent from templates
         run: |
           set -e
@@ -78,41 +15,8 @@ jobs:
             cat > "$AG_DIR/manifest.json" <<JSON
           { "name": "$NAME", "slug": "$SLUG", "version": "1.0.0" }
 JSON
-            cat > "$AG_DIR/README.md" <<MD
-          # $NAME
-          Rôle: $ROLE
+            cat > "$AG_DIR/README.md" <<'MD'
+# $NAME
+Rôle: $ROLE
 MD
           fi
-
-          if [ -d "knowledge/agents/_template" ]; then
-            mkdir -p "$KP_DIR"
-            rsync -a "knowledge/agents/_template/" "$KP_DIR/" --exclude ".gitkeep" || true
-          else
-            mkdir -p "$KP_DIR/DATA" "$KP_DIR/EVAL" "$KP_DIR/PROMPTS/20_templates" "$KP_DIR/SOPs"
-            echo "# SOURCES" > "$KP_DIR/SOURCES.md"
-            cat > "$KP_DIR/knowledge_pack.json" <<JSON
-          { "agent":{"name":"$NAME","slug":"$SLUG"}, "bench":{"file":"DATA/benchmarks.jsonl","pass_threshold":80} }
-JSON
-          fi
-
-          git add "$AG_DIR" "$KP_DIR"
-
-      - name: Commit changes
-        run: |
-          git commit -m "feat: add agent ${{ steps.pl.outputs.slug }} scaffold" || echo "Nothing to commit"
-
-      - name: Push branch
-        run: |
-          git push origin "${{ steps.bn.outputs.branch }}"
-
-      - name: Open PR
-        uses: peter-evans/create-pull-request@v6
-        with:
-          title: "Add Agent: ${{ steps.pl.outputs.name }}"
-          body: |
-            Auto-created via UA request.
-            - Agent: `${{ steps.pl.outputs.slug }}`
-            - Role:  `${{ steps.pl.outputs.role }}`
-          branch: ${{ steps.bn.outputs.branch }}
-          base: ${{ github.base_ref || 'main' }}
-          draft: false
