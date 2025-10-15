@@ -1,0 +1,1 @@
+{"ack":true,"msg":"PONG","received":{"type":"PING","intent":"healthcheck","meta":{"source":"GitHubActions","suite":"UA_E2E"}}}
