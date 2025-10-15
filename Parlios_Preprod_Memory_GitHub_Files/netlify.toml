@@ -1,0 +1,29 @@
+# Netlify config — Parlios (Blue‑Green ready)
+
+[build]
+  publish = "dist" # ou "site" si export statique
+  command = "npm run build"
+
+# Redirects (exemple)
+[[redirects]]
+  from = "/app"
+  to = "/hub/index.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "require-corp"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; frame-ancestors 'none'; connect-src 'self'; img-src 'self' data: blob:; style-src 'self' 'nonce-__NONCE__'; script-src 'self' 'nonce-__NONCE__'"
+
+# Caching (basique)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

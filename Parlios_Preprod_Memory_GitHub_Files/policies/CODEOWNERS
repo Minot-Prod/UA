@@ -1,0 +1,5 @@
+# CODEOWNERS
+* @Minot-Prod
+/docs/ @Minot-Prod
+/configs/ @Minot-Prod
+.github/ @Minot-Prod

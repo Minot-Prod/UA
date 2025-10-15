@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Input",
+  "type": "object",
+  "required": [
+    "goal",
+    "context",
+    "inputs"
+  ],
+  "properties": {
+    "goal": {
+      "type": "string"
+    },
+    "context": {
+      "type": "string",
+      "enum": [
+        "ideation",
+        "production"
+      ]
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "acceptance": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

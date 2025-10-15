@@ -1,0 +1,9 @@
+{
+  "concurrency": 4,
+  "recurse": true,
+  "skip": [
+    "^mailto:",
+    "^tel:"
+  ],
+  "verbosity": "ERROR"
+}
