@@ -1,0 +1,194 @@
+name: Parlios — Full Site Drop (ZIP + QA + Artifact)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+    paths:
+      - ".github/workflows/parlios_full_drop.yml"
+      - "apps/**"
+      - "tools/**"
+      - "packages/**"
+      - "site/**"
+      - "hub/**"
+      - "public/**"
+      - "assets/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-zip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    env:
+      GH_OWNER: ${{ github.repository_owner }}
+      OUT_BASENAME: Parlios_Full_Site_Drop
+      WEB_ROOT: site
+      READY_MARKERS: "ready production-ready"
+      TOOLS_GLOBS: |
+        apps/*/dist
+        tools/*/dist
+        packages/*/app/dist
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node + pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: corepack enable || true
+
+      - name: Install global QA tools
+        run: |
+          npm i -g @lhci/cli lighthouse pa11y-ci linkinator serve
+
+      - name: Build site (if package.json exists)
+        run: |
+          set -euo pipefail
+          if [ -f "package.json" ]; then
+            pnpm i --frozen-lockfile || npm ci || yarn --frozen-lockfile
+            if npm run --silent | grep -qE 'build'; then npm run build; fi
+          fi
+
+      - name: Stage workspace
+        run: |
+          set -euo pipefail
+          mkdir -p stage assets_tmp qa
+          # Copy common roots (try multiple)
+          for cand in "$WEB_ROOT" "dist" ".next/out" "out" "build" "public"; do
+            if [ -d "$cand" ]; then cp -a "$cand/." stage/; fi
+          done
+
+          # Branding / tokens (if exist)
+          for src in \
+            "assets/brand" \
+            "public/assets/brand" \
+            ; do
+            if [ -d "$src" ]; then
+              mkdir -p stage/assets/brand
+              cp -a "$src/." stage/assets/brand/
+            fi
+          done
+
+          # Ensure logo not overridden
+          if [ -f "assets/brand/parlios-logo.png" ]; then
+            mkdir -p stage/assets/brand
+            cp -a "assets/brand/parlios-logo.png" "stage/assets/brand/parlios-logo.png"
+          fi
+
+      - name: Integrate Hub (if built)
+        run: |
+          set -euo pipefail
+          # If hub exists in mono-repo
+          if [ -d "hub" ]; then
+            pushd hub >/dev/null
+              if [ -f "package.json" ]; then
+                pnpm i --frozen-lockfile || npm ci || yarn --frozen-lockfile
+                if npm run --silent | grep -qE 'build'; then npm run build; fi
+              fi
+              for cand in "dist" ".next/out" "out" "build"; do
+                if [ -d "$cand" ]; then
+                  mkdir -p ../stage/hub
+                  cp -a "$cand/." ../stage/hub/
+                fi
+              done
+            popd >/dev/null
+          fi
+
+      - name: Collect Ready tools
+        run: |
+          set -euo pipefail
+          mkdir -p stage/tools
+          found_any=false
+          while IFS= read -r glob; do
+            [ -n "$glob" ] || continue
+            for path in $(ls -d $glob 2>/dev/null || true); do
+              [ -d "$path" ] || continue
+              appdir="$(dirname "$path")"
+              name="$(basename "$appdir")"
+              ready=false
+              # Marker files or name markers
+              for marker in $READY_MARKERS; do
+                if [ -f "$appdir/$marker" ] || echo "$name" | grep -qi "$marker"; then ready=true; fi
+              done
+              # package.json flag
+              if [ -f "$appdir/package.json" ] && grep -q '"parlios.ready"[[:space:]]*:[[:space:]]*true' "$appdir/package.json"; then ready=true; fi
+              if [ "$ready" = true ]; then
+                echo "READY → $name"
+                mkdir -p "stage/tools/$name"
+                cp -a "$path/." "stage/tools/$name/"
+                found_any=true
+              else
+                echo "(draft) $name — ignoré (non Ready)"
+              fi
+            done
+          done <<< "$TOOLS_GLOBS"
+
+          if [ "$found_any" = false ]; then
+            echo "::warning::Aucun outil Ready détecté — la page Outils affichera des placeholders si prévue."
+          fi
+
+      - name: Ensure Netlify files
+        run: |
+          set -euo pipefail
+          if [ ! -f "stage/_redirects" ]; then
+            cat > stage/_redirects <<'REDIR'
+/*    /index.html    200
+REDIR
+          fi
+
+          if [ ! -f "stage/netlify.toml" ]; then
+            cat > stage/netlify.toml <<'TOML'
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+TOML
+          fi
+
+          cat > stage/README_DROP.md <<'MD'
+# Parlios — Netlify Drop
+1) Ouvrez https://app.netlify.com/drop et déposez ce ZIP.
+2) Récupérez l’URL déployée.
+3) Test : Accueil → Hub → Outils (toutes les tuiles Ready doivent fonctionner).
+4) QA recommandée : Lighthouse ≥ 90, Pa11y AA (0 blocker), aucun lien cassé.
+MD
+
+      - name: QA — serve local & run checks
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          npx serve -s stage -l 4173 >/dev/null 2>&1 &
+          echo $! > serve.pid
+          sleep 2
+          npx lighthouse http://localhost:4173/ --output=json --output-path=qa_lh_home.json --quiet || true
+          npx lighthouse http://localhost:4173/outils/ --output=json --output-path=qa_lh_tools.json --quiet || true
+          npx pa11y-ci --sitemap http://localhost:4173/sitemap.xml --threshold 0 || true
+          npx linkinator http://localhost:4173/ --silent --json > qa_links.json || true
+          kill "$(cat serve.pid)" || true
+
+      - name: Package ZIP
+        run: |
+          set -euo pipefail
+          OUT="${OUT_BASENAME}_$(date +%Y%m%d).zip"
+          (cd stage && zip -qr "../$OUT" .)
+          echo "ZIP=$OUT" >> $GITHUB_ENV
+
+      - name: Upload artifact (ZIP + QA)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.OUT_BASENAME }}_${{ github.run_id }}
+          path: |
+            *.zip
+            qa_*.json
+          retention-days: 7
