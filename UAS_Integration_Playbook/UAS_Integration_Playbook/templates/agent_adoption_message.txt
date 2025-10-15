@@ -1,0 +1,15 @@
+
+Objet: Adoption du contrat UAS v2 — Mise en conformité I/O (obligatoire)
+
+Salut équipe 👋
+À partir d’aujourd’hui, tous les agents doivent respecter le **contrat UAS v2** pour leurs sorties.
+Action demandée (obligatoire):
+1) Si votre agent ne produit pas nativement du UAS v2, passez sa sortie dans **Switchboard_Normalizer**.
+2) Publiez uniquement l’objet UAS v2 (JSON strict).
+3) Ajoutez les champs clés: status, summary[], decisions[], next_actions[], confidence (0–100).
+
+Motif: assurer l’interopérabilité (routage/QA) et permettre la consolidation automatique via **RAP_Central_Condenser**.
+
+Références: UAS_v2.md + schemas/uas_v2_output.schema.json + workflow `uas_contract_check.yml`.
+
+Merci 🚀
