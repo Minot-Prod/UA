@@ -1,0 +1,141 @@
+{
+  "updated": "2025-10-15 19:27",
+  "apps_count": 15,
+  "apps": [
+    {
+      "title": "CreatorHub Mini+",
+      "slug": "creatorhub-mini-plus",
+      "sprint": "Sprint 1 — Content Pack",
+      "path": "deliverables/creatorhub-mini-plus/build.zip",
+      "readme": "deliverables/creatorhub-mini-plus/README_DROP.md",
+      "qa_report": "deliverables/creatorhub-mini-plus/QA_REPORT.md",
+      "blueprint": "deliverables/creatorhub-mini-plus/Blueprint_creatorhub-mini-plus.md"
+    },
+    {
+      "title": "Studio Express IA",
+      "slug": "studio-express-ia",
+      "sprint": "Sprint 1 — Content Pack",
+      "path": "deliverables/studio-express-ia/build.zip",
+      "readme": "deliverables/studio-express-ia/README_DROP.md",
+      "qa_report": "deliverables/studio-express-ia/QA_REPORT.md",
+      "blueprint": "deliverables/studio-express-ia/Blueprint_studio-express-ia.md"
+    },
+    {
+      "title": "Prompt Designer Pro",
+      "slug": "prompt-designer-pro",
+      "sprint": "Sprint 1 — Content Pack",
+      "path": "deliverables/prompt-designer-pro/build.zip",
+      "readme": "deliverables/prompt-designer-pro/README_DROP.md",
+      "qa_report": "deliverables/prompt-designer-pro/QA_REPORT.md",
+      "blueprint": "deliverables/prompt-designer-pro/Blueprint_prompt-designer-pro.md"
+    },
+    {
+      "title": "Logo Flash AI",
+      "slug": "logo-flash-ai",
+      "sprint": "Sprint 1 — Content Pack",
+      "path": "deliverables/logo-flash-ai/build.zip",
+      "readme": "deliverables/logo-flash-ai/README_DROP.md",
+      "qa_report": "deliverables/logo-flash-ai/QA_REPORT.md",
+      "blueprint": "deliverables/logo-flash-ai/Blueprint_logo-flash-ai.md"
+    },
+    {
+      "title": "Caption Craft",
+      "slug": "caption-craft",
+      "sprint": "Sprint 1 — Content Pack",
+      "path": "deliverables/caption-craft/build.zip",
+      "readme": "deliverables/caption-craft/README_DROP.md",
+      "qa_report": "deliverables/caption-craft/QA_REPORT.md",
+      "blueprint": "deliverables/caption-craft/Blueprint_caption-craft.md"
+    },
+    {
+      "title": "Blog Auto IA",
+      "slug": "blog-auto-ia",
+      "sprint": "Sprint 2 — Creator Suite",
+      "path": "deliverables/blog-auto-ia/build.zip",
+      "readme": "deliverables/blog-auto-ia/README_DROP.md",
+      "qa_report": "deliverables/blog-auto-ia/QA_REPORT.md",
+      "blueprint": "deliverables/blog-auto-ia/Blueprint_blog-auto-ia.md"
+    },
+    {
+      "title": "Reel Wizard",
+      "slug": "reel-wizard",
+      "sprint": "Sprint 2 — Creator Suite",
+      "path": "deliverables/reel-wizard/build.zip",
+      "readme": "deliverables/reel-wizard/README_DROP.md",
+      "qa_report": "deliverables/reel-wizard/QA_REPORT.md",
+      "blueprint": "deliverables/reel-wizard/Blueprint_reel-wizard.md"
+    },
+    {
+      "title": "Text Booster",
+      "slug": "text-booster",
+      "sprint": "Sprint 2 — Creator Suite",
+      "path": "deliverables/text-booster/build.zip",
+      "readme": "deliverables/text-booster/README_DROP.md",
+      "qa_report": "deliverables/text-booster/QA_REPORT.md",
+      "blueprint": "deliverables/text-booster/Blueprint_text-booster.md"
+    },
+    {
+      "title": "Clip Cutter",
+      "slug": "clip-cutter",
+      "sprint": "Sprint 2 — Creator Suite",
+      "path": "deliverables/clip-cutter/build.zip",
+      "readme": "deliverables/clip-cutter/README_DROP.md",
+      "qa_report": "deliverables/clip-cutter/QA_REPORT.md",
+      "blueprint": "deliverables/clip-cutter/Blueprint_clip-cutter.md"
+    },
+    {
+      "title": "Hook Generator",
+      "slug": "hook-generator",
+      "sprint": "Sprint 2 — Creator Suite",
+      "path": "deliverables/hook-generator/build.zip",
+      "readme": "deliverables/hook-generator/README_DROP.md",
+      "qa_report": "deliverables/hook-generator/QA_REPORT.md",
+      "blueprint": "deliverables/hook-generator/Blueprint_hook-generator.md"
+    },
+    {
+      "title": "Ad Optimizer AI",
+      "slug": "ad-optimizer-ai",
+      "sprint": "Sprint 3 — Growth Suite",
+      "path": "deliverables/ad-optimizer-ai/build.zip",
+      "readme": "deliverables/ad-optimizer-ai/README_DROP.md",
+      "qa_report": "deliverables/ad-optimizer-ai/QA_REPORT.md",
+      "blueprint": "deliverables/ad-optimizer-ai/Blueprint_ad-optimizer-ai.md"
+    },
+    {
+      "title": "SalesFlow",
+      "slug": "salesflow",
+      "sprint": "Sprint 3 — Growth Suite",
+      "path": "deliverables/salesflow/build.zip",
+      "readme": "deliverables/salesflow/README_DROP.md",
+      "qa_report": "deliverables/salesflow/QA_REPORT.md",
+      "blueprint": "deliverables/salesflow/Blueprint_salesflow.md"
+    },
+    {
+      "title": "ClientPitch",
+      "slug": "clientpitch",
+      "sprint": "Sprint 3 — Growth Suite",
+      "path": "deliverables/clientpitch/build.zip",
+      "readme": "deliverables/clientpitch/README_DROP.md",
+      "qa_report": "deliverables/clientpitch/QA_REPORT.md",
+      "blueprint": "deliverables/clientpitch/Blueprint_clientpitch.md"
+    },
+    {
+      "title": "Landing Builder",
+      "slug": "landing-builder",
+      "sprint": "Sprint 3 — Growth Suite",
+      "path": "deliverables/landing-builder/build.zip",
+      "readme": "deliverables/landing-builder/README_DROP.md",
+      "qa_report": "deliverables/landing-builder/QA_REPORT.md",
+      "blueprint": "deliverables/landing-builder/Blueprint_landing-builder.md"
+    },
+    {
+      "title": "Offer Craft",
+      "slug": "offer-craft",
+      "sprint": "Sprint 3 — Growth Suite",
+      "path": "deliverables/offer-craft/build.zip",
+      "readme": "deliverables/offer-craft/README_DROP.md",
+      "qa_report": "deliverables/offer-craft/QA_REPORT.md",
+      "blueprint": "deliverables/offer-craft/Blueprint_offer-craft.md"
+    }
+  ]
+}
