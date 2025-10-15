@@ -1,0 +1,26 @@
+name: repo-audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inventory files
+        run: |
+          git ls-files > files.txt
+          jq -Rn '[inputs | {path: ., ext: (.[rindex(".")//-1+1:] // ""), size: (try (stat -c%s .) catch 0)}]' < files.txt > files_inventory.json
+      - name: Key artefacts presence
+        run: |
+          test -f README.md && echo "README=true" >> audit.env || echo "README=false" >> audit.env
+          test -f netlify.toml && echo "NETLIFY_TOML=true" >> audit.env || echo "NETLIFY_TOML=false" >> audit.env
+          test -d .github/workflows && echo "WORKFLOWS=true" >> audit.env || echo "WORKFLOWS=false" >> audit.env
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-audit
+          path: |
+            files_inventory.json
+            audit.env
