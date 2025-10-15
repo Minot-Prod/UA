@@ -1,18 +1,28 @@
-<<<<<<< HEAD
 name: UA E2E
 
 on:
-  workflow_dispatch:          # lancement manuel possible
-  push:                       # un petit commit déclenche aussi
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Override UA_N8N_BASE_URL secret (optional)"
+        type: string
+        required: false
+      runs:
+        description: "Repeat count"
+        type: number
+        required: false
+        default: 1
+  push:
     branches: [ "main" ]
-  schedule:                   # HEARTBEAT quotidien (UTC)
-    - cron: '0 13 * * *'      # 13:00 UTC = 09:00 à Toronto l'été, 08:00 l'hiver
+  schedule:
+    - cron: '0 13 * * *'   # Heartbeat quotidien (13:00 UTC = 9h Toronto)
 
 jobs:
   e2e:
-    timeout-minutes: 5        # évite les jobs qui pendent
-    concurrency: ua-e2e-heartbeat   # empêche les runs qui se chevauchent
+    timeout-minutes: 5
+    concurrency: ua-e2e-heartbeat
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -21,41 +31,31 @@ jobs:
           test -n "${{ secrets.UA_N8N_BASE_URL }}" || { echo "::error title=Missing secret::UA_N8N_BASE_URL"; exit 1; }
           echo "UA_N8N_BASE_URL present ✅"
 
-      - name: PING (inline)
+      - name: PING
         env:
-          UA_N8N_BASE_URL: ${{ secrets.UA_N8N_BASE_URL }}
+          UA_N8N_BASE_URL: ${{ inputs.base_url || secrets.UA_N8N_BASE_URL }}
         run: |
           echo '{"type":"PING","intent":"healthcheck","meta":{"source":"GitHubActions","suite":"UA_E2E"}}' > _ping.json
           curl -sS -X POST "$UA_N8N_BASE_URL" \
                -H "content-type: application/json" \
                --data-binary @_ping.json | tee ping.response.json
 
-      - name: DEMO (inline)
+      - name: DEMO handshake
         env:
-          UA_N8N_BASE_URL: ${{ secrets.UA_N8N_BASE_URL }}
+          UA_N8N_BASE_URL: ${{ inputs.base_url || secrets.UA_N8N_BASE_URL }}
         run: |
           echo '{"type":"DEMO","intent":"demo_handshake","payload":{"message":"Hello from UA E2E"},"meta":{"source":"GitHubActions","suite":"UA_E2E"}}' > _demo.json
           curl -sS -X POST "$UA_N8N_BASE_URL" \
                -H "content-type: application/json" \
                --data-binary @_demo.json | tee demo.response.json
 
-      - name: Upload E2E artifacts
+      - name: Upload E2E results
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: ua-e2e-results
           path: |
             ping.response.json
             demo.response.json
-          retention-days: 7    # garde les artefacts 7 jours
-=======
-- name: Upload E2E results
-  if: ${{ always() }}  # on veut l’artifact même en cas d’échec
-  uses: actions/upload-artifact@v4
-  with:
-    name: ua-e2e-results
-    path: |
-      path/to/results/**
-      path/to/logs/**
-    if-no-files-found: warn
-    retention-days: 7
->>>>>>> f0257ac (chore(all-apps): import full sprint bundle (S1–S3) + release workflow + static notes)
+          if-no-files-found: warn
+          retention-days: 7
