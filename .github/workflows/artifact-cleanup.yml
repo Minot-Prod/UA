@@ -1,0 +1,17 @@
+﻿name: Artifact Cleanup
+on:
+  schedule:
+    - cron: "0 3 * * 0"   # chaque dimanche 03:00 UTC
+  workflow_dispatch: {}
+permissions:
+  actions: write
+  contents: read
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old artifacts (≥3 jours)
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '3 day'
+          skip-tags: 'true'

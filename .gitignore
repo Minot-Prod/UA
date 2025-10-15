@@ -19,3 +19,10 @@ Gemfile.lock
 
 # Local Netlify folder
 .netlify
+.ua_backup_*
+UA_Report_*.md
+PING.json
+DEMO.json
+replay.*
+archive/
+*.zip
