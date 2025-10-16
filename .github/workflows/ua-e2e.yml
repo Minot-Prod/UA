@@ -1,39 +1,59 @@
-name: UA E2E — Stable Push (PAT-first, Token fallback)
+name: UA E2E
 
 on:
   workflow_dispatch:
     inputs:
       base_url:
-        description: "Override UA_N8N_BASE_URL (optionnel)"
+        description: "Override UA_N8N_BASE_URL secret (optional)"
+        type: string
         required: false
       runs:
-        description: "Nombre d'exécutions (optionnel)"
+        description: "Repeat count"
+        type: number
         required: false
-  schedule:
-    - cron: "25 9 * * *"   # 09:25 America/Toronto (approx) — adapte si tu veux
+        default: 1
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   e2e:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Git identity (bot)
-        run: |
-          git config user.name  "ua-automation"
-          git config user.email "ua-bot@users.noreply.github.com"
-
-      - name: Compute current branch
-        id: ref
+      - name: Resolve base URL
+        id: cfg
         shell: bash
         run: |
-          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
-            BRANCH="${GITHUB_REF#refs/heads/}"
+          if [ -n "${{ inputs.base_url }}" ]; then
+            echo "base=${{ inputs.base_url }}" >> $GITHUB_OUTPUT
+          else
+            echo "base=${{ secrets.UA_N8N_BASE_URL }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Sanity check files
+        shell: bash
+        run: |
+          test -f PING.json || (echo "Missing PING.json" && exit 1)
+          test -f DEMO.json || (echo "Missing DEMO.json" && exit 1)
+
+      - name: Run E2E (PING/DEMO)
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="${{ steps.cfg.outputs.base }}"
+          if [ -z "$BASE" ]; then echo "UA_N8N_BASE_URL not set"; exit 1; fi
+          mkdir -p e2e_results
+          R=${{ inputs.runs || 1 }}
+          for i in $(seq 1 $R); do
+            curl -sS -X POST "$BASE" -H "Content-Type: application/json" --data @PING.json  > "e2e_results/ping_$i.json"  || true
+            curl -sS -X POST "$BASE" -H "Content-Type: application/json" --data @DEMO.json  > "e2e_results/demo_$i.json"  || true
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ua-e2e-results
+          path: e2e_results/
