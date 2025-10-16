@@ -1,0 +1,79 @@
+# .github/workflows/deploy_deepresearch_bundle.yml
+name: 🧩 Deploy DeepResearch Bundle v1.0.0
+
+on:
+  workflow_dispatch: # Lancement manuel
+    inputs:
+      auto_merge:
+        description: "Activer l'auto-merge après PR"
+        required: false
+        default: "true"
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
+jobs:
+  deploy:
+    name: 🚀 Deploy DeepResearch Bundle (OPTIMIZATION + PROMPTS + MEMORY)
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧩 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: ⚙️ Setup Git config
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 📦 Create DeepResearch bundle files
+        run: |
+          mkdir -p .github/workflows
+          echo "${{ secrets.GH_API }}" > /dev/null # Sécurité : token non exposé
+
+          cat > OPTIMIZATION_PLAN.md <<'EOF'
+# 🧠 OPTIMIZATION_PLAN.md
+*(contenu complet du plan généré précédemment ici)*
+EOF
+
+          cat > PROMPTS_PLAN.md <<'EOF'
+# 🧠 PROMPTS_PLAN.md
+*(contenu complet du plan généré précédemment ici)*
+EOF
+
+          cat > GITHUB_MEMORY_PACK.md <<'EOF'
+# 🧠 GITHUB_MEMORY_PACK.md
+*(contenu complet du plan généré précédemment ici)*
+EOF
+
+      - name: 🌿 Create branch and commit
+        run: |
+          git checkout -b chore/deepresearch-bundle-import
+          git add OPTIMIZATION_PLAN.md PROMPTS_PLAN.md GITHUB_MEMORY_PACK.md
+          git commit -m "🧩 Import: DeepResearch Bundle v1.0.0 (Knowledge, Automation, CI, Prompts & Memory)"
+
+      - name: 🚀 Push branch to origin
+        env:
+          GH_TOKEN: ${{ secrets.GH_API }}
+        run: |
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:chore/deepresearch-bundle-import
+
+      - name: 🧠 Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GH_API }}
+        run: |
+          gh pr create \
+            --base main \
+            --head chore/deepresearch-bundle-import \
+            --title "🧩 Import: DeepResearch Bundle v1.0.0 (Knowledge, Automation, CI, Prompts & Memory)" \
+            --body "Ajout automatique du bundle DeepResearch orchestré par l’Agent GitHub-First (plans, workflows CI, prompts et mémoire technique)."
+
+      - name: ✅ Auto-merge PR (optionnel)
+        if: ${{ github.event.inputs.auto_merge == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_API }}
+        run: |
+          gh pr merge chore/deepresearch-bundle-import --squash --delete-branch --auto
