@@ -1,0 +1,39 @@
+name: UA E2E — Stable Push (PAT-first, Token fallback)
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Override UA_N8N_BASE_URL (optionnel)"
+        required: false
+      runs:
+        description: "Nombre d'exécutions (optionnel)"
+        required: false
+  schedule:
+    - cron: "25 9 * * *"   # 09:25 America/Toronto (approx) — adapte si tu veux
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Git identity (bot)
+        run: |
+          git config user.name  "ua-automation"
+          git config user.email "ua-bot@users.noreply.github.com"
+
+      - name: Compute current branch
+        id: ref
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+            BRANCH="${GITHUB_REF#refs/heads/}"
