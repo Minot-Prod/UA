@@ -1,0 +1,14 @@
+{
+  "id": "queued_ping_2025-09-23T04:53:57",
+  "intent": "PING",
+  "params": {},
+  "callback": {
+    "status_url": "https://httpbin.org/post",
+    "result_url": "https://httpbin.org/post"
+  },
+  "meta": {
+    "source": "UA_QUEUE",
+    "sync_timeout_s": 25,
+    "job_hard_timeout_s": 90
+  }
+}
