@@ -1,0 +1,6 @@
+{
+  "name": "API Contract Agent",
+  "openapi_required": true,
+  "versioning": "semver",
+  "breaking_change_tests": true
+}

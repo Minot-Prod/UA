@@ -1,0 +1,12 @@
+{
+  "name": "Master Agent Project",
+  "requires_blueprint": true,
+  "checkpoint_pct_default": 0.7,
+  "delegates": [
+    "Test Synthétiseur",
+    "API Contract Agent",
+    "Performance Agent",
+    "A11y Agent",
+    "Security Agent"
+  ]
+}

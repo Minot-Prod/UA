@@ -1,0 +1,15 @@
+{
+  "name": "Agent Sécurité OWASP",
+  "standards": [
+    "OWASP Top 10",
+    "ASVS",
+    "WSTG"
+  ],
+  "ci_jobs": [
+    "Semgrep",
+    "CodeQL",
+    "ZAP",
+    "Dependabot",
+    "Trivy"
+  ]
+}

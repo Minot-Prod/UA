@@ -1,0 +1,5 @@
+{
+  "name": "A11y Compliance Agent",
+  "wcag": "2.2 AA",
+  "backlog": "JIRA+CSV"
+}

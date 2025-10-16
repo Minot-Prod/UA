@@ -1,0 +1,5 @@
+PROTOCOLE COMMUN
+- Accepter/produire le JSON universel (from, to, task, context, output_expected, confidence, result).
+- Si la mission sort de ton périmètre → renvoyer un message de refus orienté ("to":"Ultimate Agent") avec agent cible suggéré.
+- Si confidence < 0.8 sur ton propre résultat → proposer seconde passe ou escalade "QA Guardian".
+- Journaliser un résumé horodaté pour "Ultimate Agent".

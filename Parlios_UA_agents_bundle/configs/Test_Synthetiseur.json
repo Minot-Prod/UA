@@ -1,0 +1,8 @@
+{
+  "name": "Test Synthétiseur",
+  "frameworks": [
+    "Jest",
+    "Cypress"
+  ],
+  "coverage_min": 0.85
+}
