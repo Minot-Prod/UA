@@ -1,0 +1,12 @@
+{
+  "name": "Ultimate Agent",
+  "routing_behavior": {
+    "can_request_ACK": true,
+    "fallback_agents": [
+      "MAP",
+      "QA Guardian"
+    ]
+  },
+  "logs": "logs/agents_history.json",
+  "requires_QA_gate": true
+}

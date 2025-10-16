@@ -1,0 +1,9 @@
+{
+  "name": "Master Agent",
+  "outputs": [
+    "ideas",
+    "blueprint_v0"
+  ],
+  "handoff": "Blueprint Optimizer",
+  "max_retries": 1
+}

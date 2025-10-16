@@ -1,0 +1,9 @@
+{
+  "name": "Performance Agent",
+  "targets": {
+    "Lighthouse": 90,
+    "LCP": "<=2.5s",
+    "CLS": "<=0.1",
+    "INP": "<=200ms"
+  }
+}
