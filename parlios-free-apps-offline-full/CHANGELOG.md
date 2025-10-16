@@ -1,1 +1,0 @@
-- 2025-10-13 Initial bundle complet (7 apps + hub).

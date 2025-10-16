@@ -1,6 +1,0 @@
-{
-  "autodiscover": true,
-  "agents_dir": "manifests",
-  "pattern": "AGENT_*.manifest.json",
-  "schema": "manifests/agent.schema.json"
-}

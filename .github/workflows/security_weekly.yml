@@ -1,0 +1,31 @@
+name: Security Weekly
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: npm audit (high only)
+        run: npm audit --audit-level=high || true
+      - name: OSV scanner
+        run: |
+          curl -sSL https://github.com/google/osv-scanner/releases/download/v1.8.5/osv-scanner_1.8.5_linux_amd64.tar.gz | tar xz
+          ./osv-scanner -r .
+      - name: secretlint (si config)
+        run: |
+          npx -y secretlint "**/*" || true

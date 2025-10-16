@@ -1,0 +1,44 @@
+name: UA E2E n8n
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: "Nombre de runs"
+        required: false
+        default: "1"
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare payloads
+        run: |
+          test -f PING.json || echo '{"id":"ping","intent":"PING","params":{}}' > PING.json
+          test -f DEMO.json || echo '{"id":"demo","intent":"RUN.DEMO_HTTPBIN","params":{"echo":"hello"}}' > DEMO.json
+
+      - name: POST PING
+        env:
+          BASE: ${{ secrets.UA_N8N_BASE_URL }}
+        run: |
+          curl -sS -X POST "$BASE" -H "Content-Type: application/json" --data @PING.json -o ping.out || true
+
+      - name: POST DEMO
+        env:
+          BASE: ${{ secrets.UA_N8N_BASE_URL }}
+        run: |
+          curl -sS -X POST "$BASE" -H "Content-Type: application/json" --data @DEMO.json -o demo.out || true
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ua-e2e-results
+          path: |
+            ping.out
+            demo.out

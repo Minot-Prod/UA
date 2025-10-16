@@ -1,1 +1,0 @@
-export default function Page(){return (<main style={{padding:'1rem'}}><h1>Mentions légales (gabarit)</h1><p>Remplacer ce contenu par les infos officielles.</p></main>)}

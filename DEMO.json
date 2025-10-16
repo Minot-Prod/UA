@@ -1,1 +1,0 @@
-{ "type": "DEMO", "intent": "demo_handshake", "payload": { "message": "Hello from UA E2E" }, "meta": { "source": "GitHubActions", "suite": "UA_E2E" } }

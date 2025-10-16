@@ -1,1 +1,0 @@
-Étape 11B: consulte la démo Next.js pour tester les rôles (admin/user).

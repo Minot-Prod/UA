@@ -1,0 +1,57 @@
+name: Netlify Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "Env (staging|prod)"
+        required: true
+        default: "staging"
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: |
+          if npm run | grep -q "build"; then npm run build; fi
+
+      - name: Install Netlify CLI
+        run: npm i -g netlify-cli@17
+
+      - name: Detect publish dir
+        id: pub
+        run: |
+          if [ -d "dist" ]; then echo "dir=dist" >> $GITHUB_OUTPUT;
+          elif [ -d "build" ]; then echo "dir=build" >> $GITHUB_OUTPUT;
+          elif [ -d "out" ]; then echo "dir=out" >> $GITHUB_OUTPUT;
+          else echo "dir=." >> $GITHUB_OUTPUT; fi
+
+      - name: Deploy
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref_name }}" = "main" ]; then
+            netlify deploy --dir "${{ steps.pub.outputs.dir }}" --prod --site "$NETLIFY_SITE_ID"
+          else
+            netlify deploy --dir "${{ steps.pub.outputs.dir }}" --site "$NETLIFY_SITE_ID"
+          fi
+
+      - name: Publish URL
+        run: echo "✅ Déployé sur Netlify."

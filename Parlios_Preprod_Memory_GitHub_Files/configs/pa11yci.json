@@ -1,9 +1,0 @@
-{
-  "defaults": {
-    "standard": "WCAG2AA",
-    "hideElements": ".sr-only,[aria-hidden='true']"
-  },
-  "urls": [
-    "http://localhost:8888/"
-  ]
-}
