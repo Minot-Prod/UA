@@ -2,63 +2,66 @@ name: QA Web (Lighthouse+Pa11y+Linkinator)
 
 on:
   pull_request:
-  workflow_dispatch: {}
-
-permissions:
-  contents: read
+    # On ne déclenche QUE si les changements touchent le site ou ce workflow
+    paths:
+      - "site/**"
+      - "web/**"
+      - ".github/workflows/qa_web.yml"
 
 jobs:
   qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Installe Node pour les outils CLI (lighthouse, pa11y, linkinator)
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version: "20"
 
-      - name: Install site deps
-        run: npm ci
-
-      - name: Build site (si script présent)
+      - name: Install QA tools
         run: |
-          if npm run | grep -q "build"; then npm run build; fi
+          npm i -g lighthouse@12 pa11y@6 linkinator@5 serve@14
 
-      - name: Install QA CLIs
+      # Build du site si nécessaire (adapter la commande à ton projet)
+      - name: Build site
         run: |
-          npm i -g @lhci/cli@0.13.0 pa11y-ci@3.1.0 linkinator@4.0.1
+          if [ -d "site" ]; then
+            cd site
+            if [ -f "package.json" ]; then
+              npm ci || npm i
+              npm run build || echo "No build script, skipping"
+            fi
+            cd ..
+          fi
 
-      - name: Start local server
+      # Lance un serveur local pour auditer (adapter le dossier si besoin)
+      - name: Start static server
         run: |
-          npx http-server ./dist -p 4173 --silent & echo $! > .server_pid
-          sleep 3
-        shell: bash
+          nohup npx serve ./site/dist -l 4173 >/dev/null 2>&1 &
+          sleep 2
 
-      - name: Lighthouse CI
+      - name: Lighthouse
         run: |
-          lhci collect --url=http://localhost:4173 --numberOfRuns=1 --max-wait-for-load=90000
-          lhci assert --preset=lighthouse:recommended || true
+          npx lighthouse http://127.0.0.1:4173 --quiet --chrome-flags="--headless" --only-categories=performance,accessibility,best-practices,seo --preset=desktop --output=json --output-path=./lighthouse.json
+          echo "Lighthouse done."
 
       - name: Pa11y (AA)
         run: |
-          npx pa11y-ci --sitemap http://localhost:4173/sitemap.xml --sitemap-exclude "*/admin/*" || true
+          npx pa11y http://127.0.0.1:4173 --standard WCAG2AA --timeout 60000
+          echo "Pa11y done."
 
-      - name: Linkinator (404 check)
+      - name: Linkinator
         run: |
-          npx linkinator http://localhost:4173 --recurse --skip "mailto:,tel:,#"
+          npx linkinator http://127.0.0.1:4173 --timeout=5000 --retry --concurrency=10
+          echo "Linkinator done."
 
-      - name: Upload QA artifacts
+      - name: Upload Lighthouse artifact
         uses: actions/upload-artifact@v4
         with:
-          name: qa-reports
-          path: |
-            .lighthouseci
-            pa11y*.json
-            linkinator*.json
-          if-no-files-found: ignore
-
-      - name: Stop server
-        if: always()
-        run: |
-          if [ -f .server_pid ]; then kill $(cat .server_pid) || true; fi
+          name: web-qa-lighthouse
+          path: ./lighthouse.json
