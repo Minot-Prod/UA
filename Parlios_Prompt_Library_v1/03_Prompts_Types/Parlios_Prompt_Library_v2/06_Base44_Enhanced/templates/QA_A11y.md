@@ -1,3 +1,0 @@
-- États focus visibles
-- Roles ARIA
-- Contraste WCAG

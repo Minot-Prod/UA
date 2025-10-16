@@ -1,0 +1,64 @@
+name: QA Web (Lighthouse+Pa11y+Linkinator)
+
+on:
+  pull_request:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install site deps
+        run: npm ci
+
+      - name: Build site (si script présent)
+        run: |
+          if npm run | grep -q "build"; then npm run build; fi
+
+      - name: Install QA CLIs
+        run: |
+          npm i -g @lhci/cli@0.13.0 pa11y-ci@3.1.0 linkinator@4.0.1
+
+      - name: Start local server
+        run: |
+          npx http-server ./dist -p 4173 --silent & echo $! > .server_pid
+          sleep 3
+        shell: bash
+
+      - name: Lighthouse CI
+        run: |
+          lhci collect --url=http://localhost:4173 --numberOfRuns=1 --max-wait-for-load=90000
+          lhci assert --preset=lighthouse:recommended || true
+
+      - name: Pa11y (AA)
+        run: |
+          npx pa11y-ci --sitemap http://localhost:4173/sitemap.xml --sitemap-exclude "*/admin/*" || true
+
+      - name: Linkinator (404 check)
+        run: |
+          npx linkinator http://localhost:4173 --recurse --skip "mailto:,tel:,#"
+
+      - name: Upload QA artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-reports
+          path: |
+            .lighthouseci
+            pa11y*.json
+            linkinator*.json
+          if-no-files-found: ignore
+
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f .server_pid ]; then kill $(cat .server_pid) || true; fi

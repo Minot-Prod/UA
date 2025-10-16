@@ -1,1 +1,0 @@
-QA Merger v2 — fusionne LH/Pa11y/Links vers qa.metrics.json

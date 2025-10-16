@@ -1,0 +1,9 @@
+frontend:
+  - "src/**/*"
+  - "app/**/*"
+qa:
+  - "qa/**/*"
+docs:
+  - "docs/**/*"
+ci:
+  - ".github/workflows/**/*"

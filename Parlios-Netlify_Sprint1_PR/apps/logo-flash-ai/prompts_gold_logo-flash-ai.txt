@@ -1,7 +1,0 @@
-// Prompts Gold — Logo Flash AI
-/*
-Exemples à copier-coller dans votre moteur IA :
-1) "Analyse le brief suivant et génère 3 variantes courtes et percutantes."
-2) "Propose 10 hashtags pertinents (FR+EN)."
-3) "Génère un visuel simple (fond dégradé + titre + accroche)."
-*/

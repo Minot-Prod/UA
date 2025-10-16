@@ -1,7 +1,0 @@
-id,category,title,file
-archi_mvp,architecture,Architecture MVP marketplace,03_Prompts_Types/3.1_Architecture.md
-flows_ui,ui,User flows & Prototype UI,03_Prompts_Types/3.2_UserFlows_Prototype.md
-frontend_ios,frontend,iOS SwiftUI feed,03_Prompts_Types/3.3_Code_Frontend_iOS.md
-frontend_react,frontend,React ProductCard,03_Prompts_Types/3.3b_Code_Frontend_React.md
-backend_api,backend,Node service Produits,03_Prompts_Types/3.4_Backend_APIs.md
-qa_review,qa,Évaluation & charge,03_Prompts_Types/3.5_Critiques_Qualite.md
