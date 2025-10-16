@@ -24,48 +24,34 @@ jobs:
         run: |
           set -euo pipefail
           ev="${GITHUB_EVENT_PATH}"
-          # Expecting:
-          # client_payload:
-          #   branch: "feat/xyz"
-          #   title: "My PR title"
-          #   files: [{ "path": "dir/file.md", "content_b64": "..." }, ...]
-          BRANCH="$(jq -r '.client_payload.branch // "update/ua-agent-bridge-'"'"'$(date +%Y%m%d%H%M%S)'"'"'"' "$ev")"
-          TITLE="$(jq -r '.client_payload.title // "UA: update from chat"' "$ev")"
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
-          echo "title=$TITLE"   >> $GITHUB_OUTPUT
-          jq -r '.client_payload.files // []' "$ev" > files.json
-          cat files.json
+          BRANCH="$(jq -r '.client_payload.branch // \"update/ua-agent-bridge-'"'"'$(date +%Y%m%d%H%M%S)'"'"'\"' \"$ev\")"
+          TITLE="$(jq -r '.client_payload.title // \"UA: update from chat\"' \"$ev\")"
+          echo \"branch=$BRANCH\" >> $GITHUB_OUTPUT
+          echo \"title=$TITLE\"   >> $GITHUB_OUTPUT
+          jq -r '.client_payload.files // []' \"$ev\" > files.json
 
       - name: Create branch
         shell: bash
         run: |
-          git checkout -b "${{ steps.pl.outputs.branch }}"
+          git checkout -b \"${{ steps.pl.outputs.branch }}\"
 
       - name: Write files from payload
-        if: ${{ always() }}
         shell: bash
         run: |
-          set -euo pipefail
           jq -c '.[]' files.json | while read -r item; do
-            p="$(jq -r '.path' <<<"$item")"
-            c="$(jq -r '.content_b64' <<<"$item")"
-            test -n "$p" || continue
-            mkdir -p "$(dirname "$p")"
-            if [ -n "$c" ] && [ "$c" != "null" ]; then
-              echo "$c" | base64 -d > "$p"
-            else
-              > "$p"
-            fi
-            echo "Wrote $p"
+            p=\"$(jq -r '.path' <<<\"$item\")\"
+            c=\"$(jq -r '.content_b64' <<<\"$item\")\"
+            mkdir -p \"$(dirname \"$p\")\"
+            echo \"$c\" | base64 -d > \"$p\"
+            echo \"Wrote $p\"
           done
-          rm -f files.json
 
       - name: Commit & push
         shell: bash
         run: |
           git add -A
-          git commit -m "${{ steps.pl.outputs.title }}"
-          git push --set-upstream origin "${{ steps.pl.outputs.branch }}"
+          git commit -m \"${{ steps.pl.outputs.title }}\"
+          git push --set-upstream origin \"${{ steps.pl.outputs.branch }}\"
 
       - name: Open PR
         uses: peter-evans/create-pull-request@v6
