@@ -54,7 +54,6 @@ jobs:
             if [ -n "$c" ] && [ "$c" != "null" ]; then
               echo "$c" | base64 -d > "$p"
             else
-              # If no content provided, create empty file
               > "$p"
             fi
             echo "Wrote $p"
