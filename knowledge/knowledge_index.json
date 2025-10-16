@@ -1,0 +1,78 @@
+﻿{
+  "generated_at": "2025-10-16 00:00:00",
+  "root": "/knowledge/",
+  "categories": [
+    {
+      "slug": "ua-core",
+      "title": "Ultimate Agent — Noyau",
+      "files": [
+        "README_UltimateAgent_Enriched.md",
+        "UA_workflows.md",
+        "UA_test_plan.md",
+        "AGENT_UltimateAgent.manifest.json"
+      ],
+      "tags": ["ua","routing","arbitration","tests","blueprint"]
+    },
+    {
+      "slug": "base44",
+      "title": "Base44 — Discipline de production",
+      "files": ["CREDIT_LOG.md", "Blueprint_UA_Fusion.md"],
+      "tags": ["base44","complexity","budget","qa"]
+    },
+    {
+      "slug": "cicd-n8n",
+      "title": "CI/CD, HTTPS & n8n",
+      "files": ["t0_https_playbook.md","replay.sh","PING.json","DEMO.json","CI_README.md"],
+      "tags": ["cicd","n8n","https","webhook","smoketest"]
+    },
+    {
+      "slug": "agents-routing",
+      "title": "Patchs d’intégration & Agents",
+      "files": ["UA_Consolidated_Integration_Patch.md"],
+      "tags": ["agents","routing","catalog"]
+    },
+    {
+      "slug": "mantra",
+      "title": "Gouvernance (Yomi)",
+      "files": ["UA_Mantra_Yomi.md"],
+      "tags": ["mindset","governance","discipline"]
+    },
+    {
+      "slug": "reports",
+      "title": "Rapports & Readiness",
+      "files": ["readiness_report.md","UA_Report_20250923.md","capabilities_diff.md"],
+      "tags": ["report","readiness","capabilities"]
+    },
+    {
+      "slug": "parlios-ecosystem",
+      "title": "Parlios — Écosystème & MVP",
+      "files": [],
+      "notes": [
+        "Stack Netlify+Supabase+Vite+React, QA gates CI (Lighthouse, Pa11y, Linkinator).",
+        "Starters Netlify priorisés (6)."
+      ],
+      "tags": ["parlios","mvp","stack","netlify","supabase","qa"]
+    },
+    {
+      "slug": "automations",
+      "title": "Workflows d’automatisation (MySafeCup, Tazlow)",
+      "files": [],
+      "notes": [
+        "Zapier: Shopify→Sellsy+Drive, Canva logo; Tazlow: médias→GPT→Notion/Sheets→Calendar→email→FB/IG."
+      ],
+      "tags": ["zapier","content","calendar","facebook","instagram"]
+    },
+    {
+      "slug": "uabri-dge",
+      "title": "UABridge — Intégrations IA",
+      "files": [],
+      "tags": ["integrations","ai-engines","costs"]
+    },
+    {
+      "slug": "branding",
+      "title": "Branding & Manifesto",
+      "files": [],
+      "tags": ["branding","manifesto","logo"]
+    }
+  ]
+}
