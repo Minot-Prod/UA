@@ -1,0 +1,18 @@
+﻿name: Knowledge Check
+on:
+  pull_request:
+    paths: ["knowledge/**"]
+jobs:
+  validate-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON and basic schema
+        run: |
+          python - <<'PY'
+          import json,sys
+          with open('knowledge/knowledge_index.json','r',encoding='utf-8') as f:
+              data=json.load(f)
+          assert 'categories' in data and len(data['categories'])>0, "No categories in index"
+          print("Index OK with", len(data['categories']), "categories")
+          PY
