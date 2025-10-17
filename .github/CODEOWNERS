@@ -1,0 +1,7 @@
+# UA (Core)
+/docs/ @Minot-Prod
+/config/ @Minot-Prod
+/.github/workflows/ @Minot-Prod
+
+# Catch-all
+* @Minot-Prod
