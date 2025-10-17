@@ -1,0 +1,32 @@
+name: Reusable Release Workflow
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: 'Node.js version'
+        required: false
+        default: '20'
+      install_command:
+        description: 'Install dependencies command'
+        required: false
+        default: 'npm ci'
+    secrets:
+      GH_TOKEN:
+        required: true
+      NPM_TOKEN:
+        required: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node_version }}
+      - name: Install dependencies
+        run: ${{ inputs.install_command }}
+      - name: Release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
