@@ -1,0 +1,20 @@
+[build]
+  command = ""
+  publish = "site/dist"
+
+[functions]
+  directory = "netlify/functions"
+
+# CORS pour l'API
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# (Optionnel) Forcer JSON pour /api/knowledge
+[[redirects]]
+  from = "/api/knowledge"
+  to = "/.netlify/functions/knowledge"
+  status = 200
