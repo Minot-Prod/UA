@@ -1,0 +1,71 @@
+name: quality-gate-web
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: Node.js version to use
+        required: false
+        default: '20'
+      build_command:
+        description: Command to build the application
+        required: false
+        default: 'npm run build'
+      serve_command:
+        description: Command to start the application server
+        required: false
+        default: 'npx serve -s dist -l 5000'
+      test_url:
+        description: URL served locally to test (e.g., http://localhost:5000)
+        required: false
+        default: 'http://localhost:5000'
+    secrets:
+      NETLIFY_AUTH_TOKEN:
+        description: Optional Netlify token if needed
+        required: false
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: ${{ inputs.build_command }}
+
+      - name: Start server
+        run: ${{ inputs.serve_command }} &
+
+      - name: Wait for server
+        run: npx wait-on ${{ inputs.test_url }}
+
+      - name: Install QA tools
+        run: |
+          npm install -g lighthouse pa11y-ci linkinator wait-on
+
+      - name: Run Lighthouse
+        run: lighthouse ${{ inputs.test_url }} --output=json --output-path=./lighthouse-report.json
+
+      - name: Run Pa11y
+        run: pa11y-ci ${{ inputs.test_url }}
+
+      - name: Run Linkinator
+        run: linkinator ${{ inputs.test_url }} --skip 429
+
+      - name: Upload QA reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: qa-web-reports
+          path: |
+            lighthouse-report.json
