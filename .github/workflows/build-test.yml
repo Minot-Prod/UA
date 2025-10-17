@@ -1,0 +1,44 @@
+name: build-test
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: Node.js version to use
+        required: false
+        default: '20'
+      install_command:
+        description: Command to install dependencies
+        required: false
+        default: 'npm ci'
+      test_command:
+        description: Command to run tests
+        required: false
+        default: 'npm test'
+      build_command:
+        description: Command to build the project
+        required: false
+        default: 'npm run build'
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: ${{ inputs.install_command }}
+
+      - name: Run tests
+        run: ${{ inputs.test_command }}
+
+      - name: Build project
+        run: ${{ inputs.build_command }}
