@@ -1,2 +1,0 @@
-- [ ] IA locale prête ou mock
-- [ ] Export PNG 1200×630 + watermark

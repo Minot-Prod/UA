@@ -1,1 +1,0 @@
-export function appendLog(a:string[],e:string){a.push(e);return a}

@@ -1,1 +1,0 @@
-export default function Page(){return (<main style={{padding:'1rem'}}><h1>Politique de confidentialité (gabarit)</h1><p>Remplacer ce contenu par le texte final.</p></main>)}

@@ -1,1 +1,0 @@
-export function useShare(){return {share: async()=>({ok:true})}}

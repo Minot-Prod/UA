@@ -1,2 +1,0 @@
-- Coverage cible ≥ 70%
-- Tests erreur/edge cases

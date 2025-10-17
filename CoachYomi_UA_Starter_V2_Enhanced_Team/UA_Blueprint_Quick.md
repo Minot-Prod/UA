@@ -1,1 +1,0 @@
-# same blueprint quick as before

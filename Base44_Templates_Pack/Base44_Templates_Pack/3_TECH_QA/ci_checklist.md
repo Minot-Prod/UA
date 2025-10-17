@@ -1,3 +1,0 @@
-- [ ] Build passe
-- [ ] Tests unitaires ok
-- [ ] Linter validé
