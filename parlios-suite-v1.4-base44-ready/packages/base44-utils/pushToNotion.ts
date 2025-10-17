@@ -1,1 +1,0 @@
-export async function pushToNotion(){return {ok:true}}

@@ -1,1 +1,0 @@
-export function generateCreditLine(e:string){return e}

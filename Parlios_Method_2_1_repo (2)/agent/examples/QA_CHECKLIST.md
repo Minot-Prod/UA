@@ -1,2 +1,0 @@
-- [ ] Lighthouse Perf≥95 A11y≥95 Best≥95 SEO≥90
-- [ ] 0 liens cassés

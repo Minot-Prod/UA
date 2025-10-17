@@ -1,3 +1,0 @@
-- Ne pas tout demander d’un coup
-- Compiler et tester systématiquement
-- Penser a11y + perfs
