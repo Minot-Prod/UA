@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: UA E2E
 
 on:
@@ -46,3 +47,15 @@ jobs:
             ping.response.json
             demo.response.json
           retention-days: 7    # garde les artefacts 7 jours
+=======
+- name: Upload E2E results
+  if: ${{ always() }}  # on veut l’artifact même en cas d’échec
+  uses: actions/upload-artifact@v4
+  with:
+    name: ua-e2e-results
+    path: |
+      path/to/results/**
+      path/to/logs/**
+    if-no-files-found: warn
+    retention-days: 7
+>>>>>>> f0257ac (chore(all-apps): import full sprint bundle (S1–S3) + release workflow + static notes)
