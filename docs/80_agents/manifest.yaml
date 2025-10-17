@@ -1,0 +1,12 @@
+schema_version: 1
+name_for_human: "Playbook 80 Agents"
+name_for_model: 80_agents_playbook
+description_for_human: >
+  Ce manifeste référence les fichiers du dossier `docs/80_agents`
+  pour intégration dans des environnements GPT comme Parlios et UA.
+description_for_model: >
+  Manifest describing the contents and purpose of the 80 agents playbook,
+  including a master document and README.
+files:
+  - doc_realisation_80_agents.md
+  - README.md
