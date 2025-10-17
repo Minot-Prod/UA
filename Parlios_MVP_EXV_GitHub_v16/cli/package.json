@@ -1,6 +1,0 @@
-{
-  "name": "create-parlios",
-  "version": "0.1.0",
-  "type": "module",
-  "bin": { "create-parlios": "./create-parlios.js" }
-}

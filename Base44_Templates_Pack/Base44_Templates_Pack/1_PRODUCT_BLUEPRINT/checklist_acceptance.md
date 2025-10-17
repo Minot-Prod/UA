@@ -1,3 +1,0 @@
-- [ ] Objectifs clairs
-- [ ] Tests définis
-- [ ] Déploiement validé

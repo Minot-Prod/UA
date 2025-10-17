@@ -1,7 +1,0 @@
-{
-  "intent": "PING",
-  "meta": {
-    "source": "ua-external-agent",
-    "ts": "AUTO"
-  }
-}

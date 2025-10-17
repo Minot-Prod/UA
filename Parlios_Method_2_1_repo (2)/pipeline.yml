@@ -1,7 +1,0 @@
-stages:
-  - id: intake→siteplan
-  - id: copy+seo
-  - id: visuals
-  - id: build
-  - id: validate
-  - id: deploy

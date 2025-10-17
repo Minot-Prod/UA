@@ -1,1 +1,0 @@
-export function useParliosIA(){return {status:'absent',messages:[],loading:false,send:async()=>''}}
