@@ -1,0 +1,11 @@
+authority:
+  agent: BAS44
+  scope: org/parlios
+  policies:
+    - no-delete
+    - fast-path
+    - hotfix
+  visibility: public_readonly
+  supervisor: MAP
+  verified: true
+  timestamp: 2025-10-18T23:05Z
