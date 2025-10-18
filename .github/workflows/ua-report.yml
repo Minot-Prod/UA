@@ -1,0 +1,56 @@
+name: UA Report Generation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.ua/**'
+      - '.github/workflows/ua-report.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install pyyaml markdownify
+
+      - name: Generate agent reports
+        run: |
+          mkdir -p .ua/reports
+          echo "# 🧠 Ultimate Agent Library – Rapport d’État" > .ua/reports/agents_status.md
+          echo "Dernière mise à jour : $(date -u)" >> .ua/reports/agents_status.md
+          echo "" >> .ua/reports/agents_status.md
+          echo "## Agents détectés" >> .ua/reports/agents_status.md
+          find .ua/agents -name "*.json" | while read agent; do
+            name=$(basename "$agent" .json)
+            echo "- $name" >> .ua/reports/agents_status.md
+          done
+          echo "Rapport généré automatiquement par UA_Orchestrator." >> .ua/reports/agents_status.md
+
+          # Générer un index YAML simple
+          echo "# Index des agents UA" > .ua/reports/agents_index.yaml
+          for f in $(find .ua/agents -name "*.json"); do
+            base=$(basename "$f" .json)
+            echo "$base:" >> .ua/reports/agents_index.yaml
+            echo "  path: $f" >> .ua/reports/agents_index.yaml
+          done
+
+      - name: Commit and push reports
+        run: |
+          git config --global user.name "UA_Orchestrator"
+          git config --global user.email "orchestrator@ua.local"
+          git add .ua/reports/*
+          git commit -m "Update UA agent reports [automated]" || echo "No changes to commit"
+          git push origin main
